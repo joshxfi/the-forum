@@ -1,3 +1,4 @@
+import { Menu } from "@/components/menu";
 import { Message } from "@/components/message";
 
 export default function Home() {
@@ -18,6 +19,8 @@ export default function Home() {
         upvoteCount={7}
         replyCount={4}
       />
+
+      <Menu />
     </section>
   );
 }
