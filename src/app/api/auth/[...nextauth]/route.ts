@@ -1,29 +1,28 @@
 /* eslint-disable no-param-reassign */
-import { NextApiHandler } from 'next';
-import { prisma } from '@/utils/db';
-import NextAuth, { NextAuthOptions } from 'next-auth';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import CredentialsProvider from 'next-auth/providers/credentials';
-
-import { AuthedUser } from '../../authorize/route';
+import { NextApiHandler } from "next";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/utils/db";
+import { AuthedUser } from "../../authorize/route";
 
 const options: NextAuthOptions = {
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      id: 'credentials',
-      name: 'credentials',
+      id: "credentials",
+      name: "credentials",
       credentials: {
         username: {
-          label: 'Username',
-          type: 'text',
+          label: "Username",
+          type: "text",
         },
-        password: { label: 'Password', type: 'password' },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
         const res = await fetch(`${process.env.NEXTAUTH_URL}/api/authorize`, {
-          method: 'POST',
+          method: "POST",
           body: JSON.stringify({
             username: credentials?.username,
             password: credentials?.password,
@@ -35,28 +34,27 @@ const options: NextAuthOptions = {
           return user;
         }
 
-        return Promise.reject(new Error('Invalid credentials'));
+        return Promise.reject(new Error("Invalid credentials"));
       },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user }: any) {
       if (user) {
         token.username = user.username;
         return token;
       }
       return token;
     },
-    session({ session, token }) {
+    session({ session, token }: any) {
       if (session.user) {
-        session.user.id = token.sub;
         session.user.username = token.username as string;
       }
       return session;
