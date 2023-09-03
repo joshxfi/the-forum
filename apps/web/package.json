@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "docker:down": "docker-compose down",
-    "docker:up": "docker-compose up -d"
+    "lint": "next lint"
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",
