@@ -55,9 +55,9 @@ const Post = ({
   setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
-    <div className="border-b border-muted pb-8">
+    <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
       <div
-        className={`text-sm container max-w-screen-sm ${
+        className={`text-sm container ${
           type === "reply" && "pl-16 pt-8"
         }`}
       >

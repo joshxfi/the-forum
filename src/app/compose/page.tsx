@@ -11,7 +11,7 @@ export default function Compose() {
   const [text, setText] = useState("");
 
   return (
-    <form className="mt-24 container">
+    <form className="container">
       <div className="flex flex-col gap-y-3">
         <h2 className="font-semibold text-sm">joe</h2>
 
