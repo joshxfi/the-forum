@@ -1,5 +1,5 @@
 {
-  "name": "the-forum",
+  "name": "web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,16 +11,20 @@
     "docker:up": "docker-compose up -d"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.3",
+    "@as-integrations/next": "^2.0.2",
     "@next-auth/prisma-adapter": "1.0.7",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
+    "@theforum/prisma": "workspace:*",
     "@types/node": "20.5.7",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "class-validator": "^0.14.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "eslint": "8.48.0",
@@ -37,12 +41,12 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
-    "type-graphql": "^1.1.1",
+    "type-graphql": "2.0.0-beta.3",
     "typescript": "5.2.2",
-    "zod": "^3.22.2",
-    "@theforum/prisma": "workspace:*"
+    "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.0"
+    "@types/bcrypt": "^5.0.0",
+    "encoding": "^0.1.13"
   }
 }
