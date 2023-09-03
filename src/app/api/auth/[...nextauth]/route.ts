@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthedUser } from "../../authorize/route";
+import { AuthedUser } from "../../authorize/types";
 
 const handler = NextAuth({
   debug: process.env.NODE_ENV === "development",
