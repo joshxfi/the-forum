@@ -1,14 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { NextApiHandler } from "next";
-import NextAuth, { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "@/utils/db";
 import { AuthedUser } from "../../authorize/route";
 
-const options: NextAuthOptions = {
+const handler = NextAuth({
   debug: process.env.NODE_ENV === "development",
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       id: "credentials",
@@ -60,8 +56,6 @@ const options: NextAuthOptions = {
       return session;
     },
   },
-};
+});
 
-const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
-
-export default authHandler;
+export { handler as GET, handler as POST };
