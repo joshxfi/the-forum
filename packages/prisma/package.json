@@ -1,0 +1,17 @@
+{
+  "name": "@theforum/prisma",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "prisma generate && tsc",
+    "build": "prisma generate && tsc",
+    "generate": "prisma generate && tsc"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.2.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.2.0",
+    "typescript": "^4.7.4"
+  }
+}
