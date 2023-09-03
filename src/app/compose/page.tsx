@@ -13,10 +13,7 @@ export default function Compose() {
   return (
     <form className="mt-24 container">
       <div className="flex flex-col gap-y-3">
-        <div className="text-sm flex justify-between">
-          <h2 className="font-semibold">joe</h2>
-          <p className="text-muted-foreground">{text.length}/500</p>
-        </div>
+        <h2 className="font-semibold text-sm">joe</h2>
 
         <Textarea
           required
@@ -24,22 +21,22 @@ export default function Compose() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="type your message here."
-          className="max-h-[500px]"
+          className="max-h-[300px]"
         />
 
-        <div className="flex justify-between items-center">
+        <Button type="submit" disabled={text.length === 0} className="w-full">
+          Post
+        </Button>
+
+        <div className="flex justify-between items-start">
           <div className="flex items-center space-x-2">
             <Switch id="hide-username" />
             <Label htmlFor="hide-username">Hide Username</Label>
           </div>
 
-          <Button
-            type="submit"
-            disabled={text.length === 0}
-            className="self-end"
-          >
-            Post
-          </Button>
+          <p className="text-muted-foreground text-sm mb-2 text-right">
+            {text.length}/500
+          </p>
         </div>
       </div>
 
