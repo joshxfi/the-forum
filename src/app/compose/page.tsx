@@ -11,10 +11,16 @@ export default function Compose() {
   const [text, setText] = useState("");
 
   return (
-    <section className="mt-24 container">
+    <form className="mt-24 container">
       <div className="flex flex-col gap-y-3">
-        <h2 className="font-semibold">joe</h2>
+        <div className="text-sm flex justify-between">
+          <h2 className="font-semibold">joe</h2>
+          <p className="text-muted-foreground">{text.length}/500</p>
+        </div>
+
         <Textarea
+          required
+          maxLength={500}
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="type your message here."
@@ -27,13 +33,17 @@ export default function Compose() {
             <Label htmlFor="hide-username">Hide Username</Label>
           </div>
 
-          <Button disabled={text.length === 0} className="self-end">
+          <Button
+            type="submit"
+            disabled={text.length === 0}
+            className="self-end"
+          >
             Post
           </Button>
         </div>
       </div>
 
       <Menu />
-    </section>
+    </form>
   );
 }
