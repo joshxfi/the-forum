@@ -42,14 +42,14 @@ const handler = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user }: any) {
+    jwt({ token, user }) {
       if (user) {
         token.username = user.username;
         return token;
       }
       return token;
     },
-    session({ session, token }: any) {
+    session({ session, token }) {
       if (session.user) {
         session.user.username = token.username as string;
       }
