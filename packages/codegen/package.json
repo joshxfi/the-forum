@@ -1,0 +1,14 @@
+{
+  "name": "@theforum/codegen",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "generate": "graphql-codegen && tsc"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
+    "typescript": "^5.2.2"
+  }
+}

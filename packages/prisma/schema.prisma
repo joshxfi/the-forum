@@ -11,9 +11,28 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  username  String?  @unique
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  username  String?   @unique
   password  String?
+  messages  Message[] @relation("messages")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  content     String   @db.VarChar(500)
+  isAnonymous Boolean  @default(false)
+
+  userId String
+  user   User   @relation(name: "messages", fields: [userId], references: [id])
+
+  @@index([userId, isAnonymous, updatedAt(sort: Desc)])
+}
+
+model Upvote {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
 }
