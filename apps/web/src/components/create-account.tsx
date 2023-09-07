@@ -17,9 +17,7 @@ export function CreateAccount() {
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Create an account</CardTitle>
-        <CardDescription>
-          A true open space for lozol. Made by lozolians.
-        </CardDescription>
+        <CardDescription>an open space for bcd universities</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="relative">

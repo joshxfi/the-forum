@@ -53,7 +53,7 @@ export function Menu() {
         <Icons.bell className="w-6 h-6" />
       </button>
 
-      <Link href="/profile">
+      <Link href="/register">
         <Icons.user className="w-6 h-6" />
       </Link>
     </div>
