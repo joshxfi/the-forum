@@ -8,8 +8,7 @@ import {
   SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
 
-// have a function to create a client for you
-function makeClient() {
+export function makeClient() {
   const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
     fetchOptions: { cache: "no-store" },

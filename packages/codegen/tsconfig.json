@@ -4,6 +4,8 @@
   "compilerOptions": {
     "target": "ES6",
     "lib": ["ESNext"],
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "module": "commonjs",
     "outDir": "dist",

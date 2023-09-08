@@ -10,6 +10,27 @@ export class UserResolver {
     return "Hello World";
   }
 
+  @Query(() => User)
+  async getUser(
+    @Arg("username", () => String) username: string,
+    @Ctx() { prisma }: TContext
+  ): Promise<User> {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { username },
+      });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      return user;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   @Mutation(() => User)
   async createUser(
     @Arg("username", () => String) username: string,
