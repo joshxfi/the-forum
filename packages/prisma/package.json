@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "prisma generate && tsc",
     "build": "prisma generate && tsc",
-    "generate": "prisma generate && tsc"
+    "generate": "prisma generate && tsc",
+    "db:push": "prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0"

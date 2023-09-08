@@ -15,7 +15,7 @@ export class UserResolver {
     @Arg("username", () => String) username: string,
     @Arg("password", () => String) password: string,
     @Ctx() { prisma }: TContext
-  ) {
+  ): Promise<User> {
     const usernameRegex = /^[a-zA-Z0-9]+$/;
     const hashedPassword = hashPassword(password);
 
@@ -32,12 +32,14 @@ export class UserResolver {
         throw new Error("Username already taken");
       }
 
-      await prisma.user.create({
+      const newUser = await prisma.user.create({
         data: {
           username,
           password: hashedPassword,
         },
       });
+
+      return newUser;
     } catch (err) {
       console.error(err);
       throw err;
