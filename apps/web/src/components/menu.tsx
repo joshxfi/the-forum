@@ -4,10 +4,12 @@ import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { usePathname } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
 
 export function Menu() {
   const { toast } = useToast();
   const pathname = usePathname();
+  const { status } = useSession();
 
   const routes: { route: string; icon: "home" | "info" | "write" }[] = [
     {
@@ -53,8 +55,8 @@ export function Menu() {
         <Icons.bell className="w-6 h-6" />
       </button>
 
-      <Link href="/register">
-        {pathname === "/register" ? (
+      <Link href={status === 'authenticated' ? '/' : 'login'}>
+        {["/login", '/register', '/profile'].includes(pathname) ? (
           <Icons.userSolid className="w-6 h-6" />
         ) : (
           <Icons.user className="w-6 h-6" />
