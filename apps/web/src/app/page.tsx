@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@apollo/client";
-import { gql } from "@theforum/codegen/__generated__";
+import { gql } from "@tf/codegen/__generated__";
 import { signOut, useSession } from "next-auth/react";
 
 import { Message } from "@/components/message";

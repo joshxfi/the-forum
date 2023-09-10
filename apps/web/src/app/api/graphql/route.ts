@@ -1,14 +1,16 @@
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { getSession } from "next-auth/react";
 import { ApolloServer } from "@apollo/server";
+import { getServerSession } from "next-auth/next";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 import prisma from "@/utils/db";
+import { authOptions } from "../auth/[...nextauth]/options";
 import { UserResolver } from "@/schema/user/user.resolvers";
+import { MessageResolver } from "@/schema/message/message.resolvers";
 
 const schema = await buildSchema({
-  resolvers: [UserResolver],
+  resolvers: [UserResolver, MessageResolver],
 });
 
 const server = new ApolloServer({
@@ -16,8 +18,8 @@ const server = new ApolloServer({
 });
 
 const handler = startServerAndCreateNextHandler(server, {
-  context: async (req) => {
-    const session = await getSession({ req });
+  context: async () => {
+    const session = await getServerSession(authOptions);
     const id = session?.user?.id;
     return { prisma, id };
   },

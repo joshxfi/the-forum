@@ -13,8 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\nquery hello {\n  hello\n}\n": types.HelloDocument,
     "\nquery GetUser($username: String!) {\n  getUser(username: $username) {\n    id\n    username\n  }\n}\n": types.GetUserDocument,
+    "\nmutation WriteMessage($input: WriteMessageInput!) {\n  writeMessage(input: $input) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteMessageDocument,
 };
 
 /**
@@ -34,11 +34,11 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nquery hello {\n  hello\n}\n"): (typeof documents)["\nquery hello {\n  hello\n}\n"];
+export function gql(source: "\nquery GetUser($username: String!) {\n  getUser(username: $username) {\n    id\n    username\n  }\n}\n"): (typeof documents)["\nquery GetUser($username: String!) {\n  getUser(username: $username) {\n    id\n    username\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nquery GetUser($username: String!) {\n  getUser(username: $username) {\n    id\n    username\n  }\n}\n"): (typeof documents)["\nquery GetUser($username: String!) {\n  getUser(username: $username) {\n    id\n    username\n  }\n}\n"];
+export function gql(source: "\nmutation WriteMessage($input: WriteMessageInput!) {\n  writeMessage(input: $input) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation WriteMessage($input: WriteMessageInput!) {\n  writeMessage(input: $input) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
