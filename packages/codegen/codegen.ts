@@ -9,7 +9,6 @@ const config: CodegenConfig = {
       presetConfig: {
         gqlTagName: "gql",
       },
-      plugins: ["typed-document-node"],
     },
   },
   ignoreNoDocuments: true,

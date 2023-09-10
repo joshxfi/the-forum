@@ -1,22 +1,36 @@
-"use client"
+"use client";
+
+import { useQuery } from "@apollo/client";
 import { gql } from "@theforum/codegen/__generated__";
+import { signOut, useSession } from "next-auth/react";
 
 import { Menu } from "@/components/menu";
 import { Message } from "@/components/message";
-import { useQuery } from "@apollo/client";
+import { Button } from "@/components/ui/button";
 
-const HELLO = gql(`
-query hello {
-  hello
+const USER = gql(`
+query GetUser($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+  }
 }
 `);
 
 export default function Home() {
-  const { data } = useQuery(HELLO);
+  const { data } = useQuery(USER, { variables: { username: "hellouser12" } });
+  const { status, data: user } = useSession();
 
   return (
     <section className="pb-24">
-      <p>{data?.hello}</p>
+      <div className="container max-w-screen-sm mb-12">
+        <p>{JSON.stringify(data?.getUser, null, 2)}</p>
+        <p>{status}</p>
+        <p>{JSON.stringify(user, null, 2)}</p>
+        <Button type="button" onClick={() => signOut({ redirect: false })}>
+          Logout
+        </Button>
+      </div>
 
       <Message
         username="joe"

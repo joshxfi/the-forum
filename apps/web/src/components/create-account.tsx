@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +14,32 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 
 export function CreateAccount() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { push } = useRouter();
+  const { toast } = useToast();
+
+  const handleAuth = async () => {
+    const res = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      toast({ title: "Error", description: res.error });
+      return;
+    }
+
+    if (res?.ok) {
+      push("/");
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -34,17 +61,26 @@ export function CreateAccount() {
           <Label htmlFor="username">Username</Label>
           <Input
             id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             type="text"
             placeholder="Do not use your real name!"
           />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" />
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            id="password"
+            type="password"
+          />
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Create account</Button>
+        <Button type="button" onClick={handleAuth} className="w-full">
+          Login
+        </Button>
       </CardFooter>
     </Card>
   );
