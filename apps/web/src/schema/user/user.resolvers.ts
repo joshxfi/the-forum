@@ -53,14 +53,12 @@ export class UserResolver {
         throw new Error("Username already taken");
       }
 
-      const newUser = await prisma.user.create({
+      return await prisma.user.create({
         data: {
           username,
           password: hashedPassword,
         },
       });
-
-      return newUser;
     } catch (err) {
       console.error(err);
       throw err;
