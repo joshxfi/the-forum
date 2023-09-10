@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import { ApolloWrapper } from "@/lib/ApolloWrapper";
 import NextAuthProvider from "@/context/NextAuthProvider";
+import { Menu } from "@/components/menu";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,12 +23,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} max-w-screen-sm mx-auto`}>
         <NextAuthProvider>
           <NextTopLoader showSpinner={false} />
           <Toaster />
           <Navbar />
-          <ApolloWrapper>{children}</ApolloWrapper>
+          <ApolloWrapper>
+            {children}
+            <Menu />
+          </ApolloWrapper>
         </NextAuthProvider>
       </body>
     </html>

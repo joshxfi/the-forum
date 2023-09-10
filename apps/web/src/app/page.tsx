@@ -47,8 +47,6 @@ export default function Home() {
         upvoteCount={7}
         replyCount={4}
       />
-
-      <Menu />
     </section>
   );
 }

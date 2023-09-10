@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Menu } from "@/components/menu";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function Compose() {
+export default function Write() {
   const [text, setText] = useState("");
 
   return (
@@ -39,8 +38,6 @@ export default function Compose() {
           </p>
         </div>
       </div>
-
-      <Menu />
     </form>
   );
 }

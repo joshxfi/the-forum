@@ -19,7 +19,7 @@ export function Menu() {
       icon: "info",
     },
     {
-      route: "/compose",
+      route: "/write",
       icon: "write",
     },
   ];
@@ -54,7 +54,11 @@ export function Menu() {
       </button>
 
       <Link href="/register">
-        <Icons.user className="w-6 h-6" />
+        {pathname === "/register" ? (
+          <Icons.userSolid className="w-6 h-6" />
+        ) : (
+          <Icons.user className="w-6 h-6" />
+        )}
       </Link>
     </div>
   );
