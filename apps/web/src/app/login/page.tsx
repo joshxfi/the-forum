@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
-import { gql } from "@tf/codegen/__generated__";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,23 +18,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
-import { useMutation } from "@apollo/client";
 
-const CREATE_USER = gql(`
-mutation CreateUser($password: String!, $username: String!) {
-  createUser(password: $password, username: $username) {
-    id
-    username
-  }
-}
-`);
-
-export default function Register() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [mutate] = useMutation(CREATE_USER);
 
   const { status } = useSession();
   const { push } = useRouter();
@@ -44,45 +32,28 @@ export default function Register() {
     push("/");
   }
 
-  const handleAuth: React.FormEventHandler = (e) => {
+  const handleAuth: React.FormEventHandler = async (e) => {
     e.preventDefault();
+
     setLoading(true);
 
-    mutate({
-      variables: {
-        username,
-        password,
-      },
-      onCompleted: async (data) => {
-        toast({
-          title: "Account Created",
-          description: `Logging in, please wait...`,
-        });
-
-        const res = await signIn("credentials", {
-          username,
-          password,
-          redirect: false,
-        });
-
-        if (res?.error) {
-          toast({ title: "Error", description: res.error });
-        }
-
-        if (res?.ok) {
-          push("/");
-          toast({
-            title: "Success",
-            description: `Welcome ${data.createUser.username}!`,
-          });
-        }
-
-        setLoading(false);
-      },
-      onError: (err) => {
-        toast({ title: "Error", description: err.message });
-      },
+    const res = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
     });
+
+    if (res?.error) {
+      toast({ title: "Error", description: res.error });
+      setLoading(false);
+      return;
+    }
+
+    if (res?.ok) {
+      push("/");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -90,7 +61,7 @@ export default function Register() {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl flex justify-between items-center">
-            <h2>Create an account</h2>
+            <h2>Login to proceed</h2>
             {loading && <Icons.spinner className="w-8 h-8" />}
           </CardTitle>
           <CardDescription>an open space for universities</CardDescription>
@@ -111,7 +82,7 @@ export default function Register() {
               maxLength={15}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Do not use your real name!"
+              placeholder="Enter your username"
             />
           </div>
           <div className="grid gap-2">
@@ -128,7 +99,7 @@ export default function Register() {
         </CardContent>
         <CardFooter>
           <Button disabled={loading} type="submit" className="w-full">
-            Create Account
+            Login
           </Button>
         </CardFooter>
       </Card>
