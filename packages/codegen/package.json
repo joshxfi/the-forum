@@ -1,5 +1,5 @@
 {
-  "name": "@theforum/codegen",
+  "name": "@tf/codegen",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

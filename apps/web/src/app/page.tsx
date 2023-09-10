@@ -4,7 +4,6 @@ import { useQuery } from "@apollo/client";
 import { gql } from "@theforum/codegen/__generated__";
 import { signOut, useSession } from "next-auth/react";
 
-import { Menu } from "@/components/menu";
 import { Message } from "@/components/message";
 import { Button } from "@/components/ui/button";
 

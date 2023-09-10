@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@theforum/codegen', '@theforum/prisma'],
+  transpilePackages: ['@tf/codegen', '@tf/prisma'],
 }
 
 module.exports = nextConfig

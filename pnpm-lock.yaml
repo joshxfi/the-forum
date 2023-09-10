@@ -44,10 +44,10 @@ importers:
       '@radix-ui/react-toast':
         specifier: ^1.1.4
         version: 1.1.4(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
-      '@theforum/codegen':
+      '@tf/codegen':
         specifier: workspace:*
         version: link:../../packages/codegen
-      '@theforum/prisma':
+      '@tf/prisma':
         specifier: workspace:*
         version: link:../../packages/prisma
       '@types/node':

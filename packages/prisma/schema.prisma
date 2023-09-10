@@ -31,8 +31,3 @@ model Message {
 
   @@index([userId, isAnonymous, updatedAt(sort: Desc)])
 }
-
-model Upvote {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-}
