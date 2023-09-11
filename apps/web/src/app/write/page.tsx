@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { gql } from "@tf/codegen/__generated__";
+import { useMutation, useQuery } from "@apollo/client";
 
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -37,7 +39,10 @@ export default function Write() {
 
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+
   const { toast } = useToast();
+  const { status } = useSession();
+  const { push } = useRouter();
 
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
@@ -60,6 +65,10 @@ export default function Write() {
       },
     });
   };
+
+  if (status === "unauthenticated") {
+    push("/login");
+  }
 
   return (
     <form onSubmit={handleSubmit} className="container">
