@@ -39,6 +39,14 @@ export const authOptions: NextAuthOptions = {
     signIn: "/register",
   },
   callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.username = user.username;
+        return token;
+      }
+      return token;
+    },
+
     session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub;
@@ -47,4 +55,4 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-}
+};

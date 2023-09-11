@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
 
 import { Label } from "@/components/ui/label";
@@ -22,12 +22,22 @@ mutation WriteMessage($input: WriteMessageInput!) {
 }
 `);
 
+const GET_CURRENT_USER = gql(`
+query GetCurrentUser {
+  getCurrentUser {
+    id
+    username
+  }
+}
+`);
+
 export default function Write() {
+  const { data } = useQuery(GET_CURRENT_USER);
+  const [submitMessage] = useMutation(WRITE_MESSAGE);
+
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const { toast } = useToast();
-
-  const [submitMessage] = useMutation(WRITE_MESSAGE);
 
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
@@ -54,7 +64,13 @@ export default function Write() {
   return (
     <form onSubmit={handleSubmit} className="container">
       <div className="flex flex-col gap-y-3">
-        <h2 className="font-semibold text-sm">joe</h2>
+        <h2
+          className={`${
+            isAnonymous && "text-muted-foreground"
+          } font-semibold text-sm`}
+        >
+          {data?.getCurrentUser.username}
+        </h2>
 
         <Textarea
           required

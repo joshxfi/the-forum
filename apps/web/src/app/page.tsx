@@ -23,7 +23,7 @@ export default function Home() {
   const { data } = useQuery(GET_MESSAGES);
 
   return (
-    <section className="pb-24 pt-12">
+    <section className="pb-24">
       {data?.getMessages.map((m) => (
         <Message
           key={m.id}
