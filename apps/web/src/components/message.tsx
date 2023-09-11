@@ -1,11 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
+
 import { Icons } from "./icons";
 
 type Props = {
   username: string;
   content: string;
-  timestamp: string;
+  timestamp: Date;
   upvoteCount: number;
   replyCount: number;
 };
@@ -56,14 +58,14 @@ const Post = ({
 }) => {
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
-      <div
-        className={`text-sm container ${
-          type === "reply" && "pl-16 pt-8"
-        }`}
-      >
+      <div className={`text-sm container ${type === "reply" && "pl-16 pt-8"}`}>
         <div className="flex gap-x-2 mb-2">
           <h2 className="font-semibold">{username}</h2>
-          <p className="text-muted-foreground">{timestamp}</p>
+          <p className="text-muted-foreground">
+            {formatDistanceToNow(new Date(timestamp), {
+              addSuffix: true,
+            })}
+          </p>
         </div>
 
         <p>{content}</p>
