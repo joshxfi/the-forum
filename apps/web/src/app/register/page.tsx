@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
+import { signIn, useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,12 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Icons } from "@/components/icons";
-import { useMutation } from "@apollo/client";
-import Link from "next/link";
 
 const CREATE_USER = gql(`
 mutation CreateUser($password: String!, $username: String!) {

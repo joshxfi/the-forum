@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -14,11 +15,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Icons } from "@/components/icons";
-import Link from "next/link";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -52,6 +52,7 @@ export default function Login() {
 
     if (res?.ok) {
       push("/");
+      toast({ title: "Success", description: `Welcome ${username}!` });
     }
 
     setLoading(false);
