@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
+import Link from "next/link";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -61,7 +62,7 @@ export default function Login() {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl flex justify-between items-center">
-            <h2>Login to proceed</h2>
+            <p>Login to proceed</p>
             {loading && <Icons.spinner className="w-8 h-8" />}
           </CardTitle>
           <CardDescription>an open space for universities</CardDescription>
@@ -97,10 +98,17 @@ export default function Login() {
             />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col items-start">
           <Button disabled={loading} type="submit" className="w-full">
             Login
           </Button>
+
+          <p className="mt-3 text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-white">
+              Get started &rarr;
+            </Link>
+          </p>
         </CardFooter>
       </Card>
     </form>

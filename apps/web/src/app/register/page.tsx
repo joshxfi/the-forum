@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
 import { useMutation } from "@apollo/client";
+import Link from "next/link";
 
 const CREATE_USER = gql(`
 mutation CreateUser($password: String!, $username: String!) {
@@ -90,7 +91,7 @@ export default function Register() {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl flex justify-between items-center">
-            <h2>Create an account</h2>
+            <p>Create an account</p>
             {loading && <Icons.spinner className="w-8 h-8" />}
           </CardTitle>
           <CardDescription>an open space for universities</CardDescription>
@@ -126,10 +127,17 @@ export default function Register() {
             />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className='flex flex-col items-start'>
           <Button disabled={loading} type="submit" className="w-full">
             Create Account
           </Button>
+
+          <p className="mt-3 text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="text-white">
+              Login &rarr;
+            </Link>
+          </p>
         </CardFooter>
       </Card>
     </form>
