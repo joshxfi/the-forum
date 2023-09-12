@@ -24,7 +24,7 @@ export function Message({ ...rest }: Props) {
           <Post
             username="jane04"
             content="that's amazing! 🚀"
-            timestamp="2023-08-11"
+            timestamp={new Date()}
             upvoteCount={2}
             replyCount={0}
             type="reply"
@@ -33,7 +33,7 @@ export function Message({ ...rest }: Props) {
           <Post
             username="user_091"
             content="I'm so proud of you!"
-            timestamp="2023-08-11"
+            timestamp={new Date()}
             upvoteCount={4}
             replyCount={0}
             type="reply"
