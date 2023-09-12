@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { gql } from "@tf/codegen/__generated__";
 import { useMutation, useQuery } from "@apollo/client";
 
+import { Icons } from "@/components/icons";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ query GetCurrentUser {
 `);
 
 export default function Write() {
-  const { data } = useQuery(GET_CURRENT_USER);
+  const { data, loading } = useQuery(GET_CURRENT_USER);
   const [submitMessage] = useMutation(WRITE_MESSAGE);
 
   const [content, setContent] = useState("");
@@ -68,6 +69,14 @@ export default function Write() {
 
   if (status === "unauthenticated") {
     push("/login");
+  }
+
+  if (loading) {
+    return (
+      <div className="grid place-items-center pt-40">
+        <Icons.spinner className="w-12 h-12" />
+      </div>
+    );
   }
 
   return (
