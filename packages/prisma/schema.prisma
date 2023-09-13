@@ -17,6 +17,7 @@ model User {
   username  String?   @unique
   password  String?
   messages  Message[] @relation("messages")
+  replies   Reply[]   @relation("replies")
 }
 
 model Message {
@@ -25,9 +26,27 @@ model Message {
   updatedAt   DateTime @updatedAt
   content     String   @db.VarChar(500)
   isAnonymous Boolean  @default(false)
+  replies     Reply[]  @relation("replies")
 
   userId String
   user   User   @relation(name: "messages", fields: [userId], references: [id])
 
+  @@index([userId, isAnonymous, updatedAt(sort: Desc)])
+}
+
+model Reply {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  content     String   @db.VarChar(500)
+  isAnonymous Boolean  @default(false)
+
+  messageId String
+  message   Message @relation(name: "replies", fields: [messageId], references: [id])
+
+  userId String
+  user   User   @relation(name: "replies", fields: [userId], references: [id])
+
+  @@index([messageId, isAnonymous, updatedAt(sort: Asc)])
   @@index([userId, isAnonymous, updatedAt(sort: Desc)])
 }
