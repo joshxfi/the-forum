@@ -20,6 +20,7 @@ import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const CREATE_USER = gql(`
 mutation CreateUser($password: String!, $username: String!) {
@@ -87,7 +88,7 @@ export default function Register() {
   };
 
   return (
-    <form onSubmit={handleAuth} className="container max-w-screen-sm mt-24">
+    <form onSubmit={handleAuth} className="container max-w-screen-sm">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl flex justify-between items-center">
@@ -126,8 +127,19 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <label
+              htmlFor="terms"
+              className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground"
+            >
+              I am over 18 years of age
+            </label>
+          </div>
         </CardContent>
-        <CardFooter className='flex flex-col items-start'>
+
+        <CardFooter className="flex flex-col items-start">
           <Button disabled={loading} type="submit" className="w-full">
             Create Account
           </Button>
