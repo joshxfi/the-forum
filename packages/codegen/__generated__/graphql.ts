@@ -24,6 +24,7 @@ export type Message = {
   createdAt: Scalars['DateTimeISO']['output'];
   id: Scalars['ID']['output'];
   isAnonymous: Scalars['Boolean']['output'];
+  replies?: Maybe<Array<Reply>>;
   updatedAt: Scalars['DateTimeISO']['output'];
   user: User;
 };
@@ -32,6 +33,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
   writeMessage: Message;
+  writeReply: Reply;
 };
 
 
@@ -43,6 +45,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationWriteMessageArgs = {
   input: WriteMessageInput;
+};
+
+
+export type MutationWriteReplyArgs = {
+  input: WriteReplyInput;
 };
 
 export type Query = {
@@ -58,6 +65,16 @@ export type QueryGetUserArgs = {
   username: Scalars['String']['input'];
 };
 
+export type Reply = {
+  __typename?: 'Reply';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTimeISO']['output'];
+  id: Scalars['ID']['output'];
+  isAnonymous: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user: User;
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
@@ -68,6 +85,12 @@ export type User = {
 export type WriteMessageInput = {
   content: Scalars['String']['input'];
   isAnonymous: Scalars['Boolean']['input'];
+};
+
+export type WriteReplyInput = {
+  content: Scalars['String']['input'];
+  isAnonymous: Scalars['Boolean']['input'];
+  messageId: Scalars['ID']['input'];
 };
 
 export type GetMessagesQueryVariables = Exact<{ [key: string]: never; }>;

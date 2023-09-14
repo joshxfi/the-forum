@@ -2,9 +2,8 @@ import { IsNotEmpty, MaxLength, MinLength } from "class-validator";
 import { Directive, Field, ID, InputType, ObjectType } from "type-graphql";
 import { User } from "../user/user.types";
 
-@Directive("@cacheControl(maxAge: 60)")
 @ObjectType()
-export class Message {
+class BaseMessage {
   @Field(() => ID)
   id: string;
 
@@ -24,6 +23,17 @@ export class Message {
   user: User;
 }
 
+@Directive("@cacheControl(maxAge: 60)")
+@ObjectType()
+export class Message extends BaseMessage {
+  @Field(() => [Reply], { nullable: true })
+  replies?: Reply[];
+}
+
+@Directive("@cacheControl(maxAge: 60)")
+@ObjectType()
+export class Reply extends BaseMessage {}
+
 @InputType()
 export class WriteMessageInput {
   @IsNotEmpty()
@@ -34,4 +44,10 @@ export class WriteMessageInput {
 
   @Field(() => Boolean)
   isAnonymous: boolean;
+}
+
+@InputType()
+export class WriteReplyInput extends WriteMessageInput {
+  @Field(() => ID)
+  messageId: string;
 }
