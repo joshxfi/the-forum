@@ -1,5 +1,6 @@
 "use client";
 
+import { nanoid } from "nanoid";
 import { useQuery } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
 
@@ -28,7 +29,7 @@ export default function Home() {
     return (
       <div className="container max-w-screen-sm space-y-12">
         {Array.from({ length: 5 }).map(() => (
-          <div className="space-y-2">
+          <div className="space-y-2" key={nanoid()}>
             <div className="flex space-x-2">
               <Skeleton className="h-4 w-[100px]" />
               <Skeleton className="h-4 w-[150px]" />
