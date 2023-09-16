@@ -46,11 +46,7 @@ export default function Home() {
       {data?.getMessages.map((m) => (
         <Message
           key={m.id}
-          content={m.content}
-          replyCount={0}
-          upvoteCount={0}
-          timestamp={m.createdAt}
-          username={m.user.username!}
+          {...m}
         />
       ))}
     </section>

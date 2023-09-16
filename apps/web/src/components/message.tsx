@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
-
 import { Button } from "@/components/ui/button";
+import { gql } from "@tf/codegen/__generated__";
+
 import {
   Dialog,
   DialogContent,
@@ -10,33 +12,65 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { Icons } from "./icons";
-import { Textarea } from "./ui/textarea";
-import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { Switch } from "./ui/switch";
+import { Textarea } from "./ui/textarea";
+import { useToast } from "./ui/use-toast";
+import { Message } from "@tf/codegen/__generated__/graphql";
 
-type Props = {
-  username: string;
-  content: string;
-  timestamp: Date;
-  upvoteCount: number;
-  replyCount: number;
-};
+const WRITE_REPLY = gql(`
+mutation WriteReply($input: WriteReplyInput!) {
+  writeReply(input: $input) {
+    id
+    content
+    createdAt
+    isAnonymous
+    user {
+      username
+    }
+  }
+}
+`);
 
-export function Message({ ...props }: Props) {
+export function Message({ ...props }: Omit<Message, "updatedAt">) {
+  const { toast } = useToast();
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
+  const [sendReply] = useMutation(WRITE_REPLY);
+
+  const handleReply: React.FormEventHandler = (e) => {
+    e.preventDefault();
+
+    sendReply({
+      variables: {
+        input: {
+          content: reply,
+          isAnonymous,
+          messageId: props.id,
+        },
+      },
+      onCompleted: () => {
+        toast({
+          title: "Success",
+          description: "Your reply has been sent successfully",
+        });
+        setReply("");
+      },
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+        });
+      },
+    });
+  };
+
   return (
     <div className="pb-8">
-      <Post
-        {...props}
-        type="origin"
-        username={props.username}
-        setShowReplies={setShowReplies}
-      />
+      <Post {...props} type="origin" setShowReplies={setShowReplies} />
 
       {showReplies && (
         <div className="mt-4 container">
@@ -46,16 +80,16 @@ export function Message({ ...props }: Props) {
                 type="button"
                 className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
               >
-                Reply to {props.username}
+                Reply to {props.user.username}
               </button>
             </DialogTrigger>
 
             <DialogContent className="max-w-[425px]">
               <DialogHeader className="text-left text-sm">
                 <div className="flex gap-x-2">
-                  <h2 className="font-semibold">{props.username}</h2>
+                  <h2 className="font-semibold">{props.user.username}</h2>
                   <p className="text-muted-foreground">
-                    {formatDistanceToNow(new Date(props.timestamp), {
+                    {formatDistanceToNow(new Date(props.createdAt), {
                       addSuffix: true,
                     })}
                   </p>
@@ -67,27 +101,32 @@ export function Message({ ...props }: Props) {
                   <div className="flex gap-x-1 items-center">
                     <Icons.arrowUp className="w-6 h-6" />
 
-                    <p className="text-muted-foreground">{props.upvoteCount}</p>
+                    <p className="text-muted-foreground">12</p>
                   </div>
 
                   <div className="flex gap-x-1 items-center">
                     <Icons.reply className="w-6 h-6" />
 
-                    <p className="text-muted-foreground">{props.replyCount}</p>
+                    <p className="text-muted-foreground">3</p>
                   </div>
                 </div>
               </DialogHeader>
 
-              <Textarea
-                required
-                maxLength={500}
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-                placeholder="Type your reply here"
-                className="max-h-[300px]"
-              />
+              <form onSubmit={handleReply}>
+                <Textarea
+                  required
+                  maxLength={500}
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  placeholder="Type your reply here"
+                  className="max-h-[300px]"
+                />
 
-              <Button type="submit">Reply</Button>
+                <Button type="submit" className="w-full mt-4">
+                  Reply
+                </Button>
+              </form>
+
               <DialogFooter>
                 <div className="flex items-center space-x-2">
                   <Switch
@@ -101,54 +140,41 @@ export function Message({ ...props }: Props) {
             </DialogContent>
           </Dialog>
 
-          <Post
-            username="jane04"
-            content="that's amazing! 🚀"
-            timestamp={new Date()}
-            upvoteCount={2}
-            replyCount={0}
-            type="reply"
-          />
-
-          <Post
-            username="user_091"
-            content="I'm so proud of you!"
-            timestamp={new Date()}
-            upvoteCount={4}
-            replyCount={0}
-            type="reply"
-          />
+          <Post {...props} upvoteCount={2} replyCount={0} type="reply" />
+          <Post {...props} upvoteCount={2} replyCount={0} type="reply" />
         </div>
       )}
     </div>
   );
 }
 
+type Props = {
+  type: "origin" | "reply";
+  upvoteCount?: number;
+  replyCount?: number;
+  setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 const Post = ({
-  username,
-  content,
-  timestamp,
   upvoteCount,
   replyCount,
-  type = "origin",
   setShowReplies,
-}: Props & {
-  type: "origin" | "reply";
-  setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+  type = "origin",
+  ...rest
+}: Props & Omit<Message, "updatedAt">) => {
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
       <div className={`text-sm container ${type === "reply" && "pl-12 pt-8"}`}>
         <div className="flex gap-x-2 mb-2">
-          <h2 className="font-semibold">{username}</h2>
+          <h2 className="font-semibold">{rest.user.username}</h2>
           <p className="text-muted-foreground">
-            {formatDistanceToNow(new Date(timestamp), {
+            {formatDistanceToNow(new Date(rest.createdAt), {
               addSuffix: true,
             })}
           </p>
         </div>
 
-        <p>{content}</p>
+        <p>{rest.content}</p>
 
         <div className="mt-2 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
