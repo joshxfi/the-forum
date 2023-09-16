@@ -18,6 +18,16 @@ query GetMessages {
       id
       username
     }
+    replies {
+      id
+      content
+      createdAt
+      isAnonymous
+      user {
+        id
+        username
+      }
+    }
   }
 }
 `);

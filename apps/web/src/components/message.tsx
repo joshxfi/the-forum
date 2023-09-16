@@ -17,7 +17,8 @@ import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
-import { Message } from "@tf/codegen/__generated__/graphql";
+import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
+import { ReplyPost } from "./reply-post";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply($input: WriteReplyInput!) {
@@ -33,7 +34,7 @@ mutation WriteReply($input: WriteReplyInput!) {
 }
 `);
 
-export function Message({ ...props }: Omit<Message, "updatedAt">) {
+export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
   const { toast } = useToast();
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);
@@ -70,7 +71,7 @@ export function Message({ ...props }: Omit<Message, "updatedAt">) {
 
   return (
     <div className="pb-8">
-      <Post {...props} type="origin" setShowReplies={setShowReplies} />
+      <Post {...props} setShowReplies={setShowReplies} />
 
       {showReplies && (
         <div className="mt-4 container">
@@ -140,8 +141,9 @@ export function Message({ ...props }: Omit<Message, "updatedAt">) {
             </DialogContent>
           </Dialog>
 
-          <Post {...props} upvoteCount={2} replyCount={0} type="reply" />
-          <Post {...props} upvoteCount={2} replyCount={0} type="reply" />
+          {props.replies?.map((reply) => (
+            <ReplyPost {...reply} upvoteCount={2} />
+          ))}
         </div>
       )}
     </div>
@@ -149,22 +151,20 @@ export function Message({ ...props }: Omit<Message, "updatedAt">) {
 }
 
 type Props = {
-  type: "origin" | "reply";
   upvoteCount?: number;
   replyCount?: number;
-  setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowReplies: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Post = ({
   upvoteCount,
   replyCount,
   setShowReplies,
-  type = "origin",
   ...rest
-}: Props & Omit<Message, "updatedAt">) => {
+}: Props & GetMessagesQuery["getMessages"][0]) => {
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
-      <div className={`text-sm container ${type === "reply" && "pl-12 pt-8"}`}>
+      <div className="text-sm container">
         <div className="flex gap-x-2 mb-2">
           <h2 className="font-semibold">{rest.user.username}</h2>
           <p className="text-muted-foreground">
@@ -185,15 +185,13 @@ const Post = ({
             <p className="text-muted-foreground">{upvoteCount}</p>
           </div>
 
-          {setShowReplies && type === "origin" && (
-            <div className="flex gap-x-1 items-center">
-              <button type="button" onClick={() => setShowReplies((p) => !p)}>
-                <Icons.reply className="w-6 h-6" />
-              </button>
+          <div className="flex gap-x-1 items-center">
+            <button type="button" onClick={() => setShowReplies((p) => !p)}>
+              <Icons.reply className="w-6 h-6" />
+            </button>
 
-              <p className="text-muted-foreground">{replyCount}</p>
-            </div>
-          )}
+            <p className="text-muted-foreground">{replyCount}</p>
+          </div>
         </div>
       </div>
     </div>
