@@ -149,7 +149,7 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
           </Dialog>
 
           {props.replies?.map((reply) => (
-            <ReplyPost {...reply} upvoteCount={2} />
+            <ReplyPost key={reply.id} {...reply} upvoteCount={2} />
           ))}
         </div>
       )}
