@@ -15,10 +15,10 @@ import {
 import { Icons } from "./icons";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
+import { ReplyPost } from "./reply-post";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
 import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
-import { ReplyPost } from "./reply-post";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply($input: WriteReplyInput!) {
@@ -40,7 +40,7 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
   const [showReplies, setShowReplies] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const [sendReply] = useMutation(WRITE_REPLY);
+  const [sendReply, { loading }] = useMutation(WRITE_REPLY);
 
   const handleReply: React.FormEventHandler = (e) => {
     e.preventDefault();
@@ -123,19 +123,26 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
                   className="max-h-[300px]"
                 />
 
-                <Button type="submit" className="w-full mt-4">
+                <Button
+                  type="submit"
+                  disabled={loading || reply.length === 0}
+                  className="w-full mt-4"
+                >
                   Reply
                 </Button>
               </form>
 
               <DialogFooter>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={isAnonymous}
-                    onClick={() => setIsAnonymous((prev) => !prev)}
-                    id="hide-username"
-                  />
-                  <Label htmlFor="hide-username">Hide Username</Label>
+                <div className="flex justify-between h-8">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={isAnonymous}
+                      onClick={() => setIsAnonymous((prev) => !prev)}
+                      id="hide-username"
+                    />
+                    <Label htmlFor="hide-username">Hide Username</Label>
+                  </div>
+                  {loading && <Icons.spinner className="w-8 h-8" />}
                 </div>
               </DialogFooter>
             </DialogContent>

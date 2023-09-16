@@ -36,7 +36,8 @@ query GetCurrentUser {
 
 export default function Write() {
   const { data, loading } = useQuery(GET_CURRENT_USER);
-  const [submitMessage] = useMutation(WRITE_MESSAGE);
+  const [submitMessage, { loading: submitLoading }] =
+    useMutation(WRITE_MESSAGE);
 
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -82,13 +83,16 @@ export default function Write() {
   return (
     <form onSubmit={handleSubmit} className="container">
       <div className="flex flex-col gap-y-3">
-        <h2
-          className={`${
-            isAnonymous && "text-muted-foreground"
-          } font-semibold text-sm`}
-        >
-          {data?.getCurrentUser.username}
-        </h2>
+        <div className="flex items-end justify-between h-8">
+          <h2
+            className={`${
+              isAnonymous && "text-muted-foreground"
+            } font-semibold text-sm`}
+          >
+            {data?.getCurrentUser.username}
+          </h2>
+          {submitLoading && <Icons.spinner className="w-8 h-8" />}
+        </div>
 
         <Textarea
           required
@@ -101,7 +105,7 @@ export default function Write() {
 
         <Button
           type="submit"
-          disabled={content.length === 0}
+          disabled={submitLoading || content.length === 0}
           className="w-full"
         >
           Post
