@@ -11,7 +11,7 @@ import {
 export class MessageResolver {
   @Query(() => [Message])
   async getMessages(@Ctx() ctx: TContext): Promise<Message[]> {
-    return ctx.prisma.message.findMany({
+    return await ctx.prisma.message.findMany({
       orderBy: { createdAt: "desc" },
       include: {
         user: true,
@@ -28,7 +28,7 @@ export class MessageResolver {
     { content, isAnonymous }: WriteMessageInput,
     @Ctx() ctx: TContext
   ): Promise<Message> {
-    return ctx.prisma.message.create({
+    return await ctx.prisma.message.create({
       data: {
         content,
         isAnonymous,
@@ -44,7 +44,7 @@ export class MessageResolver {
     { content, isAnonymous, messageId }: WriteReplyInput,
     @Ctx() ctx: TContext
   ): Promise<Reply> {
-    return ctx.prisma.reply.create({
+    return await ctx.prisma.reply.create({
       data: {
         content,
         isAnonymous,
