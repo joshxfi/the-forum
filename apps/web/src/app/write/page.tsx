@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Icons } from "@/components/icons";
 import { Label } from "@/components/ui/label";
@@ -56,8 +57,9 @@ export default function Write() {
         setIsAnonymous(false);
         toast({
           title: "Message sent!",
-          description: "Your message has been sent.",
+          description: "Your message has been posted.",
         });
+        push("/");
       },
       onError: (error) => {
         toast({

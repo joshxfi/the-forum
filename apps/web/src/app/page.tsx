@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Message } from "@/components/message";
 import { Skeleton } from "@/components/ui/skeleton";
