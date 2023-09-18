@@ -4,6 +4,10 @@ import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { gql } from "@tf/codegen/__generated__";
+import {
+  GetMessagesQuery,
+  WriteReplyMutation,
+} from "@tf/codegen/__generated__/graphql";
 
 import {
   Dialog,
@@ -18,7 +22,6 @@ import { Switch } from "./ui/switch";
 import { ReplyPost } from "./reply-post";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
-import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply($input: WriteReplyInput!) {
@@ -28,6 +31,7 @@ mutation WriteReply($input: WriteReplyInput!) {
     createdAt
     isAnonymous
     user {
+      id
       username
     }
   }
@@ -39,12 +43,14 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [tempReplies, setTempReplies] = useState<
+    WriteReplyMutation["writeReply"][]
+  >([]);
 
   const [sendReply, { loading }] = useMutation(WRITE_REPLY);
 
   const handleReply: React.FormEventHandler = (e) => {
     e.preventDefault();
-
     sendReply({
       variables: {
         input: {
@@ -53,12 +59,13 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
           messageId: props.id,
         },
       },
-      onCompleted: () => {
+      onCompleted: (data) => {
         toast({
           title: "Success",
           description: "Your reply has been sent successfully",
         });
         setReply("");
+        setTempReplies((prev) => [data.writeReply, ...prev]);
       },
       onError: () => {
         toast({
@@ -149,6 +156,10 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
           </Dialog>
 
           {props.replies?.map((reply) => (
+            <ReplyPost key={reply.id} {...reply} upvoteCount={2} />
+          ))}
+
+          {tempReplies.map((reply) => (
             <ReplyPost key={reply.id} {...reply} upvoteCount={2} />
           ))}
         </div>

@@ -17,7 +17,7 @@ const documents = {
     "\nmutation CreateUser($password: String!, $username: String!) {\n  createUser(password: $password, username: $username) {\n    id\n    username\n  }\n}\n": types.CreateUserDocument,
     "\nmutation WriteMessage($input: WriteMessageInput!) {\n  writeMessage(input: $input) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteMessageDocument,
     "\nquery GetCurrentUser {\n  getCurrentUser {\n    id\n    username\n  }\n}\n": types.GetCurrentUserDocument,
-    "\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      username\n    }\n  }\n}\n": types.WriteReplyDocument,
+    "\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteReplyDocument,
 };
 
 /**
@@ -53,7 +53,7 @@ export function gql(source: "\nquery GetCurrentUser {\n  getCurrentUser {\n    i
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      username\n    }\n  }\n}\n"];
+export function gql(source: "\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
