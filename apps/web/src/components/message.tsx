@@ -78,7 +78,7 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
 
   return (
     <div className="pb-8">
-      <Post {...props} setShowReplies={setShowReplies} />
+      <Post {...props} replyCount={props.replies?.length} setShowReplies={setShowReplies} />
 
       {showReplies && (
         <div className="mt-4 container">
