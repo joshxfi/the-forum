@@ -1,11 +1,12 @@
-import { Reply } from "@tf/codegen/__generated__/graphql";
+import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
 import { formatDistanceToNow } from "date-fns";
 import { Icons } from "./icons";
 
-export function ReplyPost({
-  upvoteCount,
-  ...rest
-}: Omit<Reply, "updatedAt"> & { upvoteCount: number }) {
+type Reply = NonNullable<GetMessagesQuery["getMessages"][0]["replies"]>[0] & {
+  upvoteCount?: number;
+};
+
+export function ReplyPost({ upvoteCount, ...rest }: Reply) {
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
       <div className="text-sm containe pl-10 pt-8">

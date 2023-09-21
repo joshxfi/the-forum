@@ -78,7 +78,12 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
 
   return (
     <div className="pb-8">
-      <Post {...props} replyCount={props.replies?.length} setShowReplies={setShowReplies} />
+      <Post
+        {...props}
+        replyCount={props.replies?.length}
+        upvoteCount={props.upvotes?.length}
+        setShowReplies={setShowReplies}
+      />
 
       {showReplies && (
         <div className="mt-4 container">
@@ -156,11 +161,15 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
           </Dialog>
 
           {props.replies?.map((reply) => (
-            <ReplyPost key={reply.id} {...reply} upvoteCount={2} />
+            <ReplyPost
+              key={reply.id}
+              {...reply}
+              upvoteCount={reply.upvotes?.length}
+            />
           ))}
 
           {tempReplies.map((reply) => (
-            <ReplyPost key={reply.id} {...reply} upvoteCount={2} />
+            <ReplyPost key={reply.id} {...reply} upvoteCount={0} />
           ))}
         </div>
       )}
