@@ -17,6 +17,9 @@ query GetMessages {
       id
       username
     }
+    upvotes {
+      userId
+    }
     replies {
       id
       content
@@ -25,6 +28,9 @@ query GetMessages {
       user {
         id
         username
+      }
+      upvotes {
+        userId
       }
     }
   }

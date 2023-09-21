@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\nquery GetMessages {\n  getMessages {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    replies {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n    }\n  }\n}\n": types.GetMessagesDocument,
+    "\nquery GetMessages {\n  getMessages {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    upvotes {\n      userId\n    }\n    replies {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n      upvotes {\n        userId\n      }\n    }\n  }\n}\n": types.GetMessagesDocument,
     "\nmutation CreateUser($password: String!, $username: String!) {\n  createUser(password: $password, username: $username) {\n    id\n    username\n  }\n}\n": types.CreateUserDocument,
     "\nmutation WriteMessage($input: WriteMessageInput!) {\n  writeMessage(input: $input) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteMessageDocument,
     "\nquery GetCurrentUser {\n  getCurrentUser {\n    id\n    username\n  }\n}\n": types.GetCurrentUserDocument,
@@ -37,7 +37,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nquery GetMessages {\n  getMessages {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    replies {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n    }\n  }\n}\n"): (typeof documents)["\nquery GetMessages {\n  getMessages {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    replies {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n    }\n  }\n}\n"];
+export function gql(source: "\nquery GetMessages {\n  getMessages {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    upvotes {\n      userId\n    }\n    replies {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n      upvotes {\n        userId\n      }\n    }\n  }\n}\n"): (typeof documents)["\nquery GetMessages {\n  getMessages {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    upvotes {\n      userId\n    }\n    replies {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n      upvotes {\n        userId\n      }\n    }\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

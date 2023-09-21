@@ -28,6 +28,7 @@ model Message {
   content     String   @db.VarChar(500)
   isAnonymous Boolean  @default(false)
   replies     Reply[]  @relation("replies")
+  upvotes     Upvote[] @relation("upvotes")
 
   userId String
   user   User   @relation(name: "messages", fields: [userId], references: [id])
@@ -41,6 +42,7 @@ model Reply {
   updatedAt   DateTime @updatedAt
   content     String   @db.VarChar(500)
   isAnonymous Boolean  @default(false)
+  upvotes     Upvote[] @relation("upvotes")
 
   messageId String
   message   Message @relation(name: "replies", fields: [messageId], references: [id])
@@ -50,4 +52,19 @@ model Reply {
 
   @@index([messageId, isAnonymous, updatedAt(sort: Asc)])
   @@index([userId, isAnonymous, updatedAt(sort: Desc)])
+}
+
+model Upvote {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId    String
+
+  messageId String?
+  message   Message? @relation(name: "upvotes", fields: [messageId], references: [id])
+
+  replyId String?
+  reply   Reply?  @relation(name: "upvotes", fields: [replyId], references: [id])
+
+  @@index([messageId, userId])
+  @@index([replyId, userId])
 }

@@ -15,8 +15,9 @@ export class MessageResolver {
       orderBy: { createdAt: "desc" },
       include: {
         user: true,
+        upvotes: true,
         replies: {
-          include: { user: true },
+          include: { user: true, upvotes: true },
         },
       },
     });

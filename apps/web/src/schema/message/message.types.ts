@@ -23,16 +23,34 @@ class BaseMessage {
   user: User;
 }
 
+@ObjectType()
+class Upvote {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => ID)
+  userId: string;
+}
+
 @Directive("@cacheControl(maxAge: 60)")
 @ObjectType()
 export class Message extends BaseMessage {
   @Field(() => [Reply], { nullable: true })
   replies?: Reply[];
+
+  @Field(() => [Upvote], { nullable: true })
+  upvotes?: Upvote[];
 }
 
 @Directive("@cacheControl(maxAge: 60)")
 @ObjectType()
-export class Reply extends BaseMessage {}
+export class Reply extends BaseMessage {
+  @Field(() => [Upvote], { nullable: true })
+  upvotes?: Upvote[];
+}
 
 @InputType()
 export class WriteMessageInput {
