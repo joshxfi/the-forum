@@ -3,6 +3,7 @@ import type { TContext } from "@/app/api/graphql/types";
 import {
   Message,
   Reply,
+  Upvote,
   WriteMessageInput,
   WriteReplyInput,
 } from "./message.types";
@@ -53,6 +54,26 @@ export class MessageResolver {
         message: { connect: { id: messageId } },
       },
       include: { user: true },
+    });
+  }
+
+  @Mutation(() => Reply)
+  async addUpvote(
+    @Arg("messageId", () => String) messageId: string,
+    @Arg("type", () => String) type: "message" | "reply",
+    @Ctx() ctx: TContext
+  ): Promise<Upvote> {
+    return ctx.prisma.upvote.create({
+      data:
+        type === "message"
+          ? {
+              user: { connect: { id: ctx.id } },
+              message: { connect: { id: messageId } },
+            }
+          : {
+              user: { connect: { id: ctx.id } },
+              reply: { connect: { id: messageId } },
+            },
     });
   }
 }

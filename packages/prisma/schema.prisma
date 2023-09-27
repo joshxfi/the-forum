@@ -19,6 +19,7 @@ model User {
   password  String?
   messages  Message[] @relation("messages")
   replies   Reply[]   @relation("replies")
+  upvotes   Upvote[]  @relation("upvotes")
 }
 
 model Message {
@@ -58,6 +59,7 @@ model Upvote {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   userId    String
+  user      User     @relation(name: "upvotes", fields: [userId], references: [id])
 
   messageId String?
   message   Message? @relation(name: "upvotes", fields: [messageId], references: [id])
@@ -65,6 +67,7 @@ model Upvote {
   replyId String?
   reply   Reply?  @relation(name: "upvotes", fields: [replyId], references: [id])
 
+  @@index([userId])
   @@index([messageId, userId])
   @@index([replyId, userId])
 }

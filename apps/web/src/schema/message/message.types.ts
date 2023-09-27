@@ -23,7 +23,7 @@ class BaseMessage {
   user: User;
 }
 
-@ObjectType()
+export @ObjectType()
 class Upvote {
   @Field(() => ID)
   id: string;
@@ -33,6 +33,12 @@ class Upvote {
 
   @Field(() => ID)
   userId: string;
+
+  @Field(() => ID, { nullable: true })
+  messageId?: string | null;
+
+  @Field(() => ID, { nullable: true })
+  replyId?: string | null;
 }
 
 @Directive("@cacheControl(maxAge: 60)")

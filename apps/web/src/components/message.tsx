@@ -183,12 +183,44 @@ type Props = {
   setShowReplies: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+const ADD_UPVOTE = gql(`
+mutation AddUpvote($type: String!, $messageId: String!) {
+  addUpvote(type: $type, messageId: $messageId) {
+    id
+  }
+}
+`);
+
 const Post = ({
   upvoteCount,
   replyCount,
   setShowReplies,
   ...rest
 }: Props & GetMessagesQuery["getMessages"][0]) => {
+  const [addUpvote] = useMutation(ADD_UPVOTE);
+  const { toast } = useToast();
+
+  const handleUpvote = (messageId: string, type: "message" | "reply") => {
+    addUpvote({
+      variables: {
+        messageId,
+        type,
+      },
+      onCompleted: () => {
+        toast({
+          title: "Success",
+          description: "Upvoted successfully",
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+        });
+      },
+    });
+  };
+
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
       <div className="text-sm container">
@@ -205,7 +237,10 @@ const Post = ({
 
         <div className="mt-2 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
-            <button>
+            <button
+              type="button"
+              onClick={() => handleUpvote(rest.id, "message")}
+            >
               <Icons.arrowUp className="w-6 h-6" />
             </button>
 

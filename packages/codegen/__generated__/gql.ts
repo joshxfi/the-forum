@@ -18,6 +18,7 @@ const documents = {
     "\nmutation WriteMessage($input: WriteMessageInput!) {\n  writeMessage(input: $input) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteMessageDocument,
     "\nquery GetCurrentUser {\n  getCurrentUser {\n    id\n    username\n  }\n}\n": types.GetCurrentUserDocument,
     "\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteReplyDocument,
+    "\nmutation AddUpvote($type: String!, $messageId: String!) {\n  addUpvote(type: $type, messageId: $messageId) {\n    id\n  }\n}\n": types.AddUpvoteDocument,
 };
 
 /**
@@ -54,6 +55,10 @@ export function gql(source: "\nquery GetCurrentUser {\n  getCurrentUser {\n    i
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation WriteReply($input: WriteReplyInput!) {\n  writeReply(input: $input) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nmutation AddUpvote($type: String!, $messageId: String!) {\n  addUpvote(type: $type, messageId: $messageId) {\n    id\n  }\n}\n"): (typeof documents)["\nmutation AddUpvote($type: String!, $messageId: String!) {\n  addUpvote(type: $type, messageId: $messageId) {\n    id\n  }\n}\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
