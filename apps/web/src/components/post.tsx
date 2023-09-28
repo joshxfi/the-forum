@@ -66,7 +66,13 @@ export const Post = ({
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto text-sm">
       <div className={`${type === "reply" && "pl-10 pt-8"} container`}>
         <div className="flex gap-x-2 mb-2">
-          <h2 className="font-semibold">{rest.user.username}</h2>
+          <h2 className="font-semibold">
+            {rest.isAnonymous ? (
+              <span className="text-zinc-400">hidden</span>
+            ) : (
+              rest.user.username
+            )}
+          </h2>
           <p className="text-muted-foreground">
             {formatDistanceToNow(new Date(rest.createdAt), {
               addSuffix: true,

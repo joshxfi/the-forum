@@ -101,7 +101,13 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
             <DialogContent className="max-w-[425px]">
               <DialogHeader className="text-left text-sm">
                 <div className="flex gap-x-2">
-                  <h2 className="font-semibold">{props.user.username}</h2>
+                  <h2 className="font-semibold">
+                    {props.isAnonymous ? (
+                      <span className="text-zinc-400">hidden</span>
+                    ) : (
+                      props.user.username
+                    )}
+                  </h2>
                   <p className="text-muted-foreground">
                     {formatDistanceToNow(new Date(props.createdAt), {
                       addSuffix: true,
