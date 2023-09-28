@@ -115,13 +115,17 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
                   <div className="flex gap-x-1 items-center">
                     <Icons.arrowUp className="w-6 h-6" />
 
-                    <p className="text-muted-foreground">12</p>
+                    <p className="text-muted-foreground">
+                      {props.upvotes?.length}
+                    </p>
                   </div>
 
                   <div className="flex gap-x-1 items-center">
                     <Icons.reply className="w-6 h-6" />
 
-                    <p className="text-muted-foreground">3</p>
+                    <p className="text-muted-foreground">
+                      {props.replies?.length}
+                    </p>
                   </div>
                 </div>
               </DialogHeader>
