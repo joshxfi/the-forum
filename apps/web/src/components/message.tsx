@@ -22,6 +22,7 @@ import { Switch } from "./ui/switch";
 import { ReplyPost } from "./reply-post";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
+import { useSession } from "next-auth/react";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply($input: WriteReplyInput!) {
@@ -197,8 +198,12 @@ const Post = ({
   setShowReplies,
   ...rest
 }: Props & GetMessagesQuery["getMessages"][0]) => {
-  const [addUpvote] = useMutation(ADD_UPVOTE);
+  const [addUpvote, { loading }] = useMutation(ADD_UPVOTE);
   const { toast } = useToast();
+  const { data } = useSession();
+
+  const [tempUpvote, setTempUpvote] = useState(false);
+  const [upvotes, setUpvotes] = useState(upvoteCount ?? 0);
 
   const handleUpvote = (messageId: string, type: "message" | "reply") => {
     addUpvote({
@@ -211,6 +216,8 @@ const Post = ({
           title: "Success",
           description: "Upvoted successfully",
         });
+        setTempUpvote(true);
+        setUpvotes((prev) => prev + 1);
       },
       onError: () => {
         toast({
@@ -237,14 +244,22 @@ const Post = ({
 
         <div className="mt-2 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
-            <button
-              type="button"
-              onClick={() => handleUpvote(rest.id, "message")}
-            >
-              <Icons.arrowUp className="w-6 h-6" />
-            </button>
+            {tempUpvote ||
+            rest.upvotes?.some((u) => u.userId === data?.user?.id) ? (
+              <button type="button">
+                <Icons.arrowUpSolid className="w-6 h-6" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleUpvote(rest.id, "message")}
+              >
+                <Icons.arrowUp className="w-6 h-6" />
+              </button>
+            )}
 
-            <p className="text-muted-foreground">{upvoteCount}</p>
+            <p className="text-muted-foreground">{upvotes}</p>
           </div>
 
           <div className="flex gap-x-1 items-center">
