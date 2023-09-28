@@ -19,10 +19,9 @@ import {
 import { Icons } from "./icons";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
-import { ReplyPost } from "./reply-post";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
-import { useSession } from "next-auth/react";
+import { Post } from "./post";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply($input: WriteReplyInput!) {
@@ -81,6 +80,7 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
     <div className="pb-8">
       <Post
         {...props}
+        type="message"
         replyCount={props.replies?.length}
         upvoteCount={props.upvotes?.length}
         setShowReplies={setShowReplies}
@@ -162,115 +162,19 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
           </Dialog>
 
           {props.replies?.map((reply) => (
-            <ReplyPost
+            <Post
               key={reply.id}
+              type="reply"
               {...reply}
               upvoteCount={reply.upvotes?.length}
             />
           ))}
 
           {tempReplies.map((reply) => (
-            <ReplyPost key={reply.id} {...reply} upvoteCount={0} />
+            <Post key={reply.id} type="reply" {...reply} upvoteCount={0} />
           ))}
         </div>
       )}
     </div>
   );
 }
-
-type Props = {
-  upvoteCount?: number;
-  replyCount?: number;
-  setShowReplies: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const ADD_UPVOTE = gql(`
-mutation AddUpvote($type: String!, $messageId: String!) {
-  addUpvote(type: $type, messageId: $messageId) {
-    id
-  }
-}
-`);
-
-const Post = ({
-  upvoteCount,
-  replyCount,
-  setShowReplies,
-  ...rest
-}: Props & GetMessagesQuery["getMessages"][0]) => {
-  const [addUpvote, { loading }] = useMutation(ADD_UPVOTE);
-  const { toast } = useToast();
-  const { data } = useSession();
-
-  const [tempUpvote, setTempUpvote] = useState(false);
-  const [upvotes, setUpvotes] = useState(upvoteCount ?? 0);
-
-  const handleUpvote = (messageId: string, type: "message" | "reply") => {
-    addUpvote({
-      variables: {
-        messageId,
-        type,
-      },
-      onCompleted: () => {
-        toast({
-          title: "Success",
-          description: "Upvoted successfully",
-        });
-        setTempUpvote(true);
-        setUpvotes((prev) => prev + 1);
-      },
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Something went wrong",
-        });
-      },
-    });
-  };
-
-  return (
-    <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto">
-      <div className="text-sm container">
-        <div className="flex gap-x-2 mb-2">
-          <h2 className="font-semibold">{rest.user.username}</h2>
-          <p className="text-muted-foreground">
-            {formatDistanceToNow(new Date(rest.createdAt), {
-              addSuffix: true,
-            })}
-          </p>
-        </div>
-
-        <p>{rest.content}</p>
-
-        <div className="mt-2 flex gap-x-2 items-center">
-          <div className="flex gap-x-1 items-center">
-            {tempUpvote ||
-            rest.upvotes?.some((u) => u.userId === data?.user?.id) ? (
-              <button type="button">
-                <Icons.arrowUpSolid className="w-6 h-6" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                disabled={loading}
-                onClick={() => handleUpvote(rest.id, "message")}
-              >
-                <Icons.arrowUp className="w-6 h-6" />
-              </button>
-            )}
-
-            <p className="text-muted-foreground">{upvotes}</p>
-          </div>
-
-          <div className="flex gap-x-1 items-center">
-            <button type="button" onClick={() => setShowReplies((p) => !p)}>
-              <Icons.reply className="w-6 h-6" />
-            </button>
-
-            <p className="text-muted-foreground">{replyCount}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

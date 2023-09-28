@@ -1,0 +1,112 @@
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { formatDistanceToNow } from "date-fns";
+import { gql, useMutation } from "@apollo/client";
+import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
+
+import { Icons } from "./icons";
+import { useToast } from "./ui/use-toast";
+
+type Props = {
+  type: "message" | "reply";
+  upvoteCount?: number;
+  replyCount?: number;
+  setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+type Reply = NonNullable<GetMessagesQuery["getMessages"][0]["replies"]>[0];
+type Message = GetMessagesQuery["getMessages"][0];
+
+const ADD_UPVOTE = gql(`
+mutation AddUpvote($type: String!, $messageId: String!) {
+  addUpvote(type: $type, messageId: $messageId) {
+    id
+  }
+}
+`);
+
+export const Post = ({
+  type,
+  replyCount,
+  upvoteCount,
+  setShowReplies,
+  ...rest
+}: Props & (Reply | Message)) => {
+  const [addUpvote, { loading }] = useMutation(ADD_UPVOTE);
+  const { toast } = useToast();
+  const { data } = useSession();
+
+  const [tempUpvote, setTempUpvote] = useState(false);
+  const [upvotes, setUpvotes] = useState(upvoteCount ?? 0);
+
+  const handleUpvote = (messageId: string, type: "message" | "reply") => {
+    addUpvote({
+      variables: {
+        messageId,
+        type,
+      },
+      onCompleted: () => {
+        toast({
+          title: "Success",
+          description: "Upvoted successfully",
+        });
+        setTempUpvote(true);
+        setUpvotes((prev) => prev + 1);
+      },
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+        });
+      },
+    });
+  };
+
+  return (
+    <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto text-sm">
+      <div className={`${type === "reply" && "pl-10 pt-8"} container`}>
+        <div className="flex gap-x-2 mb-2">
+          <h2 className="font-semibold">{rest.user.username}</h2>
+          <p className="text-muted-foreground">
+            {formatDistanceToNow(new Date(rest.createdAt), {
+              addSuffix: true,
+            })}
+          </p>
+        </div>
+
+        <p>{rest.content}</p>
+
+        <div className="mt-2 flex gap-x-2 items-center">
+          <div className="flex gap-x-1 items-center">
+            {tempUpvote ||
+            rest.upvotes?.some((u) => u.userId === data?.user?.id) ? (
+              <button type="button">
+                <Icons.arrowUpSolid className="w-6 h-6" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleUpvote(rest.id, "message")}
+              >
+                <Icons.arrowUp className="w-6 h-6" />
+              </button>
+            )}
+
+            <p className="text-muted-foreground">{upvotes}</p>
+          </div>
+
+          {setShowReplies && (
+            <div className="flex gap-x-1 items-center">
+              <button type="button" onClick={() => setShowReplies((p) => !p)}>
+                <Icons.reply className="w-6 h-6" />
+              </button>
+
+              <p className="text-muted-foreground">{replyCount}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
