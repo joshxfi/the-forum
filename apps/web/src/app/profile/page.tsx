@@ -40,12 +40,14 @@ export default function Profile() {
     <div className="container text-sm flex justify-between items-center">
       <div>
         <h2 className="font-semibold">{data?.getCurrentUser.username}</h2>
-        <p className="text-muted-foreground mt-1">
-          Joined{" "}
-          {formatDistanceToNow(new Date(data?.getCurrentUser.createdAt), {
-            addSuffix: true,
-          })}
-        </p>
+        {data?.getCurrentUser.createdAt && (
+          <p className="text-muted-foreground mt-1">
+            Joined{" "}
+            {formatDistanceToNow(new Date(data?.getCurrentUser.createdAt), {
+              addSuffix: true,
+            })}
+          </p>
+        )}
       </div>
       <Button type="button" onClick={() => signOut()} className="mt-4">
         Logout

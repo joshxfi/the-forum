@@ -16,7 +16,7 @@ export class UserResolver {
     @Ctx() { prisma }: TContext
   ): Promise<User> {
     try {
-      const user = await prisma.user.findUnique({
+      const user = await prisma.user.findUniqueOrThrow({
         where: { username },
       });
 
@@ -34,7 +34,11 @@ export class UserResolver {
   @Query(() => User)
   async getCurrentUser(@Ctx() { prisma, id }: TContext): Promise<User> {
     try {
-      const user = await prisma.user.findUnique({
+      if (!id) {
+        throw new Error("Not authenticated");
+      }
+
+      const user = await prisma.user.findUniqueOrThrow({
         where: { id },
       });
 
