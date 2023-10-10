@@ -135,7 +135,7 @@ export default function Register() {
               htmlFor="terms"
               className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground"
             >
-              I agree to the <Link href="/terms">terms of service</Link>
+              I agree to the <Link href="/terms" className="underline">terms of service</Link>
             </label>
           </div>
         </CardContent>
