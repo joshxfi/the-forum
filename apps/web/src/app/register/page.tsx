@@ -83,6 +83,7 @@ export default function Register() {
       },
       onError: (err) => {
         toast({ title: "Error", description: err.message });
+        setLoading(false);
       },
     });
   };
@@ -112,7 +113,7 @@ export default function Register() {
               minLength={3}
               maxLength={15}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.trim().toLowerCase())}
               placeholder="Do not use your real name!"
             />
           </div>
@@ -129,12 +130,12 @@ export default function Register() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox id="terms" />
+            <Checkbox required id="terms" />
             <label
               htmlFor="terms"
               className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground"
             >
-              I am over 18 years of age
+              I agree to the <Link href="/terms">terms of service</Link>
             </label>
           </div>
         </CardContent>

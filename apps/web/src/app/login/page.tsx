@@ -83,7 +83,7 @@ export default function Login() {
               minLength={3}
               maxLength={15}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.trim().toLowerCase())}
               placeholder="Enter your username"
             />
           </div>
