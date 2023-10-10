@@ -56,7 +56,7 @@ export function Menu() {
         const IconSolid = Icons[`${icon}Solid`];
 
         return onClick ? (
-          <button type="button" onClick={onClick}>
+          <button key={route} type="button" onClick={onClick}>
             <Icon className="w-6 h-6" />
           </button>
         ) : (
