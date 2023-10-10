@@ -31,6 +31,7 @@ query GetCurrentUser {
   getCurrentUser {
     id
     username
+    createdAt
   }
 }
 `);

@@ -43,9 +43,9 @@ export function Menu() {
       },
     },
     {
-      route: status === "unauthenticated" ? "/login" : "/user",
+      route: status === "unauthenticated" ? "/login" : "/profile",
       icon: "user",
-      path: "/profifle",
+      path: "/profile",
     },
   ];
 

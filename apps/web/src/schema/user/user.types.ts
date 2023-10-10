@@ -5,6 +5,9 @@ export class User {
   @Field(() => ID)
   id: string;
 
+  @Field(() => Date)
+  createdAt: Date;
+
   @Field(() => String, { nullable: true })
   username: string | null;
 
