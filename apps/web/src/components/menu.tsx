@@ -13,8 +13,9 @@ export function Menu() {
 
   const routes: {
     route: string;
-    icon: "home" | "info" | "write";
-    path: string;
+    icon: "home" | "info" | "write" | "user" | "bell";
+    path?: string;
+    onClick?: () => void;
   }[] = [
     {
       route: "/",
@@ -31,15 +32,34 @@ export function Menu() {
       icon: "write",
       path: "/write",
     },
+    {
+      route: "/notifications",
+      icon: "bell",
+      onClick: () => {
+        toast({
+          title: "Feature: Notifications 🔔",
+          description: "Coming soon!",
+        });
+      },
+    },
+    {
+      route: status === "unauthenticated" ? "/login" : "/user",
+      icon: "user",
+      path: "/profifle",
+    },
   ];
 
   return (
     <div className="fixed bottom-0 flex justify-evenly items-center py-6 bg-background max-w-screen-sm left-[50%] translate-x-[-50%] w-full">
-      {routes.map(({ route, icon, path }) => {
+      {routes.map(({ route, icon, path, onClick }) => {
         const Icon = Icons[icon];
         const IconSolid = Icons[`${icon}Solid`];
 
-        return (
+        return onClick ? (
+          <button type="button" onClick={onClick}>
+            <Icon className="w-6 h-6" />
+          </button>
+        ) : (
           <Link key={route} href={route}>
             {pathname === path ? (
               <IconSolid className="w-6 h-6" />
@@ -49,26 +69,6 @@ export function Menu() {
           </Link>
         );
       })}
-
-      <button
-        type="button"
-        onClick={() => {
-          toast({
-            title: "Feature: Notifications 🔔",
-            description: "Coming soon!",
-          });
-        }}
-      >
-        <Icons.bell className="w-6 h-6" />
-      </button>
-
-      <Link href={status === "authenticated" ? "/" : "login"}>
-        {["/login", "/register", "/profile"].includes(pathname) ? (
-          <Icons.userSolid className="w-6 h-6" />
-        ) : (
-          <Icons.user className="w-6 h-6" />
-        )}
-      </Link>
     </div>
   );
 }
