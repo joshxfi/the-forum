@@ -1,5 +1,5 @@
 import prisma from "@/utils/db";
-import { userSchema } from "./types";
+import { userSchema } from "./_types";
 import { isPassword } from "@/utils/helpers";
 import { NextResponse } from "next/server";
 

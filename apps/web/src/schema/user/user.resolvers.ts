@@ -1,4 +1,4 @@
-import type { TContext } from "@/app/api/graphql/types";
+import type { TContext } from "@/app/api/graphql/_types";
 import { Resolver, Query, Mutation, Ctx, Arg } from "type-graphql";
 import { User } from "./user.types";
 import { hashPassword } from "@/utils/helpers";

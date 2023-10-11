@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
-import { authOptions } from "./options";
+import { authOptions } from "./_options";
 
 const handler = NextAuth(authOptions);
 

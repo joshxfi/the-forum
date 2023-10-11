@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import type { AuthedUser } from "../../authorize/types";
+import type { AuthedUser } from "../../authorize/_types";
 
 export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",

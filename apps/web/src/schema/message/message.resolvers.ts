@@ -1,5 +1,5 @@
 import { Resolver, Query, Ctx, Mutation, Arg } from "type-graphql";
-import type { TContext } from "@/app/api/graphql/types";
+import type { TContext } from "@/app/api/graphql/_types";
 import {
   Message,
   Reply,
