@@ -108,8 +108,8 @@ importers:
         specifier: 13.5.4
         version: 13.5.4(react-dom@18.2.0)(react@18.2.0)
       next-auth:
-        specifier: 4.18.8
-        version: 4.18.8(next@13.5.4)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 4.23.2
+        version: 4.23.2(next@13.5.4)(react-dom@18.2.0)(react@18.2.0)
       nextjs-toploader:
         specifier: ^1.4.2
         version: 1.4.2(next@13.5.4)(react-dom@18.2.0)(react@18.2.0)
@@ -5423,9 +5423,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /next-auth@4.18.8(next@13.5.4)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-USP8ihmvB7iCGtkS0+toe2QPrzdbZfkydQZX56JOI9Ft5n/BardOXh3D4wQ2An+vpq/jDKojGlgfv21wVElW7A==}
-    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.12.0}
+  /next-auth@4.23.2(next@13.5.4)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-VRmInu0r/yZNFQheDFeOKtiugu3bt90Po3owAQDnFQ3YLQFmUKgFjcE2+3L0ny5jsJpBXaKbm7j7W2QTc6Ye2A==}
     peerDependencies:
       next: ^12.2.5 || ^13
       nodemailer: ^6.6.5

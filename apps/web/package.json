@@ -39,7 +39,7 @@
     "lucide-react": "^0.272.0",
     "nanoid": "^5.0.1",
     "next": "13.5.4",
-    "next-auth": "4.18.8",
+    "next-auth": "4.23.2",
     "nextjs-toploader": "^1.4.2",
     "postcss": "8.4.29",
     "react": "18.2.0",
