@@ -21,17 +21,11 @@ const server = new ApolloServer({
 });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
-  context: async () => {
+  context: async (req) => {
     const session = await getServerSession(authOptions);
     const id = session?.user?.id;
-    return { prisma, id };
+    return { req, prisma, id };
   },
 });
 
-export async function GET(request: NextRequest) {
-  return handler(request);
-}
-
-export async function POST(request: NextRequest) {
-  return handler(request);
-}
+export { handler as GET, handler as POST };
