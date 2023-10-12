@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
 import { getServerSession } from "next-auth/next";
+import responseCachePlugin from "@apollo/server-plugin-response-cache";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 import prisma from "@/utils/db";
@@ -16,6 +17,7 @@ const schema = await buildSchema({
 
 const server = new ApolloServer({
   schema,
+  plugins: [responseCachePlugin()],
 });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
