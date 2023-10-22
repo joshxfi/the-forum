@@ -8,8 +8,8 @@ import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 import prisma from "@/utils/db";
 import { authOptions } from "../auth/[...nextauth]/_options";
-import { UserResolver } from "../schema/user/user.resolvers";
-import { MessageResolver } from "../schema/message/message.resolvers";
+import { UserResolver } from "./schema/user/user.resolvers";
+import { MessageResolver } from "./schema/message/message.resolvers";
 
 const schema = await buildSchema({
   resolvers: [UserResolver, MessageResolver],
