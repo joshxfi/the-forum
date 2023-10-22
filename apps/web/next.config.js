@@ -9,7 +9,7 @@ const nextConfig = {
           { key: "Access-Control-Allow-Credentials", value: "true" },
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NEXTAUTH_URL,
+            value: process.env.NEXT_PUBLIC_GRAPHQL_URL,
           },
           {
             key: "Access-Control-Allow-Methods",
