@@ -5,6 +5,7 @@ import { Icons } from "@/components/icons";
 import { usePathname } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
+import { nanoid } from "nanoid";
 
 export function Menu() {
   const { toast } = useToast();
@@ -56,11 +57,11 @@ export function Menu() {
         const IconSolid = Icons[`${icon}Solid`];
 
         return onClick ? (
-          <button key={route} type="button" onClick={onClick}>
+          <button key={nanoid()} type="button" onClick={onClick}>
             <Icon className="w-6 h-6" />
           </button>
         ) : (
-          <Link key={route} href={route}>
+          <Link key={nanoid()} href={route}>
             {pathname === path ? (
               <IconSolid className="w-6 h-6" />
             ) : (
