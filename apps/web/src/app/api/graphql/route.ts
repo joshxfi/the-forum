@@ -7,9 +7,9 @@ import responseCachePlugin from "@apollo/server-plugin-response-cache";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 import prisma from "@/utils/db";
-import { UserResolver } from "@/schema/user/user.resolvers";
 import { authOptions } from "../auth/[...nextauth]/_options";
-import { MessageResolver } from "@/schema/message/message.resolvers";
+import { UserResolver } from "./schema/user/user.resolvers";
+import { MessageResolver } from "./schema/message/message.resolvers";
 
 const schema = await buildSchema({
   resolvers: [UserResolver, MessageResolver],
