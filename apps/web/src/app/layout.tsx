@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 
-import "./globals.css";
+import { Menu } from "@/components/menu";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "@/components/ui/toaster";
-import { ApolloWrapper } from "@/lib/ApolloWrapper";
 import NextAuthProvider from "@/context/NextAuthProvider";
-import { Menu } from "@/components/menu";
+
+import "./globals.css";
+import { ApolloWrapper } from "./ApolloWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
