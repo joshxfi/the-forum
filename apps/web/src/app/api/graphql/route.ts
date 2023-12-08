@@ -13,6 +13,7 @@ import { MessageResolver } from "./schema/message/message.resolvers";
 
 const schema = await buildSchema({
   resolvers: [UserResolver, MessageResolver],
+  validate: true,
 });
 
 const server = new ApolloServer({
