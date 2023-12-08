@@ -1,5 +1,6 @@
 "use client";
 
+import { nanoid } from 'nanoid'
 import { gql } from "@tf/codegen/__generated__";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
@@ -43,8 +44,8 @@ export default function Home() {
   if (loading) {
     return (
       <div className="container max-w-screen-sm space-y-12">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div className="space-y-2" key={i}>
+        {Array.from({ length: 5 }).map((_) => (
+          <div className="space-y-2" key={nanoid()}>
             <div className="flex space-x-2">
               <Skeleton className="h-4 w-[100px]" />
               <Skeleton className="h-4 w-[150px]" />
