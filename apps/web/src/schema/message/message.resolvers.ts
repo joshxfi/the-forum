@@ -1,12 +1,6 @@
-import { Resolver, Query, Ctx, Mutation, Arg } from "type-graphql";
+import { Resolver, Query, Ctx, Mutation, Arg, ID } from "type-graphql";
 import type { TContext } from "@/app/api/graphql/_types";
-import {
-  Message,
-  Reply,
-  Upvote,
-  WriteMessageInput,
-  WriteReplyInput,
-} from "./message.types";
+import { Message, Reply, Upvote } from "./message.types";
 
 @Resolver()
 export class MessageResolver {
@@ -26,8 +20,8 @@ export class MessageResolver {
 
   @Mutation(() => Message)
   async writeMessage(
-    @Arg("input", () => WriteMessageInput)
-    { content, isAnonymous }: WriteMessageInput,
+    @Arg("content", () => String) content: string,
+    @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
     @Ctx() ctx: TContext
   ): Promise<Message> {
     return await ctx.prisma.message.create({
@@ -42,8 +36,9 @@ export class MessageResolver {
 
   @Mutation(() => Reply)
   async writeReply(
-    @Arg("input", () => WriteReplyInput)
-    { content, isAnonymous, messageId }: WriteReplyInput,
+    @Arg("content", () => String) content: string,
+    @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
+    @Arg("messageId", () => ID) messageId: string,
     @Ctx() ctx: TContext
   ): Promise<Reply> {
     return await ctx.prisma.reply.create({

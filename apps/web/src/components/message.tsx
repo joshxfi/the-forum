@@ -24,8 +24,16 @@ import { useToast } from "./ui/use-toast";
 import { Post } from "./post";
 
 const WRITE_REPLY = gql(`
-mutation WriteReply($input: WriteReplyInput!) {
-  writeReply(input: $input) {
+mutation WriteReply(
+  $messageId: ID!
+  $isAnonymous: Boolean!
+  $content: String!
+) {
+  writeReply(
+    messageId: $messageId
+    isAnonymous: $isAnonymous
+    content: $content
+  ) {
     id
     content
     createdAt
@@ -36,6 +44,7 @@ mutation WriteReply($input: WriteReplyInput!) {
     }
   }
 }
+
 `);
 
 export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
@@ -53,11 +62,9 @@ export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
     e.preventDefault();
     sendReply({
       variables: {
-        input: {
-          content: reply,
-          isAnonymous,
-          messageId: props.id,
-        },
+        content: reply,
+        isAnonymous,
+        messageId: props.id,
       },
       onCompleted: (data) => {
         toast({

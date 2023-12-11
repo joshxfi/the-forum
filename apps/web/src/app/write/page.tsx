@@ -15,8 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 
 const WRITE_MESSAGE = gql(`
-mutation WriteMessage($input: WriteMessageInput!) {
-  writeMessage(input: $input) {
+mutation WriteMessage($isAnonymous: Boolean!, $content: String!) {
+  writeMessage(isAnonymous: $isAnonymous, content: $content) {
     content
     user {
       id
@@ -52,7 +52,7 @@ export default function Write() {
     e.preventDefault();
 
     submitMessage({
-      variables: { input: { content, isAnonymous } },
+      variables: { content, isAnonymous },
       onCompleted: () => {
         setContent("");
         setIsAnonymous(false);
