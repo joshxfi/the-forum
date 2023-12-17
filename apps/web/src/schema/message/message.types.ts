@@ -1,5 +1,4 @@
-import { IsNotEmpty, MaxLength, MinLength } from "class-validator";
-import { Directive, Field, ID, InputType, ObjectType } from "type-graphql";
+import { Directive, Field, ID, ObjectType } from "type-graphql";
 import { User } from "../user/user.types";
 
 @ObjectType()
@@ -23,7 +22,8 @@ class BaseMessage {
   user: User;
 }
 
-export @ObjectType()
+export
+@ObjectType()
 class Upvote {
   @Field(() => ID)
   id: string;
@@ -41,7 +41,7 @@ class Upvote {
   replyId?: string | null;
 }
 
-@Directive("@cacheControl(maxAge: 60)")
+@Directive("@cacheControl(maxAge: 0)")
 @ObjectType()
 export class Message extends BaseMessage {
   @Field(() => [Reply], { nullable: true })
@@ -51,27 +51,18 @@ export class Message extends BaseMessage {
   upvotes?: Upvote[];
 }
 
-@Directive("@cacheControl(maxAge: 60)")
+@ObjectType()
+export class MessagesData {
+  @Field(() => [Message])
+  data: Message[];
+
+  @Field(() => String, { nullable: true })
+  cursorId: string | null;
+}
+
+@Directive("@cacheControl(maxAge: 86400)")
 @ObjectType()
 export class Reply extends BaseMessage {
   @Field(() => [Upvote], { nullable: true })
   upvotes?: Upvote[];
-}
-
-@InputType()
-export class WriteMessageInput {
-  @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(500)
-  @Field(() => String)
-  content: string;
-
-  @Field(() => Boolean)
-  isAnonymous: boolean;
-}
-
-@InputType()
-export class WriteReplyInput extends WriteMessageInput {
-  @Field(() => ID)
-  messageId: string;
 }

@@ -47,7 +47,9 @@ mutation WriteReply(
 
 `);
 
-export function Message({ ...props }: GetMessagesQuery["getMessages"][0]) {
+export function Message({
+  ...props
+}: GetMessagesQuery["getMessages"]["data"][0]) {
   const { toast } = useToast();
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);

@@ -13,8 +13,9 @@ import { ApolloWrapper } from "./ApolloWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "The Forum",
-  description: "A true open space for lozol bcd.",
+  title: "TheForum",
+  description:
+    "For the voices unheard — stories, confessions, rants, and more.",
 };
 
 export default function RootLayout({

@@ -1,13 +1,17 @@
 import { Resolver, Query, Ctx, Mutation, Arg, ID } from "type-graphql";
 import type { TContext } from "@/app/api/graphql/_types";
-import { Message, Reply, Upvote } from "./message.types";
+import { Message, MessagesData, Reply, Upvote } from "./message.types";
 
 @Resolver()
 export class MessageResolver {
-  @Query(() => [Message])
-  async getMessages(@Ctx() ctx: TContext): Promise<Message[]> {
-    return await ctx.prisma.message.findMany({
+  @Query(() => MessagesData)
+  async getMessages(
+    @Ctx() ctx: TContext,
+    @Arg("cursorId", () => ID, { nullable: true }) cursorId?: string | null
+  ): Promise<MessagesData> {
+    const messages = await ctx.prisma.message.findMany({
       orderBy: { createdAt: "desc" },
+      take: 5,
       include: {
         user: true,
         upvotes: true,
@@ -15,7 +19,25 @@ export class MessageResolver {
           include: { user: true, upvotes: true },
         },
       },
+      ...(cursorId && {
+        skip: 1,
+        cursor: {
+          id: cursorId,
+        },
+      }),
     });
+
+    if (messages.length === 0) {
+      return {
+        data: [],
+        cursorId: null,
+      };
+    }
+
+    return {
+      data: messages,
+      cursorId: messages[messages.length - 1].id,
+    };
   }
 
   @Mutation(() => Message)

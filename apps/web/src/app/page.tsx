@@ -1,27 +1,19 @@
 "use client";
 
-import { nanoid } from 'nanoid'
+import { nanoid } from "nanoid";
 import { gql } from "@tf/codegen/__generated__";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Message } from "@/components/message";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 const GET_MESSAGES = gql(`
-query GetMessages {
-  getMessages {
-    id
-    content
-    createdAt
-    isAnonymous
-    user {
-      id
-      username
-    }
-    upvotes {
-      userId
-    }
-    replies {
+query GetMessages($cursorId: ID) {
+  getMessages(cursorId: $cursorId) {
+    cursorId
+    data {
       id
       content
       createdAt
@@ -33,13 +25,27 @@ query GetMessages {
       upvotes {
         userId
       }
+      replies {
+        id
+        content
+        createdAt
+        isAnonymous
+        user {
+          id
+          username
+        }
+        upvotes {
+          userId
+        }
+      }
     }
   }
 }
 `);
 
 export default function Home() {
-  const { data, loading } = useQuery(GET_MESSAGES);
+  const { toast } = useToast();
+  const { data, loading, fetchMore } = useQuery(GET_MESSAGES);
 
   if (loading) {
     return (
@@ -59,9 +65,27 @@ export default function Home() {
 
   return (
     <section className="pb-24">
-      {data?.getMessages.map((m) => (
+      {data?.getMessages.data.map((m) => (
         <Message key={m.id} {...m} />
       ))}
+
+      <Button
+        type="button"
+        onClick={() => {
+          toast({
+            title: "stfu",
+            description: data?.getMessages.cursorId,
+          });
+
+          fetchMore({
+            variables: {
+              cursorId: data?.getMessages.cursorId,
+            },
+          });
+        }}
+      >
+        Load More
+      </Button>
     </section>
   );
 }
