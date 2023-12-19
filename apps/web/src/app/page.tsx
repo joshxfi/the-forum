@@ -60,7 +60,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="container max-w-screen-sm space-y-12">
-        {Array.from({ length: 5 }).map((_) => (
+        {Array.from({ length: 10 }).map((_) => (
           <div className="space-y-2" key={nanoid()}>
             <div className="flex space-x-2">
               <Skeleton className="h-4 w-[100px]" />
