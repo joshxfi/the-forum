@@ -11,7 +11,7 @@ export class MessageResolver {
   ): Promise<MessagesData> {
     const messages = await ctx.prisma.message.findMany({
       orderBy: { createdAt: "desc" },
-      take: 5,
+      take: 10,
       include: {
         user: true,
         upvotes: true,

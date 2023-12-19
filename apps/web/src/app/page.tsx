@@ -1,13 +1,13 @@
 "use client";
 
 import { nanoid } from "nanoid";
+import { useEffect } from "react";
 import { gql } from "@tf/codegen/__generated__";
+import { useInView } from "react-intersection-observer";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Message } from "@/components/message";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 
 const GET_MESSAGES = gql(`
 query GetMessages($cursorId: ID) {
@@ -44,8 +44,18 @@ query GetMessages($cursorId: ID) {
 `);
 
 export default function Home() {
-  const { toast } = useToast();
+  const { ref, inView } = useInView();
   const { data, loading, fetchMore } = useQuery(GET_MESSAGES);
+
+  useEffect(() => {
+    if (inView) {
+      fetchMore({
+        variables: {
+          cursorId: data?.getMessages.cursorId,
+        },
+      });
+    }
+  }, [inView]);
 
   if (loading) {
     return (
@@ -69,23 +79,9 @@ export default function Home() {
         <Message key={m.id} {...m} />
       ))}
 
-      <Button
-        type="button"
-        onClick={() => {
-          toast({
-            title: "stfu",
-            description: data?.getMessages.cursorId,
-          });
-
-          fetchMore({
-            variables: {
-              cursorId: data?.getMessages.cursorId,
-            },
-          });
-        }}
-      >
-        Load More
-      </Button>
+      {data?.getMessages && data.getMessages.data.length >= 10 && (
+        <div ref={ref}></div>
+      )}
     </section>
   );
 }
