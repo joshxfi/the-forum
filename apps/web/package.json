@@ -54,7 +54,8 @@
     "tailwindcss-animate": "^1.0.7",
     "type-graphql": "2.0.0-beta.3",
     "typescript": "5.2.2",
-    "zod": "^3.22.2"
+    "zod": "^3.22.2",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
@@ -6,6 +6,7 @@ import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
 
 import { Icons } from "./icons";
 import { useToast } from "./ui/use-toast";
+import { useMessageStore } from "@/store/useMessageStore";
 
 type Props = {
   type: "message" | "reply";
@@ -14,8 +15,10 @@ type Props = {
   setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-type Reply = NonNullable<GetMessagesQuery["getMessages"][0]["replies"]>[0];
-type Message = GetMessagesQuery["getMessages"][0];
+type Reply = NonNullable<
+  GetMessagesQuery["getMessages"]["data"][0]["replies"]
+>[0];
+type Message = GetMessagesQuery["getMessages"]["data"][0];
 
 const ADD_UPVOTE = gql(`
 mutation AddUpvote($type: String!, $messageId: String!) {
@@ -28,7 +31,7 @@ mutation AddUpvote($type: String!, $messageId: String!) {
 export const Post = ({
   type,
   replyCount,
-  upvoteCount,
+  upvoteCount = 0,
   setShowReplies,
   ...rest
 }: Props & (Reply | Message)) => {
@@ -36,8 +39,14 @@ export const Post = ({
   const { toast } = useToast();
   const { data } = useSession();
 
-  const [tempUpvote, setTempUpvote] = useState(false);
-  const [upvotes, setUpvotes] = useState(upvoteCount ?? 0);
+  const isTempUpvote = useMessageStore((state) => state.tempUpvotes).includes(
+    rest.id
+  );
+  const updateTempUpvotes = useMessageStore((state) => state.updateTempUpvotes);
+  const upvotes = useMemo(
+    () => (isTempUpvote ? upvoteCount + 1 : upvoteCount),
+    [isTempUpvote]
+  );
 
   const handleUpvote = (messageId: string, type: "message" | "reply") => {
     addUpvote({
@@ -50,8 +59,7 @@ export const Post = ({
           title: "Success",
           description: "Upvoted successfully",
         });
-        setTempUpvote(true);
-        setUpvotes((prev) => prev + 1);
+        updateTempUpvotes(rest.id);
       },
       onError: () => {
         toast({
@@ -84,7 +92,7 @@ export const Post = ({
 
         <div className="mt-2 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
-            {tempUpvote ||
+            {isTempUpvote ||
             rest.upvotes?.some((u) => u.userId === data?.user?.id) ? (
               <button type="button">
                 <Icons.arrowUpSolid className="w-6 h-6" />
