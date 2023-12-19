@@ -74,7 +74,7 @@ export class MessageResolver {
     });
   }
 
-  @Mutation(() => Reply)
+  @Mutation(() => Upvote)
   async addUpvote(
     @Arg("messageId", () => String) messageId: string,
     @Arg("type", () => String) type: "message" | "reply",

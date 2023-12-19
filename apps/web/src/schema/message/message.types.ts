@@ -41,7 +41,7 @@ class Upvote {
   replyId?: string | null;
 }
 
-@Directive("@cacheControl(maxAge: 0)")
+@Directive("@cacheControl(maxAge: 86400)")
 @ObjectType()
 export class Message extends BaseMessage {
   @Field(() => [Reply], { nullable: true })
