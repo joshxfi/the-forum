@@ -22,9 +22,8 @@ class BaseMessage {
   user: User;
 }
 
-export
 @ObjectType()
-class Upvote {
+export class Upvote {
   @Field(() => ID)
   id: string;
 
@@ -41,7 +40,6 @@ class Upvote {
   replyId?: string | null;
 }
 
-@Directive("@cacheControl(maxAge: 86400)")
 @ObjectType()
 export class Message extends BaseMessage {
   @Field(() => [Reply], { nullable: true })
@@ -56,6 +54,7 @@ export class MessagesData {
   @Field(() => [Message])
   data: Message[];
 
+  @Directive("@cacheControl(maxAge: 86400)")
   @Field(() => String, { nullable: true })
   cursorId: string | null;
 }
