@@ -45,7 +45,7 @@ export const Post = ({
   const updateTempUpvotes = useMessageStore((state) => state.updateTempUpvotes);
   const upvotes = useMemo(
     () => (isTempUpvote ? upvoteCount + 1 : upvoteCount),
-    [isTempUpvote]
+    [isTempUpvote, upvoteCount]
   );
 
   const handleUpvote = (messageId: string, type: "message" | "reply") => {
