@@ -51,10 +51,10 @@ export class Message extends BaseMessage {
 
 @ObjectType()
 export class MessagesData {
+  @Directive("@cacheControl(maxAge: 86400)")
   @Field(() => [Message])
   data: Message[];
 
-  @Directive("@cacheControl(maxAge: 86400)")
   @Field(() => String, { nullable: true })
   cursorId: string | null;
 }
