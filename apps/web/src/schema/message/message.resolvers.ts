@@ -1,5 +1,5 @@
-import { Resolver, Query, Ctx, Mutation, Arg, ID } from "type-graphql";
 import type { TContext } from "@/app/api/graphql/_types";
+import { Resolver, Query, Ctx, Mutation, Arg, ID } from "type-graphql";
 import { Message, MessagesData, Reply, Upvote } from "./message.types";
 
 @Resolver()
@@ -9,35 +9,40 @@ export class MessageResolver {
     @Ctx() ctx: TContext,
     @Arg("cursorId", () => ID, { nullable: true }) cursorId?: string | null
   ): Promise<MessagesData> {
-    const messages = await ctx.prisma.message.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 10,
-      include: {
-        user: true,
-        upvotes: true,
-        replies: {
-          include: { user: true, upvotes: true },
+    try {
+      const messages = await ctx.prisma.message.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          user: true,
+          upvotes: true,
+          replies: {
+            include: { user: true, upvotes: true },
+          },
         },
-      },
-      ...(cursorId && {
-        skip: 1,
-        cursor: {
-          id: cursorId,
-        },
-      }),
-    });
+        ...(cursorId && {
+          skip: 1,
+          cursor: {
+            id: cursorId,
+          },
+        }),
+      });
 
-    if (messages.length === 0) {
+      if (messages.length === 0) {
+        return {
+          data: [],
+          cursorId: null,
+        };
+      }
+
       return {
-        data: [],
-        cursorId: null,
+        data: messages,
+        cursorId: messages[messages.length - 1].id,
       };
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-
-    return {
-      data: messages,
-      cursorId: messages[messages.length - 1].id,
-    };
   }
 
   @Mutation(() => Message)
@@ -46,14 +51,19 @@ export class MessageResolver {
     @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
     @Ctx() ctx: TContext
   ): Promise<Message> {
-    return await ctx.prisma.message.create({
-      data: {
-        content,
-        isAnonymous,
-        user: { connect: { id: ctx.id } },
-      },
-      include: { user: true },
-    });
+    try {
+      return await ctx.prisma.message.create({
+        data: {
+          content,
+          isAnonymous,
+          user: { connect: { id: ctx.id } },
+        },
+        include: { user: true },
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 
   @Mutation(() => Reply)
@@ -63,15 +73,20 @@ export class MessageResolver {
     @Arg("messageId", () => ID) messageId: string,
     @Ctx() ctx: TContext
   ): Promise<Reply> {
-    return await ctx.prisma.reply.create({
-      data: {
-        content,
-        isAnonymous,
-        user: { connect: { id: ctx.id } },
-        message: { connect: { id: messageId } },
-      },
-      include: { user: true },
-    });
+    try {
+      return await ctx.prisma.reply.create({
+        data: {
+          content,
+          isAnonymous,
+          user: { connect: { id: ctx.id } },
+          message: { connect: { id: messageId } },
+        },
+        include: { user: true },
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 
   @Mutation(() => Upvote)
@@ -80,17 +95,22 @@ export class MessageResolver {
     @Arg("type", () => String) type: "message" | "reply",
     @Ctx() ctx: TContext
   ): Promise<Upvote> {
-    return ctx.prisma.upvote.create({
-      data:
-        type === "message"
-          ? {
-              user: { connect: { id: ctx.id } },
-              message: { connect: { id: messageId } },
-            }
-          : {
-              user: { connect: { id: ctx.id } },
-              reply: { connect: { id: messageId } },
-            },
-    });
+    try {
+      return ctx.prisma.upvote.create({
+        data:
+          type === "message"
+            ? {
+                user: { connect: { id: ctx.id } },
+                message: { connect: { id: messageId } },
+              }
+            : {
+                user: { connect: { id: ctx.id } },
+                reply: { connect: { id: messageId } },
+              },
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 }
