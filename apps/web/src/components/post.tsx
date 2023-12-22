@@ -10,6 +10,7 @@ import { useMessageStore } from "@/store/useMessageStore";
 
 type Props = {
   type: "message" | "reply";
+  isAuthor?: boolean;
   upvoteCount?: number;
   replyCount?: number;
   setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +33,7 @@ mutation AddUpvote($type: String!, $messageId: String!) {
 
 export const Post = ({
   type,
+  isAuthor,
   replyCount,
   upvoteCount = 0,
   setShowReplies,
@@ -88,6 +90,11 @@ export const Post = ({
               addSuffix: true,
             })}
           </p>
+          {type === "reply" && isAuthor && (
+            <p className="py-[2px] px-2 text-secondary-foreground text-xs bg-secondary border border-muted-foreground rounded-full">
+              author
+            </p>
+          )}
         </div>
 
         <p>{rest.content}</p>

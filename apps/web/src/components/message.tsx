@@ -187,11 +187,18 @@ export function Message({
               type="reply"
               {...reply}
               upvoteCount={reply.upvotes?.length}
+              isAuthor={props.user.id === reply.user.id}
             />
           ))}
 
           {tempReplies.map((reply) => (
-            <Post key={reply.id} type="reply" {...reply} upvoteCount={0} />
+            <Post
+              key={reply.id}
+              type="reply"
+              {...reply}
+              upvoteCount={0}
+              isAuthor={props.user.id === reply.user.id}
+            />
           ))}
         </div>
       )}
