@@ -30,7 +30,7 @@ export function makeClient() {
               ) {
                 const messages = existing ? { ...existing.data } : {};
 
-                incoming.data.forEach((msg) => {
+                incoming.data?.forEach((msg) => {
                   // @ts-ignore
                   messages[readField("id", msg)] = msg;
                 });

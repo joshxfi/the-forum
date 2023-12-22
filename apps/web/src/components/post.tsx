@@ -16,9 +16,11 @@ type Props = {
 };
 
 type Reply = NonNullable<
-  GetMessagesQuery["getMessages"]["data"][0]["replies"]
+  NonNullable<Required<GetMessagesQuery["getMessages"]>["data"]>[0]["replies"]
 >[0];
-type Message = GetMessagesQuery["getMessages"]["data"][0];
+type Message = NonNullable<
+  Required<GetMessagesQuery["getMessages"]["data"]>
+>[0];
 
 const ADD_UPVOTE = gql(`
 mutation AddUpvote($type: String!, $messageId: String!) {

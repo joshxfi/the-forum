@@ -75,11 +75,11 @@ export default function Home() {
 
   return (
     <section className="pb-24">
-      {data?.getMessages.data.map((m) => (
+      {data?.getMessages.data?.map((m) => (
         <Message key={m.id} {...m} />
       ))}
 
-      {data?.getMessages && data.getMessages.data.length >= 10 && (
+      {data?.getMessages.data && data.getMessages.data.length >= 10 && (
         <div ref={ref}></div>
       )}
     </section>

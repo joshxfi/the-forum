@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
-import { Button } from "@/components/ui/button";
 import { gql } from "@tf/codegen/__generated__";
 import {
   GetMessagesQuery,
@@ -16,12 +15,14 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
+import { Post } from "./post";
 import { Icons } from "./icons";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
-import { Post } from "./post";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply(
@@ -49,7 +50,7 @@ mutation WriteReply(
 
 export function Message({
   ...props
-}: GetMessagesQuery["getMessages"]["data"][0]) {
+}: NonNullable<Required<GetMessagesQuery["getMessages"]["data"]>>[0]) {
   const { toast } = useToast();
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);

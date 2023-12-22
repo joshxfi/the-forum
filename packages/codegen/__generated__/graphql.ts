@@ -33,7 +33,7 @@ export type Message = {
 export type MessagesData = {
   __typename?: 'MessagesData';
   cursorId?: Maybe<Scalars['String']['output']>;
-  data: Array<Message>;
+  data?: Maybe<Array<Message>>;
 };
 
 export type Mutation = {
@@ -120,7 +120,7 @@ export type GetMessagesQueryVariables = Exact<{
 }>;
 
 
-export type GetMessagesQuery = { __typename?: 'Query', getMessages: { __typename?: 'MessagesData', cursorId?: string | null, data: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null, replies?: Array<{ __typename?: 'Reply', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null }> | null }> } };
+export type GetMessagesQuery = { __typename?: 'Query', getMessages: { __typename?: 'MessagesData', cursorId?: string | null, data?: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null, replies?: Array<{ __typename?: 'Reply', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null }> | null }> | null } };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
