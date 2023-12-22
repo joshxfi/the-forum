@@ -5,7 +5,10 @@ const nextConfig = {
   transpilePackages: ["@tf/codegen", "@tf/prisma"],
   webpack: (config, { isServer }) => {
     if (isServer) {
-      config.plugins = [...config.plugins, new PrismaPlugin()];
+      config.plugins =
+        process.env.NODE_ENV === "production"
+          ? [...config.plugins, new PrismaPlugin()]
+          : [...config.plugins];
     }
 
     return config;
