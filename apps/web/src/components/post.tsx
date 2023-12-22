@@ -41,7 +41,7 @@ export const Post = ({
 }: Props & (Reply | Message)) => {
   const [addUpvote, { loading }] = useMutation(ADD_UPVOTE);
   const { toast } = useToast();
-  const { data } = useSession();
+  const { data: session } = useSession();
 
   const isTempUpvote = useMessageStore((state) => state.tempUpvotes).includes(
     rest.id
@@ -102,7 +102,7 @@ export const Post = ({
         <div className="mt-2 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
             {isTempUpvote ||
-            rest.upvotes?.some((u) => u.userId === data?.user?.id) ? (
+            rest.upvotes?.some((u) => u.userId === session?.user?.id) ? (
               <button type="button">
                 <Icons.arrowUpSolid className="w-6 h-6" />
               </button>

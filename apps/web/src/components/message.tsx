@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
 import { gql } from "@tf/codegen/__generated__";
@@ -13,7 +14,6 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -52,21 +52,25 @@ export function Message({
   ...props
 }: NonNullable<Required<GetMessagesQuery["getMessages"]["data"]>>[0]) {
   const { toast } = useToast();
+  const { data: session } = useSession();
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [tempReplies, setTempReplies] = useState<
     WriteReplyMutation["writeReply"][]
   >([]);
 
   const [sendReply, { loading }] = useMutation(WRITE_REPLY);
+  const anonymousAuthor =
+    props.isAnonymous && props.user.id === session?.user?.id;
 
   const handleReply: React.FormEventHandler = (e) => {
     e.preventDefault();
     sendReply({
       variables: {
         content: reply,
-        isAnonymous,
+        isAnonymous: anonymousAuthor ? true : isAnonymous,
         messageId: props.id,
       },
       onCompleted: (data) => {
@@ -76,6 +80,7 @@ export function Message({
         });
         setReply("");
         setTempReplies((prev) => [data.writeReply, ...prev]);
+        setShowDialog(false);
       },
       onError: () => {
         toast({
@@ -98,16 +103,15 @@ export function Message({
 
       {showReplies && (
         <div className="mt-4 container">
-          <Dialog>
-            <DialogTrigger asChild>
-              <button
-                type="button"
-                className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
-              >
-                Reply to {props.user.username}
-              </button>
-            </DialogTrigger>
+          <button
+            onClick={() => setShowDialog(true)}
+            type="button"
+            className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
+          >
+            Reply to {props.isAnonymous ? "user" : props.user.username}
+          </button>
 
+          <Dialog open={showDialog} onOpenChange={setShowDialog}>
             <DialogContent className="max-w-[425px]">
               <DialogHeader className="text-left text-sm">
                 <div className="flex gap-x-2">
@@ -126,24 +130,6 @@ export function Message({
                 </div>
 
                 <p>{props.content}</p>
-
-                <div className="mt-2 flex gap-x-2 items-center">
-                  <div className="flex gap-x-1 items-center">
-                    <Icons.arrowUp className="w-6 h-6" />
-
-                    <p className="text-muted-foreground">
-                      {props.upvotes?.length}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-x-1 items-center">
-                    <Icons.reply className="w-6 h-6" />
-
-                    <p className="text-muted-foreground">
-                      {props.replies?.length}
-                    </p>
-                  </div>
-                </div>
               </DialogHeader>
 
               <form onSubmit={handleReply}>
@@ -166,15 +152,22 @@ export function Message({
               </form>
 
               <DialogFooter>
-                <div className="flex justify-between h-8">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={isAnonymous}
-                      onClick={() => setIsAnonymous((prev) => !prev)}
-                      id="hide-username"
-                    />
-                    <Label htmlFor="hide-username">Hide Username</Label>
-                  </div>
+                <div className="flex items-center justify-between h-8">
+                  {anonymousAuthor ? (
+                    <p className="text-muted-foreground italic text-xs">
+                      Username will be hidden
+                    </p>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={isAnonymous}
+                        onClick={() => setIsAnonymous((prev) => !prev)}
+                        id="hide-username"
+                      />
+                      <Label htmlFor="hide-username">Hide Username</Label>
+                    </div>
+                  )}
+
                   {loading && <Icons.spinner className="w-8 h-8" />}
                 </div>
               </DialogFooter>
