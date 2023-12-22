@@ -2,27 +2,6 @@ import { Directive, Field, ID, ObjectType } from "type-graphql";
 import { User } from "../user/user.types";
 
 @ObjectType()
-class BaseMessage {
-  @Field(() => ID)
-  id: string;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  @Field(() => String)
-  content: string;
-
-  @Field(() => Boolean)
-  isAnonymous: boolean;
-
-  @Field(() => User)
-  user: User;
-}
-
-@ObjectType()
 export class Upvote {
   @Field(() => ID)
   id: string;
@@ -41,7 +20,25 @@ export class Upvote {
 }
 
 @ObjectType()
-export class Message extends BaseMessage {
+export class Message {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+
+  @Field(() => String)
+  content: string;
+
+  @Field(() => Boolean)
+  isAnonymous: boolean;
+
+  @Field(() => User)
+  user: User;
+
   @Field(() => [Reply], { nullable: true })
   replies?: Reply[];
 
@@ -61,7 +58,25 @@ export class MessagesData {
 
 @Directive("@cacheControl(maxAge: 86400)")
 @ObjectType()
-export class Reply extends BaseMessage {
+export class Reply {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+
+  @Field(() => String)
+  content: string;
+
+  @Field(() => Boolean)
+  isAnonymous: boolean;
+
+  @Field(() => User)
+  user: User;
+
   @Field(() => [Upvote], { nullable: true })
   upvotes?: Upvote[];
 }
