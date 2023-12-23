@@ -51,6 +51,15 @@ export const Post = ({
   const updateTempUpvotes = useMessageStore((state) => state.updateTempUpvotes);
 
   const handleUpvote = (messageId: string, type: "message" | "reply") => {
+    if (isUserAuthor) {
+      toast({
+        title: "Oops!",
+        description: "You can't upvote your own post"
+      })
+
+      return
+
+    }
     addUpvote({
       variables: {
         messageId,

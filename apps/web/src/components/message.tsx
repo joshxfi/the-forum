@@ -21,6 +21,7 @@ import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
+import { Badge } from "./badge";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply(
@@ -124,7 +125,7 @@ export function Message({
           <Dialog open={showDialog} onOpenChange={setShowDialog}>
             <DialogContent className="max-w-[425px]">
               <DialogHeader className="text-left text-sm">
-                <div className="flex gap-x-2">
+                <div className="flex gap-x-2 mb-2">
                   <h2 className="font-semibold">
                     {props.isAnonymous ? (
                       <span className="text-zinc-400">hidden</span>
@@ -140,6 +141,10 @@ export function Message({
                 </div>
 
                 <p>{props.content}</p>
+
+                <div className="flex space-x-1 mt-2">
+                  {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
+                </div>
               </DialogHeader>
 
               <form onSubmit={handleReply}>
