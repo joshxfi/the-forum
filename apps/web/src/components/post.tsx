@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
@@ -47,10 +46,6 @@ export const Post = ({
     rest.id
   );
   const updateTempUpvotes = useMessageStore((state) => state.updateTempUpvotes);
-  const upvotes = useMemo(
-    () => (isTempUpvote ? upvoteCount + 1 : upvoteCount),
-    [isTempUpvote, upvoteCount]
-  );
 
   const handleUpvote = (messageId: string, type: "message" | "reply") => {
     addUpvote({
@@ -116,7 +111,9 @@ export const Post = ({
               </button>
             )}
 
-            <p className="text-muted-foreground">{upvotes}</p>
+            <p className="text-muted-foreground">
+              {isTempUpvote ? upvoteCount + 1 : upvoteCount}
+            </p>
           </div>
 
           {setShowReplies && (

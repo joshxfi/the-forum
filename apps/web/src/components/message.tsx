@@ -68,11 +68,6 @@ export function Message({
     [_tempReplies]
   );
 
-  const replyCount = useMemo(
-    () => (props.replies?.length ?? 0) + tempReplies.length,
-    [props.replies, tempReplies]
-  );
-
   const handleReply: React.FormEventHandler = (e) => {
     e.preventDefault();
     sendReply({
@@ -107,7 +102,7 @@ export function Message({
       <Post
         {...props}
         type="message"
-        replyCount={replyCount}
+        replyCount={(props.replies?.length ?? 0) + tempReplies.length}
         upvoteCount={props.upvotes?.length}
         setShowReplies={setShowReplies}
       />
