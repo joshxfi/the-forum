@@ -57,7 +57,7 @@ export function Message({
   const [showDialog, setShowDialog] = useState(false);
 
   const [sendReply, { loading }] = useMutation(WRITE_REPLY);
-  const isAuthor = props.user.id === session?.user?.id;
+  const isUserAuthor = props.user.id === session?.user?.id;
 
   const _tempReplies = useMessageStore((state) => state.tempReplies);
   const updateTempReplies = useMessageStore((state) => state.updateTempReplies);
@@ -72,7 +72,7 @@ export function Message({
     sendReply({
       variables: {
         content: reply,
-        isAnonymous: isAuthor
+        isAnonymous: isUserAuthor
           ? props.isAnonymous
             ? true
             : false
@@ -105,6 +105,7 @@ export function Message({
       <Post
         {...props}
         type="message"
+        isUserAuthor={isUserAuthor}
         replyCount={(props.replies?.length ?? 0) + tempReplies.length}
         upvoteCount={props.upvotes?.length}
         setShowReplies={setShowReplies}
@@ -162,7 +163,7 @@ export function Message({
 
               <DialogFooter>
                 <div className="flex items-center justify-between h-8">
-                  {isAuthor ? (
+                  {isUserAuthor ? (
                     <p className="text-muted-foreground italic text-xs">
                       Username will be {props.isAnonymous ? "hidden" : "shown"}
                     </p>
@@ -190,6 +191,7 @@ export function Message({
               {...reply}
               upvoteCount={reply.upvotes?.length}
               isAuthor={props.user.id === reply.user.id}
+              isUserAuthor={isUserAuthor}
             />
           ))}
 
@@ -199,6 +201,7 @@ export function Message({
               type="reply"
               {...reply}
               isAuthor={props.user.id === reply.user.id}
+              isUserAuthor={isUserAuthor}
             />
           ))}
         </div>

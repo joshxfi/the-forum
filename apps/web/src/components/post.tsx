@@ -6,10 +6,12 @@ import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
 import { Icons } from "./icons";
 import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
+import { Badge } from "./badge";
 
 type Props = {
   type: "message" | "reply";
   isAuthor?: boolean;
+  isUserAuthor?: boolean;
   upvoteCount?: number;
   replyCount?: number;
   setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,6 +35,7 @@ mutation AddUpvote($type: String!, $messageId: String!) {
 export const Post = ({
   type,
   isAuthor,
+  isUserAuthor,
   replyCount,
   upvoteCount = 0,
   setShowReplies,
@@ -85,16 +88,16 @@ export const Post = ({
               addSuffix: true,
             })}
           </p>
-          {type === "reply" && isAuthor && (
-            <p className="py-[2px] px-2 text-secondary-foreground text-xs bg-secondary border border-muted-foreground rounded-full">
-              author
-            </p>
-          )}
         </div>
 
         <p>{rest.content}</p>
 
-        <div className="mt-2 flex gap-x-2 items-center">
+        <div className="flex space-x-1 mt-2">
+          {type === "reply" && isAuthor && <Badge>author</Badge>}
+          {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
+        </div>
+
+        <div className="mt-4 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
             {isTempUpvote ||
             rest.upvotes?.some((u) => u.userId === session?.user?.id) ? (
