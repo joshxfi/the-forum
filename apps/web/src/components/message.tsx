@@ -65,7 +65,7 @@ export function Message({
 
   const tempReplies = useMemo(
     () => _tempReplies.find((r) => r.messageId === props.id)?.replyData ?? [],
-    [_tempReplies]
+    [_tempReplies, props.id]
   );
 
   const handleReply: React.FormEventHandler = (e) => {
