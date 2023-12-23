@@ -8,6 +8,7 @@ import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Message } from "@/components/message";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMessageStore } from "@/store/useMessageStore";
 
 const GET_MESSAGES = gql(`
 query GetMessages($cursorId: ID) {
@@ -46,6 +47,7 @@ query GetMessages($cursorId: ID) {
 export default function Home() {
   const { ref, inView } = useInView();
   const { data, loading, fetchMore } = useQuery(GET_MESSAGES);
+  const tempMessages = useMessageStore((state) => state.tempMessages);
 
   useEffect(() => {
     if (inView) {
@@ -75,6 +77,10 @@ export default function Home() {
 
   return (
     <section className="pb-24">
+      {tempMessages.map((m) => (
+        <Message key={m.id} {...m} />
+      ))}
+
       {data?.getMessages.data?.map((m) => (
         <Message key={m.id} {...m} />
       ))}

@@ -13,11 +13,19 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useMessageStore } from "@/store/useMessageStore";
 
 const WRITE_MESSAGE = gql(`
 mutation WriteMessage($isAnonymous: Boolean!, $content: String!) {
   writeMessage(isAnonymous: $isAnonymous, content: $content) {
+    id
     content
+    createdAt
+    isAnonymous
+    user {
+      id
+      username
+    }
     user {
       id
       username
@@ -43,6 +51,9 @@ export default function Write() {
 
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const updateTempMessages = useMessageStore(
+    (state) => state.updateTempMessages
+  );
 
   const { toast } = useToast();
   const { status } = useSession();
@@ -53,13 +64,14 @@ export default function Write() {
 
     submitMessage({
       variables: { content, isAnonymous },
-      onCompleted: () => {
+      onCompleted: (data) => {
         setContent("");
         setIsAnonymous(false);
         toast({
           title: "Message sent!",
           description: "Your message has been posted.",
         });
+        updateTempMessages(data.writeMessage);
         push("/");
       },
       onError: (error) => {

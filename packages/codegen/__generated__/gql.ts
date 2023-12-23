@@ -16,7 +16,7 @@ const documents = {
     "\nquery GetMessages($cursorId: ID) {\n  getMessages(cursorId: $cursorId) {\n    cursorId\n    data {\n      id\n      content\n      createdAt\n      isAnonymous\n      user {\n        id\n        username\n      }\n      upvotes {\n        userId\n      }\n      replies {\n        id\n        content\n        createdAt\n        isAnonymous\n        user {\n          id\n          username\n        }\n        upvotes {\n          userId\n        }\n      }\n    }\n  }\n}\n": types.GetMessagesDocument,
     "\nquery GetCurrentUser {\n  getCurrentUser {\n    id\n    username\n    createdAt\n  }\n}\n": types.GetCurrentUserDocument,
     "\nmutation CreateUser($password: String!, $username: String!) {\n  createUser(password: $password, username: $username) {\n    id\n    username\n  }\n}\n": types.CreateUserDocument,
-    "\nmutation WriteMessage($isAnonymous: Boolean!, $content: String!) {\n  writeMessage(isAnonymous: $isAnonymous, content: $content) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteMessageDocument,
+    "\nmutation WriteMessage($isAnonymous: Boolean!, $content: String!) {\n  writeMessage(isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    user {\n      id\n      username\n    }\n  }\n}\n": types.WriteMessageDocument,
     "\nmutation WriteReply(\n  $messageId: ID!\n  $isAnonymous: Boolean!\n  $content: String!\n) {\n  writeReply(\n    messageId: $messageId\n    isAnonymous: $isAnonymous\n    content: $content\n  ) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n  }\n}\n\n": types.WriteReplyDocument,
     "\nmutation AddUpvote($type: String!, $messageId: String!) {\n  addUpvote(type: $type, messageId: $messageId) {\n    id\n  }\n}\n": types.AddUpvoteDocument,
 };
@@ -50,7 +50,7 @@ export function gql(source: "\nmutation CreateUser($password: String!, $username
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nmutation WriteMessage($isAnonymous: Boolean!, $content: String!) {\n  writeMessage(isAnonymous: $isAnonymous, content: $content) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation WriteMessage($isAnonymous: Boolean!, $content: String!) {\n  writeMessage(isAnonymous: $isAnonymous, content: $content) {\n    content\n    user {\n      id\n      username\n    }\n  }\n}\n"];
+export function gql(source: "\nmutation WriteMessage($isAnonymous: Boolean!, $content: String!) {\n  writeMessage(isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    user {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation WriteMessage($isAnonymous: Boolean!, $content: String!) {\n  writeMessage(isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    user {\n      id\n      username\n    }\n    user {\n      id\n      username\n    }\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
