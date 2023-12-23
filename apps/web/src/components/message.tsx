@@ -57,8 +57,7 @@ export function Message({
   const [showDialog, setShowDialog] = useState(false);
 
   const [sendReply, { loading }] = useMutation(WRITE_REPLY);
-  const anonymousAuthor =
-    props.isAnonymous && props.user.id === session?.user?.id;
+  const isAuthor = props.user.id === session?.user?.id;
 
   const _tempReplies = useMessageStore((state) => state.tempReplies);
   const updateTempReplies = useMessageStore((state) => state.updateTempReplies);
@@ -73,7 +72,11 @@ export function Message({
     sendReply({
       variables: {
         content: reply,
-        isAnonymous: anonymousAuthor ? true : isAnonymous,
+        isAnonymous: isAuthor
+          ? props.isAnonymous
+            ? true
+            : false
+          : isAnonymous,
         messageId: props.id,
       },
       onCompleted: (data) => {
@@ -159,9 +162,9 @@ export function Message({
 
               <DialogFooter>
                 <div className="flex items-center justify-between h-8">
-                  {anonymousAuthor ? (
+                  {isAuthor ? (
                     <p className="text-muted-foreground italic text-xs">
-                      Username will be hidden
+                      Username will be {props.isAnonymous ? "hidden" : "shown"}
                     </p>
                   ) : (
                     <div className="flex items-center space-x-2">
