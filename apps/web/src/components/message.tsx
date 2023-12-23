@@ -1,13 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
 import { gql } from "@tf/codegen/__generated__";
-import {
-  GetMessagesQuery,
-  WriteReplyMutation,
-} from "@tf/codegen/__generated__/graphql";
+import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
 
 import {
   Dialog,
@@ -23,6 +20,7 @@ import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
+import { useMessageStore } from "@/store/useMessageStore";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply(
@@ -57,13 +55,23 @@ export function Message({
   const [showReplies, setShowReplies] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [tempReplies, setTempReplies] = useState<
-    WriteReplyMutation["writeReply"][]
-  >([]);
 
   const [sendReply, { loading }] = useMutation(WRITE_REPLY);
   const anonymousAuthor =
     props.isAnonymous && props.user.id === session?.user?.id;
+
+  const _tempReplies = useMessageStore((state) => state.tempReplies);
+  const updateTempReplies = useMessageStore((state) => state.updateTempReplies);
+
+  const tempReplies = useMemo(
+    () => _tempReplies.find((r) => r.messageId === props.id)?.replyData ?? [],
+    [_tempReplies]
+  );
+
+  const replyCount = useMemo(
+    () => (props.replies?.length ?? 0) + tempReplies.length,
+    [props.replies, tempReplies]
+  );
 
   const handleReply: React.FormEventHandler = (e) => {
     e.preventDefault();
@@ -79,7 +87,10 @@ export function Message({
           description: "Your reply has been sent successfully",
         });
         setReply("");
-        setTempReplies((prev) => [data.writeReply, ...prev]);
+        updateTempReplies({
+          messageId: props.id,
+          replyData: [data.writeReply],
+        });
         setShowDialog(false);
       },
       onError: () => {
@@ -96,7 +107,7 @@ export function Message({
       <Post
         {...props}
         type="message"
-        replyCount={props.replies?.length}
+        replyCount={replyCount}
         upvoteCount={props.upvotes?.length}
         setShowReplies={setShowReplies}
       />
@@ -184,12 +195,11 @@ export function Message({
             />
           ))}
 
-          {tempReplies.map((reply) => (
+          {tempReplies?.map((reply) => (
             <Post
               key={reply.id}
               type="reply"
               {...reply}
-              upvoteCount={0}
               isAuthor={props.user.id === reply.user.id}
             />
           ))}
