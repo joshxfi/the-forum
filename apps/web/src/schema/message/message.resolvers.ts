@@ -31,7 +31,7 @@ export class MessageResolver {
       if (messages.length === 0) {
         return {
           data: [],
-          cursorId: null,
+          cursorId: "",
         };
       }
 

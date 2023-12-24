@@ -6,7 +6,7 @@ export class Upvote {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Date)
+  @Field()
   createdAt: Date;
 
   @Field(() => ID)
@@ -24,16 +24,16 @@ export class Message {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Date)
+  @Field()
   createdAt: Date;
 
-  @Field(() => Date)
+  @Field()
   updatedAt: Date;
 
-  @Field(() => String)
+  @Field()
   content: string;
 
-  @Field(() => Boolean)
+  @Field()
   isAnonymous: boolean;
 
   @Field(() => User)
@@ -52,8 +52,8 @@ export class MessagesData {
   @Field(() => [Message], { nullable: true })
   data?: Message[];
 
-  @Field(() => String, { nullable: true })
-  cursorId: string | null;
+  @Field({ nullable: true })
+  cursorId?: string;
 }
 
 @Directive("@cacheControl(maxAge: 86400)")
@@ -62,16 +62,16 @@ export class Reply {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Date)
+  @Field()
   createdAt: Date;
 
-  @Field(() => Date)
+  @Field()
   updatedAt: Date;
 
-  @Field(() => String)
+  @Field()
   content: string;
 
-  @Field(() => Boolean)
+  @Field()
   isAnonymous: boolean;
 
   @Field(() => User)

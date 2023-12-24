@@ -5,12 +5,12 @@ export class User {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Date)
+  @Field()
   createdAt: Date;
 
-  @Field(() => String, { nullable: true })
-  username: string | null;
+  @Field()
+  username: string;
 
-  @Field(() => String, { nullable: true })
-  password: string | null;
+  @Field()
+  password: string;
 }

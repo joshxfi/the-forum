@@ -111,8 +111,8 @@ export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTimeISO']['output'];
   id: Scalars['ID']['output'];
-  password?: Maybe<Scalars['String']['output']>;
-  username?: Maybe<Scalars['String']['output']>;
+  password: Scalars['String']['output'];
+  username: Scalars['String']['output'];
 };
 
 export type GetMessagesQueryVariables = Exact<{
@@ -120,12 +120,12 @@ export type GetMessagesQueryVariables = Exact<{
 }>;
 
 
-export type GetMessagesQuery = { __typename?: 'Query', getMessages: { __typename?: 'MessagesData', cursorId?: string | null, data?: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null, replies?: Array<{ __typename?: 'Reply', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null }> | null }> | null } };
+export type GetMessagesQuery = { __typename?: 'Query', getMessages: { __typename?: 'MessagesData', cursorId?: string | null, data?: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username: string }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null, replies?: Array<{ __typename?: 'Reply', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username: string }, upvotes?: Array<{ __typename?: 'Upvote', userId: string }> | null }> | null }> | null } };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: string, username?: string | null, createdAt: any } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: string, username: string, createdAt: any } };
 
 export type CreateUserMutationVariables = Exact<{
   password: Scalars['String']['input'];
@@ -133,7 +133,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, username?: string | null } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, username: string } };
 
 export type WriteMessageMutationVariables = Exact<{
   isAnonymous: Scalars['Boolean']['input'];
@@ -141,7 +141,7 @@ export type WriteMessageMutationVariables = Exact<{
 }>;
 
 
-export type WriteMessageMutation = { __typename?: 'Mutation', writeMessage: { __typename?: 'Message', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null } } };
+export type WriteMessageMutation = { __typename?: 'Mutation', writeMessage: { __typename?: 'Message', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username: string } } };
 
 export type WriteReplyMutationVariables = Exact<{
   messageId: Scalars['ID']['input'];
@@ -150,7 +150,7 @@ export type WriteReplyMutationVariables = Exact<{
 }>;
 
 
-export type WriteReplyMutation = { __typename?: 'Mutation', writeReply: { __typename?: 'Reply', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username?: string | null } } };
+export type WriteReplyMutation = { __typename?: 'Mutation', writeReply: { __typename?: 'Reply', id: string, content: string, createdAt: any, isAnonymous: boolean, user: { __typename?: 'User', id: string, username: string } } };
 
 export type AddUpvoteMutationVariables = Exact<{
   type: Scalars['String']['input'];

@@ -15,8 +15,8 @@ model User {
   id        String    @id @default(cuid())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  username  String?   @unique
-  password  String?
+  username  String    @unique
+  password  String
   messages  Message[] @relation("messages")
   replies   Reply[]   @relation("replies")
   upvotes   Upvote[]  @relation("upvotes")
