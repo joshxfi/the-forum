@@ -19,10 +19,6 @@ query GetMessages($cursorId: ID) {
       content
       createdAt
       isAnonymous
-      _count {
-        upvotes
-        replies
-      }
       user {
         id
         username

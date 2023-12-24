@@ -15,7 +15,6 @@ import { authOptions } from "../auth/[...nextauth]/_options";
 
 const schema = await buildSchema({
   resolvers: [UserResolver, MessageResolver],
-  validate: true,
 });
 
 const server = new ApolloServer({

@@ -44,7 +44,6 @@ mutation WriteReply(
     }
   }
 }
-
 `);
 
 export function Message({
@@ -107,8 +106,8 @@ export function Message({
         {...props}
         type="message"
         isUserAuthor={isUserAuthor}
-        replyCount={(props._count?.replies ?? 0) + tempReplies.length}
-        upvoteCount={props._count?.upvotes}
+        replyCount={(props.replies?.length ?? 0) + tempReplies.length}
+        upvoteCount={props.upvotes?.length}
         setShowReplies={setShowReplies}
       />
 

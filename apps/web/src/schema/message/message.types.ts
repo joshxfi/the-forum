@@ -1,4 +1,4 @@
-import { Directive, Field, ID, Int, ObjectType } from "type-graphql";
+import { Directive, Field, ID, ObjectType } from "type-graphql";
 import { User } from "../user/user.types";
 
 @ObjectType()
@@ -20,15 +20,6 @@ export class Upvote {
 }
 
 @ObjectType()
-class Count {
-  @Field(() => Int)
-  upvotes: number;
-
-  @Field(() => Int)
-  replies: number;
-}
-
-@ObjectType()
 export class Message {
   @Field(() => ID)
   id: string;
@@ -47,9 +38,6 @@ export class Message {
 
   @Field(() => User)
   user: User;
-
-  @Field(() => Count, { nullable: true })
-  _count?: Count;
 
   @Field(() => [Reply], { nullable: true })
   replies?: Reply[];
