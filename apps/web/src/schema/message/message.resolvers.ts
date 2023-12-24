@@ -15,6 +15,12 @@ export class MessageResolver {
         take: 10,
         include: {
           user: true,
+          _count: {
+            select: {
+              upvotes: true,
+              replies: true,
+            },
+          },
           upvotes: true,
           replies: {
             include: { user: true, upvotes: true },

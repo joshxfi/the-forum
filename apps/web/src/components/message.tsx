@@ -15,13 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { Post } from "./post";
+import { Badge } from "./badge";
 import { Icons } from "./icons";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
-import { Badge } from "./badge";
 
 const WRITE_REPLY = gql(`
 mutation WriteReply(
@@ -107,8 +107,8 @@ export function Message({
         {...props}
         type="message"
         isUserAuthor={isUserAuthor}
-        replyCount={(props.replies?.length ?? 0) + tempReplies.length}
-        upvoteCount={props.upvotes?.length}
+        replyCount={(props._count?.replies ?? 0) + tempReplies.length}
+        upvoteCount={props._count?.upvotes}
         setShowReplies={setShowReplies}
       />
 

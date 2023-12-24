@@ -4,9 +4,9 @@ import { gql, useMutation } from "@apollo/client";
 import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
 
 import { Icons } from "./icons";
+import { Badge } from "./badge";
 import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
-import { Badge } from "./badge";
 
 type Props = {
   type: "message" | "reply";

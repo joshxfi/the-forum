@@ -38,7 +38,7 @@ export function Menu() {
       icon: "bell",
       onClick: () => {
         toast({
-          title: "Feature: Notifications 🔔",
+          title: "Notifications 🔔",
           description: "Coming soon!",
         });
       },

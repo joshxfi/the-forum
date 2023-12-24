@@ -19,6 +19,10 @@ query GetMessages($cursorId: ID) {
       content
       createdAt
       isAnonymous
+      _count {
+        upvotes
+        replies
+      }
       user {
         id
         username
@@ -62,11 +66,11 @@ export default function Home() {
   if (loading) {
     return (
       <div className="container max-w-screen-sm space-y-12">
-        {Array.from({ length: 8 }).map((_) => (
+        {Array.from({ length: 6 }).map((_) => (
           <div className="space-y-2" key={nanoid()}>
             <div className="flex space-x-2">
+              <Skeleton className="h-4 w-[80px]" />
               <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-4 w-[150px]" />
             </div>
             <Skeleton className="h-4 w-[300px]" />
           </div>
