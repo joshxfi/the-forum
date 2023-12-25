@@ -46,7 +46,7 @@ model Reply {
   upvotes     Upvote[] @relation("upvotes")
 
   messageId String
-  message   Message @relation(name: "replies", fields: [messageId], references: [id])
+  message   Message @relation(name: "replies", fields: [messageId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(name: "replies", fields: [userId], references: [id])
@@ -62,10 +62,10 @@ model Upvote {
   user      User     @relation(name: "upvotes", fields: [userId], references: [id])
 
   messageId String?
-  message   Message? @relation(name: "upvotes", fields: [messageId], references: [id])
+  message   Message? @relation(name: "upvotes", fields: [messageId], references: [id], onDelete: Cascade)
 
   replyId String?
-  reply   Reply?  @relation(name: "upvotes", fields: [replyId], references: [id])
+  reply   Reply?  @relation(name: "upvotes", fields: [replyId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([messageId, userId])
