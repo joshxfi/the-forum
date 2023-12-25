@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
@@ -25,10 +26,16 @@ type Message = NonNullable<
 >[0];
 
 const ADD_UPVOTE = gql(`
-mutation AddUpvote($type: String!, $messageId: String!) {
+mutation AddUpvote($type: String!, $messageId: ID!) {
   addUpvote(type: $type, messageId: $messageId) {
     id
   }
+}
+`);
+
+const REMOVE_UPVOTE = gql(`
+mutation RemoveUpvote($upvoteId: ID!) {
+  removeUpvote(id: $upvoteId) 
 }
 `);
 
@@ -41,38 +48,89 @@ export const Post = ({
   setShowReplies,
   ...rest
 }: Props & (Reply | Message)) => {
-  const [addUpvote, { loading }] = useMutation(ADD_UPVOTE);
+  const [addUpvote, { loading: addUpvoteLoading }] = useMutation(ADD_UPVOTE);
+  const [removeUpvote, { loading: removeUpvoteLoading }] =
+    useMutation(REMOVE_UPVOTE);
   const { toast } = useToast();
   const { data: session } = useSession();
 
-  const isTempUpvote = useMessageStore((state) => state.tempUpvotes).includes(
-    rest.id
+  const tempUpvote = useMessageStore((state) => state.tempUpvotes).find(
+    (u) => u.messageId === rest.id
   );
+
   const updateTempUpvotes = useMessageStore((state) => state.updateTempUpvotes);
 
-  const handleUpvote = (messageId: string, type: "message" | "reply") => {
+  const isUpvoted = useMemo(
+    () => rest.upvotes?.some((u) => u.userId === session?.user?.id),
+    [rest.upvotes, session?.user]
+  );
+
+  const upvoteId = useMemo(
+    () =>
+      tempUpvote
+        ? tempUpvote.upvoteId
+        : rest.upvotes?.find((u) => u.userId === session?.user?.id)?.id,
+    [tempUpvote, rest.upvotes, session?.user]
+  );
+
+  const handleAddUpvote = (messageId: string, type: "message" | "reply") => {
     if (isUserAuthor) {
       toast({
         title: "Oops!",
-        description: "You can't upvote your own post"
-      })
+        description: "You can't upvote your own post",
+      });
 
-      return
-
+      return;
     }
     addUpvote({
       variables: {
         messageId,
         type,
       },
-      onCompleted: () => {
+      onCompleted: (data) => {
         toast({
           title: "Success",
           description: "Upvoted successfully",
         });
-        updateTempUpvotes(rest.id);
+        updateTempUpvotes({ upvoteId: data.addUpvote.id, messageId: rest.id });
       },
-      onError: () => {
+      onError: (err) => {
+        console.log(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+        });
+      },
+    });
+  };
+
+  const handleRemoveUpvote = () => {
+    if (!upvoteId) {
+      toast({
+        title: `Oops! ${upvoteId}`,
+        description: "Something went wrong",
+      });
+
+      return;
+    }
+
+    removeUpvote({
+      variables: {
+        upvoteId,
+      },
+      onCompleted: () => {
+        toast({
+          title: "Success",
+          description: "Upvote removed",
+        });
+        if (tempUpvote) {
+          updateTempUpvotes({ messageId: rest.id });
+        }
+      },
+      onError: (err) => {
+        console.log(err);
+
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -108,23 +166,32 @@ export const Post = ({
 
         <div className="mt-4 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
-            {isTempUpvote ||
-            rest.upvotes?.some((u) => u.userId === session?.user?.id) ? (
-              <button type="button">
+            {!!tempUpvote || (isUpvoted && !tempUpvote) ? (
+              <button
+                type="button"
+                disabled={removeUpvoteLoading}
+                onClick={handleRemoveUpvote}
+              >
                 <Icons.arrowUpSolid className="w-6 h-6" />
               </button>
             ) : (
               <button
                 type="button"
-                disabled={loading}
-                onClick={() => handleUpvote(rest.id, "message")}
+                disabled={addUpvoteLoading}
+                onClick={() => handleAddUpvote(rest.id, "message")}
               >
                 <Icons.arrowUp className="w-6 h-6" />
               </button>
             )}
 
             <p className="text-muted-foreground">
-              {isTempUpvote ? upvoteCount + 1 : upvoteCount}
+              {(() => {
+                if (!!tempUpvote) {
+                  return isUpvoted ? upvoteCount - 1 : upvoteCount + 1;
+                } else {
+                  return upvoteCount;
+                }
+              })()}
             </p>
           </div>
 

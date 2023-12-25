@@ -5,7 +5,10 @@ import {
 import { create } from "zustand";
 
 type State = {
-  tempUpvotes: string[];
+  tempUpvotes: {
+    upvoteId?: string;
+    messageId: string;
+  }[];
   tempMessages: WriteMessageMutation["writeMessage"][];
   tempReplies: {
     messageId: string;
@@ -14,7 +17,7 @@ type State = {
 };
 
 type Action = {
-  updateTempUpvotes: (messageId: string) => void;
+  updateTempUpvotes: (upvoteData: State["tempUpvotes"][0]) => void;
   updateTempMessages: (messageData: State["tempMessages"][0]) => void;
   updateTempReplies: ({
     messageId,
@@ -24,8 +27,20 @@ type Action = {
 
 export const useMessageStore = create<State & Action>((set) => ({
   tempUpvotes: [],
-  updateTempUpvotes: (messageId) =>
-    set((state) => ({ tempUpvotes: [messageId, ...state.tempUpvotes] })),
+  updateTempUpvotes: (data) =>
+    set((state) => {
+      const exists = !!state.tempUpvotes.find(
+        (u) => u.messageId === data.messageId
+      );
+
+      return {
+        tempUpvotes: exists
+          ? state.tempUpvotes
+              .slice(0)
+              .filter((u) => u.messageId !== data.messageId)
+          : [data, ...state.tempUpvotes],
+      };
+    }),
 
   tempMessages: [],
   updateTempMessages: (messageData) =>

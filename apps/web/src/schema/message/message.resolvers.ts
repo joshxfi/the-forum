@@ -91,12 +91,12 @@ export class MessageResolver {
 
   @Mutation(() => Upvote)
   async addUpvote(
-    @Arg("messageId", () => String) messageId: string,
+    @Arg("messageId", () => ID) messageId: string,
     @Arg("type", () => String) type: "message" | "reply",
     @Ctx() ctx: TContext
   ): Promise<Upvote> {
     try {
-      return ctx.prisma.upvote.create({
+      return await ctx.prisma.upvote.create({
         data:
           type === "message"
             ? {
@@ -108,6 +108,25 @@ export class MessageResolver {
                 reply: { connect: { id: messageId } },
               },
       });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  @Mutation(() => String)
+  async removeUpvote(
+    @Arg("id", () => ID) id: string,
+    @Ctx() ctx: TContext
+  ): Promise<String> {
+    try {
+      await ctx.prisma.upvote.delete({
+        where: {
+          id,
+        },
+      });
+
+      return "Success";
     } catch (err) {
       console.error(err);
       throw err;

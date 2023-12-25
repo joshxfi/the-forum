@@ -24,6 +24,7 @@ query GetMessages($cursorId: ID) {
         username
       }
       upvotes {
+        id
         userId
       }
       replies {
@@ -36,6 +37,7 @@ query GetMessages($cursorId: ID) {
           username
         }
         upvotes {
+          id
           userId
         }
       }
