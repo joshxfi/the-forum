@@ -3,6 +3,10 @@ const { PrismaPlugin } = require("@prisma/nextjs-monorepo-workaround-plugin");
 
 const nextConfig = {
   transpilePackages: ["@tf/codegen", "@tf/prisma"],
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.plugins =
