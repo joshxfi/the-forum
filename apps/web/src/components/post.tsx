@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
@@ -73,6 +73,16 @@ export const Post = ({
     [tempUpvote, rest.upvotes, session?.user]
   );
 
+  const displayUpvoteCount = useCallback(() => {
+    if (!!tempUpvote) {
+      if (isUpvoted)
+        return !tempUpvote.upvoteId ? upvoteCount - 1 : upvoteCount;
+      return tempUpvote.upvoteId ? upvoteCount + 1 : upvoteCount;
+    } else {
+      return upvoteCount;
+    }
+  }, [tempUpvote, isUpvoted, upvoteCount]);
+
   const handleAddUpvote = (messageId: string, type: "message" | "reply") => {
     if (isUserAuthor) {
       toast({
@@ -108,7 +118,7 @@ export const Post = ({
   const handleRemoveUpvote = () => {
     if (!upvoteId) {
       toast({
-        title: `Oops! ${upvoteId}`,
+        title: "Oops!",
         description: "Something went wrong",
       });
 
@@ -124,9 +134,8 @@ export const Post = ({
           title: "Success",
           description: "Upvote removed",
         });
-        if (tempUpvote) {
-          updateTempUpvotes({ messageId: rest.id });
-        }
+
+        updateTempUpvotes({ messageId: rest.id });
       },
       onError: (err) => {
         console.log(err);
@@ -166,7 +175,8 @@ export const Post = ({
 
         <div className="mt-4 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
-            {!!tempUpvote || (isUpvoted && !tempUpvote) ? (
+            {(!!tempUpvote && !!tempUpvote.upvoteId) ||
+            (isUpvoted && !tempUpvote) ? (
               <button
                 type="button"
                 disabled={removeUpvoteLoading}
@@ -184,15 +194,7 @@ export const Post = ({
               </button>
             )}
 
-            <p className="text-muted-foreground">
-              {(() => {
-                if (!!tempUpvote) {
-                  return isUpvoted ? upvoteCount - 1 : upvoteCount + 1;
-                } else {
-                  return upvoteCount;
-                }
-              })()}
-            </p>
+            <p className="text-muted-foreground">{displayUpvoteCount()}</p>
           </div>
 
           {setShowReplies && (

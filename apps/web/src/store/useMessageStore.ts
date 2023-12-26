@@ -27,19 +27,27 @@ type Action = {
 
 export const useMessageStore = create<State & Action>((set) => ({
   tempUpvotes: [],
-  updateTempUpvotes: (data) =>
+  updateTempUpvotes: ({ upvoteId, messageId }) =>
     set((state) => {
-      const exists = !!state.tempUpvotes.find(
-        (u) => u.messageId === data.messageId
+      const upvote = state.tempUpvotes.find((u) => u.messageId === messageId);
+      const upvoteIndex = state.tempUpvotes.findIndex(
+        (u) => u.messageId === messageId
       );
 
-      return {
-        tempUpvotes: exists
-          ? state.tempUpvotes
-              .slice(0)
-              .filter((u) => u.messageId !== data.messageId)
-          : [data, ...state.tempUpvotes],
-      };
+      if (!!upvote) {
+        const upvotes = state.tempUpvotes.slice(0);
+
+        upvotes[upvoteIndex] = {
+          messageId,
+          upvoteId: !!upvote.upvoteId ? "" : upvoteId,
+        };
+
+        return {
+          tempUpvotes: upvotes,
+        };
+      }
+
+      return { tempUpvotes: [{ upvoteId, messageId }, ...state.tempUpvotes] };
     }),
 
   tempMessages: [],
@@ -53,7 +61,7 @@ export const useMessageStore = create<State & Action>((set) => ({
         (r) => r.messageId === messageId
       )?.replyData;
 
-      if (reply) {
+      if (!!reply) {
         const messageIndex = state.tempReplies.findIndex(
           (r) => r.messageId === messageId
         );
