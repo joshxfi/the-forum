@@ -143,7 +143,10 @@ export default function Write() {
         </div>
 
         <div className="flex items-center justify-between border-b border-muted pt-3 pb-6">
-          <Label htmlFor="hide-username" className="font-normal text-muted-foreground flex space-x-2 items-center">
+          <Label
+            htmlFor="hide-username"
+            className="font-normal text-muted-foreground flex space-x-2 items-center"
+          >
             <Icons.hide className="w-5 h-5" />
             <p>Hide username</p>
           </Label>
@@ -156,7 +159,11 @@ export default function Write() {
         </div>
 
         <div className="space-x-2 self-end mt-3">
-          <Button type="button" variant='outline' onClick={() => setShowDialog(true)}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowDialog(true)}
+          >
             Add tag
           </Button>
 
@@ -176,13 +183,13 @@ export default function Write() {
           </DialogHeader>
 
           <div className="flex flex-wrap gap-2">
-            {["story", "insight", "rant", "confession", "question"].map(
+            {["story", "insight", "rant", "confession", "question", "none"].map(
               (name) => (
                 <button
                   key={nanoid()}
                   type="button"
                   onClick={() => {
-                    setBadge(name);
+                    setBadge(name === "none" ? "" : name);
                     setShowDialog(false);
                   }}
                 >
