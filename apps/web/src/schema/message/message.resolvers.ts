@@ -40,7 +40,7 @@ export class MessageResolver {
         cursorId: messages[messages.length - 1].id,
       };
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -61,7 +61,7 @@ export class MessageResolver {
         include: { user: true },
       });
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -84,7 +84,7 @@ export class MessageResolver {
         include: { user: true },
       });
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -109,7 +109,7 @@ export class MessageResolver {
               },
       });
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -128,7 +128,7 @@ export class MessageResolver {
 
       return "Success";
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }

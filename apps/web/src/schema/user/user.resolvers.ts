@@ -26,7 +26,7 @@ export class UserResolver {
 
       return user;
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -48,7 +48,7 @@ export class UserResolver {
 
       return user;
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -82,7 +82,7 @@ export class UserResolver {
         },
       });
     } catch (err) {
-      console.error(err);
+      console.log(err);
       throw err;
     }
   }

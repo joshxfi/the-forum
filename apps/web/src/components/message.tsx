@@ -92,7 +92,9 @@ export function Message({
         });
         setShowDialog(false);
       },
-      onError: () => {
+      onError: (err) => {
+        console.log(err);
+
         toast({
           title: "Error",
           description: "Something went wrong",
