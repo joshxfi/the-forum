@@ -142,30 +142,30 @@ export default function Write() {
           )}
         </div>
 
-        <div className="flex justify-between">
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={isAnonymous}
-              onClick={() => setIsAnonymous((prev) => !prev)}
-              id="hide-username"
-            />
-            <Label htmlFor="hide-username" className="font-normal">
-              Hide Username
-            </Label>
-          </div>
+        <div className="flex items-center justify-between border-b border-muted pt-3 pb-6">
+          <Label htmlFor="hide-username" className="font-normal text-muted-foreground flex space-x-2 items-center">
+            <Icons.hide className="w-5 h-5" />
+            <p>Hide username</p>
+          </Label>
 
-          <div className="space-x-2">
-            <Button type="button" onClick={() => setShowDialog(true)}>
-              Add tag
-            </Button>
+          <Switch
+            checked={isAnonymous}
+            onClick={() => setIsAnonymous((prev) => !prev)}
+            id="hide-username"
+          />
+        </div>
 
-            <Button
-              type="submit"
-              disabled={submitLoading || content.length === 0}
-            >
-              Post
-            </Button>
-          </div>
+        <div className="space-x-2 self-end mt-3">
+          <Button type="button" variant='outline' onClick={() => setShowDialog(true)}>
+            Add tag
+          </Button>
+
+          <Button
+            type="submit"
+            disabled={submitLoading || content.length === 0}
+          >
+            Post
+          </Button>
         </div>
       </div>
 
