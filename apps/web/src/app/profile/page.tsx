@@ -37,7 +37,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="container text-sm flex justify-between items-center">
+    <div className="text-sm flex justify-between items-center">
       <div>
         <h2 className="font-semibold">{data?.getCurrentUser.username}</h2>
         {data?.getCurrentUser.createdAt && (

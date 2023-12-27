@@ -25,14 +25,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} max-w-screen-sm mx-auto`}>
+      <body className={`${inter.className}`}>
         <NextAuthProvider>
           <NextTopLoader showSpinner={false} />
           <Toaster />
-          <Navbar />
           <ApolloWrapper>
-            {children}
-            <Menu />
+            <div className="max-w-screen-sm mx-auto container">
+              <Navbar />
+              {children}
+              <Menu />
+            </div>
           </ApolloWrapper>
         </NextAuthProvider>
       </body>

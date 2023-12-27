@@ -63,7 +63,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="container max-w-screen-sm space-y-12">
+      <div className="space-y-12">
         {Array.from({ length: 6 }).map((_) => (
           <div className="space-y-2" key={nanoid()}>
             <div className="flex space-x-2">

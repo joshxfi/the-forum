@@ -113,7 +113,7 @@ export function Message({
       />
 
       {showReplies && (
-        <div className="mt-4 container">
+        <div className="mt-4">
           <button
             onClick={() => setShowDialog(true)}
             type="button"
