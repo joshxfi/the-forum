@@ -1,5 +1,6 @@
 "use client";
 
+import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -7,6 +8,7 @@ import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
+import { Badge } from "@/components/badge";
 import { Icons } from "@/components/icons";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -14,6 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import { DisplayBadge } from "@/components/display-badge";
 
 const WRITE_MESSAGE = gql(`
 mutation WriteMessage($isAnonymous: Boolean!, $content: String!) {
@@ -49,8 +58,11 @@ export default function Write() {
   const [submitMessage, { loading: submitLoading }] =
     useMutation(WRITE_MESSAGE);
 
+  const [badge, setBadge] = useState("");
   const [content, setContent] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+
   const updateTempMessages = useMessageStore(
     (state) => state.updateTempMessages
   );
@@ -98,49 +110,91 @@ export default function Write() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-y-3">
-        <div className="flex items-end justify-between h-8">
-          <h2
-            className={`${
-              isAnonymous && "text-muted-foreground"
-            } font-semibold text-sm`}
-          >
-            {data?.getCurrentUser.username}
-          </h2>
-          {submitLoading && <Icons.spinner className="w-8 h-8" />}
+        <div className="flex items-end justify-between text-sm">
+          <div className="flex space-x-2">
+            <h2
+              className={`${
+                isAnonymous && "text-muted-foreground"
+              } font-semibold`}
+            >
+              {isAnonymous ? "hidden" : data?.getCurrentUser.username}
+            </h2>
+
+            <div className="flex space-x-1">
+              <Badge className="bg-gray-900">you</Badge>
+              {badge && <DisplayBadge name={badge} />}
+            </div>
+          </div>
+          <p className="text-muted-foreground">{content.length}/500</p>
         </div>
 
-        <Textarea
-          required
-          maxLength={500}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="type your message here."
-          className="max-h-[300px]"
-        />
+        <div className="relative">
+          <Textarea
+            required
+            maxLength={500}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="type your message here."
+            className="max-h-[300px]"
+          />
+          {submitLoading && (
+            <Icons.spinner className="w-8 h-8 top-2 right-2 absolute" />
+          )}
+        </div>
 
-        <Button
-          type="submit"
-          disabled={submitLoading || content.length === 0}
-          className="w-full"
-        >
-          Post
-        </Button>
-
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between">
           <div className="flex items-center space-x-2">
             <Switch
               checked={isAnonymous}
               onClick={() => setIsAnonymous((prev) => !prev)}
               id="hide-username"
             />
-            <Label htmlFor="hide-username">Hide Username</Label>
+            <Label htmlFor="hide-username" className="font-normal">
+              Hide Username
+            </Label>
           </div>
 
-          <p className="text-muted-foreground text-sm mb-2 text-right">
-            {content.length}/500
-          </p>
+          <div className="space-x-2">
+            <Button type="button" onClick={() => setShowDialog(true)}>
+              Add tag
+            </Button>
+
+            <Button
+              type="submit"
+              disabled={submitLoading || content.length === 0}
+            >
+              Post
+            </Button>
+          </div>
         </div>
       </div>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="max-w-[425px]">
+          <DialogHeader className="text-left text-sm font-semibold">
+            <p>Select a tag</p>
+          </DialogHeader>
+
+          <div className="flex flex-wrap gap-2">
+            {["story", "insight", "rant", "confession", "question"].map(
+              (name) => (
+                <button
+                  key={nanoid()}
+                  type="button"
+                  onClick={() => {
+                    setBadge(name);
+                    setShowDialog(false);
+                  }}
+                >
+                  <DisplayBadge name={name} />
+                </button>
+              )
+            )}
+          </div>
+
+          <DialogFooter></DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }

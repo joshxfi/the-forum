@@ -144,7 +144,7 @@ export function Message({
 
                 <p>{props.content}</p>
 
-                <div className="flex space-x-1 mt-2">
+                <div className="flex pt-1">
                   {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
                 </div>
               </DialogHeader>
