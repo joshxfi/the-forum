@@ -208,7 +208,7 @@ export function Message({
               key={reply.id}
               type="reply"
               {...reply}
-              isAuthor={props.author.id === reply.user.id}
+              isAuthor={props.author.id === reply.author.id}
               isUserAuthor={isUserAuthor}
             />
           ))}

@@ -83,7 +83,7 @@ export const Post = ({
     }
   }, [tempUpvote, isUpvoted, upvoteCount]);
 
-  const handleAddUpvote = (messageId: string, type: "message" | "reply") => {
+  const handleAddUpvote = (postId: string) => {
     if (isUserAuthor) {
       toast({
         title: "Oops!",
@@ -94,8 +94,7 @@ export const Post = ({
     }
     addUpvote({
       variables: {
-        messageId,
-        type,
+        postId,
       },
       onCompleted: (data) => {
         toast({
@@ -188,7 +187,7 @@ export const Post = ({
               <button
                 type="button"
                 disabled={addUpvoteLoading}
-                onClick={() => handleAddUpvote(rest.id, "message")}
+                onClick={() => handleAddUpvote(rest.id)}
               >
                 <Icons.arrowUp className="w-6 h-6" />
               </button>

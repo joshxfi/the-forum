@@ -1,6 +1,6 @@
 import {
-  WriteMessageMutation,
-  WriteReplyMutation,
+  AddPostMutation,
+  AddCommentMutation,
 } from "@tf/codegen/__generated__/graphql";
 import { create } from "zustand";
 
@@ -9,10 +9,10 @@ type State = {
     upvoteId?: string;
     messageId: string;
   }[];
-  tempMessages: WriteMessageMutation["writeMessage"][];
+  tempMessages: AddPostMutation["addPost"][];
   tempReplies: {
     messageId: string;
-    replyData: WriteReplyMutation["writeReply"][];
+    replyData: AddCommentMutation["addComment"][];
   }[];
 };
 
