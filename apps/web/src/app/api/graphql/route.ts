@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
 import { NextRequest } from "next/server";
-import { buildSchema } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
+import { buildSchemaSync } from "type-graphql";
 import { getServerSession } from "next-auth/next";
 import responseCachePlugin from "@apollo/server-plugin-response-cache";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
@@ -13,7 +13,7 @@ import { MessageResolver } from "@/schema/message/message.resolvers";
 
 import { authOptions } from "../auth/[...nextauth]/_options";
 
-const schema = await buildSchema({
+const schema = buildSchemaSync({
   resolvers: [UserResolver, MessageResolver],
 });
 
