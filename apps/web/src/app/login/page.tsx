@@ -59,7 +59,7 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleAuth} className="container max-w-screen-sm">
+    <form onSubmit={handleAuth}>
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl flex justify-between items-center">
