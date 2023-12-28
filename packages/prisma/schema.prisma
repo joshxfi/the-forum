@@ -5,6 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  output   = "./../../node_modules/@generated/type-graphql"
+}
+
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
@@ -12,62 +17,53 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  username  String    @unique
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @default(USER)
+  username  String   @unique
   password  String
-  messages  Message[] @relation("messages")
-  replies   Reply[]   @relation("replies")
-  upvotes   Upvote[]  @relation("upvotes")
+  posts     Post[]
 }
 
-model Message {
+model Post {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   content     String   @db.VarChar(500)
   isAnonymous Boolean  @default(false)
-  replies     Reply[]  @relation("replies")
-  upvotes     Upvote[] @relation("upvotes")
+  upvotes     Upvote[]
+  tags        Tag[]
 
-  userId String
-  user   User   @relation(name: "messages", fields: [userId], references: [id])
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 
-  @@index([userId, isAnonymous, updatedAt(sort: Desc)])
-}
+  comments      Post[] @relation("PostComments")
+  commentParent Post[] @relation("PostComments")
 
-model Reply {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  content     String   @db.VarChar(500)
-  isAnonymous Boolean  @default(false)
-  upvotes     Upvote[] @relation("upvotes")
-
-  messageId String
-  message   Message @relation(name: "replies", fields: [messageId], references: [id], onDelete: Cascade)
-
-  userId String
-  user   User   @relation(name: "replies", fields: [userId], references: [id])
-
-  @@index([messageId, isAnonymous, updatedAt(sort: Asc)])
-  @@index([userId, isAnonymous, updatedAt(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
 }
 
 model Upvote {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   userId    String
-  user      User     @relation(name: "upvotes", fields: [userId], references: [id])
 
-  messageId String?
-  message   Message? @relation(name: "upvotes", fields: [messageId], references: [id], onDelete: Cascade)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  replyId String?
-  reply   Reply?  @relation(name: "upvotes", fields: [replyId], references: [id], onDelete: Cascade)
+  @@index([postId])
+}
 
-  @@index([userId])
-  @@index([messageId, userId])
-  @@index([replyId, userId])
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(100)
+  createdAt DateTime @default(now())
+  Posts     Post[]
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
 }

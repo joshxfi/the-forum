@@ -24,18 +24,14 @@ import {
 } from "@/components/ui/dialog";
 import { DisplayBadge } from "@/components/display-badge";
 
-const WRITE_MESSAGE = gql(`
-mutation WriteMessage($isAnonymous: Boolean!, $content: String!) {
-  writeMessage(isAnonymous: $isAnonymous, content: $content) {
+const ADD_MESSAGE = gql(`
+mutation AddPost($isAnonymous: Boolean!, $content: String!) {
+  addPost(isAnonymous: $isAnonymous, content: $content) {
     id
     content
     createdAt
     isAnonymous
-    user {
-      id
-      username
-    }
-    user {
+    author {
       id
       username
     }
@@ -56,7 +52,7 @@ query GetCurrentUser {
 export default function Write() {
   const { data, loading } = useQuery(GET_CURRENT_USER);
   const [submitMessage, { loading: submitLoading }] =
-    useMutation(WRITE_MESSAGE);
+    useMutation(ADD_MESSAGE);
 
   const [badge, setBadge] = useState("");
   const [content, setContent] = useState("");
@@ -83,7 +79,7 @@ export default function Write() {
           title: "Message sent!",
           description: "Your message has been posted.",
         });
-        updateTempMessages(data.writeMessage);
+        updateTempMessages(data.addPost);
         push("/");
       },
       onError: (error) => {

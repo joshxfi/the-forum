@@ -1,23 +1,24 @@
+import { Post, Upvote } from "@generated/type-graphql";
 import type { TContext } from "@/app/api/graphql/_types";
+import { PostData, PostWithComments, PostsWithCursor } from "./post.types";
 import { Resolver, Query, Ctx, Mutation, Arg, ID } from "type-graphql";
-import { Message, MessagesData, Reply, Upvote } from "./message.types";
 
-@Resolver()
-export class MessageResolver {
-  @Query(() => MessagesData)
-  async getMessages(
+@Resolver(() => Post)
+export class PostResolver {
+  @Query(() => PostsWithCursor)
+  async getPosts(
     @Ctx() ctx: TContext,
     @Arg("cursorId", () => ID, { nullable: true }) cursorId?: string | null
-  ): Promise<MessagesData> {
+  ): Promise<PostsWithCursor> {
     try {
-      const messages = await ctx.prisma.message.findMany({
+      const posts = await ctx.prisma.post.findMany({
         orderBy: { createdAt: "desc" },
         take: 10,
         include: {
-          user: true,
+          author: true,
           upvotes: true,
-          replies: {
-            include: { user: true, upvotes: true },
+          comments: {
+            include: { author: true, upvotes: true },
           },
         },
         ...(cursorId && {
@@ -28,7 +29,7 @@ export class MessageResolver {
         }),
       });
 
-      if (messages.length === 0) {
+      if (posts.length === 0) {
         return {
           data: [],
           cursorId: "",
@@ -36,8 +37,8 @@ export class MessageResolver {
       }
 
       return {
-        data: messages,
-        cursorId: messages[messages.length - 1].id,
+        data: posts,
+        cursorId: posts[posts.length - 1].id,
       };
     } catch (err) {
       console.log(err);
@@ -45,20 +46,20 @@ export class MessageResolver {
     }
   }
 
-  @Mutation(() => Message)
-  async writeMessage(
+  @Mutation(() => PostData)
+  async addPost(
     @Arg("content", () => String) content: string,
     @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
     @Ctx() ctx: TContext
-  ): Promise<Message> {
+  ): Promise<PostData> {
     try {
-      return await ctx.prisma.message.create({
+      return await ctx.prisma.post.create({
         data: {
           content,
           isAnonymous,
-          user: { connect: { id: ctx.id } },
+          author: { connect: { id: ctx.id } },
         },
-        include: { user: true },
+        include: { author: true },
       });
     } catch (err) {
       console.log(err);
@@ -66,22 +67,35 @@ export class MessageResolver {
     }
   }
 
-  @Mutation(() => Reply)
-  async writeReply(
+  @Mutation(() => PostWithComments)
+  async addComment(
     @Arg("content", () => String) content: string,
     @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
-    @Arg("messageId", () => ID) messageId: string,
+    @Arg("postId", () => ID) postId: string,
     @Ctx() ctx: TContext
-  ): Promise<Reply> {
+  ): Promise<PostWithComments> {
     try {
-      return await ctx.prisma.reply.create({
+      return await ctx.prisma.post.update({
+        where: { id: postId },
         data: {
-          content,
-          isAnonymous,
-          user: { connect: { id: ctx.id } },
-          message: { connect: { id: messageId } },
+          comments: {
+            create: [
+              {
+                content,
+                isAnonymous,
+                author: { connect: { id: ctx.id } },
+              },
+            ],
+          },
         },
-        include: { user: true },
+        include: {
+          author: true,
+          comments: {
+            include: {
+              author: true,
+            },
+          },
+        },
       });
     } catch (err) {
       console.log(err);
@@ -91,22 +105,15 @@ export class MessageResolver {
 
   @Mutation(() => Upvote)
   async addUpvote(
-    @Arg("messageId", () => ID) messageId: string,
-    @Arg("type", () => String) type: "message" | "reply",
+    @Arg("postId", () => ID) postId: string,
     @Ctx() ctx: TContext
   ): Promise<Upvote> {
     try {
       return await ctx.prisma.upvote.create({
-        data:
-          type === "message"
-            ? {
-                user: { connect: { id: ctx.id } },
-                message: { connect: { id: messageId } },
-              }
-            : {
-                user: { connect: { id: ctx.id } },
-                reply: { connect: { id: messageId } },
-              },
+        data: {
+          userId: ctx.id ?? "",
+          post: { connect: { id: postId } },
+        },
       });
     } catch (err) {
       console.log(err);

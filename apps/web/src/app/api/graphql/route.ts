@@ -9,12 +9,12 @@ import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 import prisma from "@/utils/db";
 import { UserResolver } from "@/schema/user/user.resolvers";
-import { MessageResolver } from "@/schema/message/message.resolvers";
+import { PostResolver } from "@/schema/post/post.resolvers";
 
 import { authOptions } from "../auth/[...nextauth]/_options";
 
 const schema = buildSchemaSync({
-  resolvers: [UserResolver, MessageResolver],
+  resolvers: [UserResolver, PostResolver],
 });
 
 const server = new ApolloServer({

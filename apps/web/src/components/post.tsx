@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
-import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
+import { GetPostsQuery } from "@tf/codegen/__generated__/graphql";
 
 import { Icons } from "./icons";
 import { Badge } from "./badge";
@@ -19,15 +19,15 @@ type Props = {
 };
 
 type Reply = NonNullable<
-  NonNullable<Required<GetMessagesQuery["getMessages"]>["data"]>[0]["replies"]
+  NonNullable<Required<GetPostsQuery["getPosts"]>["data"]>[0]["comments"]
 >[0];
 type Message = NonNullable<
-  Required<GetMessagesQuery["getMessages"]["data"]>
+  Required<GetPostsQuery["getPosts"]["data"]>
 >[0];
 
 const ADD_UPVOTE = gql(`
-mutation AddUpvote($type: String!, $messageId: ID!) {
-  addUpvote(type: $type, messageId: $messageId) {
+mutation AddUpvote($postId: ID!) {
+  addUpvote(postId: $postId) {
     id
   }
 }
@@ -156,7 +156,7 @@ export const Post = ({
             {rest.isAnonymous ? (
               <span className="text-zinc-400">hidden</span>
             ) : (
-              rest.user.username
+              rest.author.username
             )}
           </h2>
           <p className="text-muted-foreground">

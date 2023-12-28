@@ -1,15 +1,10 @@
 import type { TContext } from "@/app/api/graphql/_types";
 import { Resolver, Query, Mutation, Ctx, Arg } from "type-graphql";
-import { User } from "./user.types";
 import { hashPassword } from "@/utils/helpers";
+import { User } from "@generated/type-graphql";
 
 @Resolver()
 export class UserResolver {
-  @Query(() => String)
-  async hello() {
-    return "Hello World";
-  }
-
   @Query(() => User)
   async getUser(
     @Arg("username", () => String) username: string,

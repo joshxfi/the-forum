@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
 import { gql } from "@tf/codegen/__generated__";
-import { GetMessagesQuery } from "@tf/codegen/__generated__/graphql";
+import { GetPostsQuery } from "@tf/codegen/__generated__/graphql";
 
 import {
   Dialog,
@@ -24,14 +24,14 @@ import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
 
-const WRITE_REPLY = gql(`
-mutation WriteReply(
-  $messageId: ID!
+const ADD_COMMENT = gql(`
+mutation AddComment(
+  $postId: ID!
   $isAnonymous: Boolean!
   $content: String!
 ) {
-  writeReply(
-    messageId: $messageId
+  addComment(
+    postId: $postId
     isAnonymous: $isAnonymous
     content: $content
   ) {
@@ -39,17 +39,18 @@ mutation WriteReply(
     content
     createdAt
     isAnonymous
-    user {
+    author {
       id
       username
     }
   }
 }
+
 `);
 
 export function Message({
   ...props
-}: NonNullable<Required<GetMessagesQuery["getMessages"]["data"]>>[0]) {
+}: NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0]) {
   const { toast } = useToast();
   const { data: session } = useSession();
   const [reply, setReply] = useState("");
@@ -57,8 +58,8 @@ export function Message({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
-  const [sendReply, { loading }] = useMutation(WRITE_REPLY);
-  const isUserAuthor = props.user.id === session?.user?.id;
+  const [sendReply, { loading }] = useMutation(ADD_COMMENT);
+  const isUserAuthor = props.author.id === session?.user?.id;
 
   const _tempReplies = useMessageStore((state) => state.tempReplies);
   const updateTempReplies = useMessageStore((state) => state.updateTempReplies);
@@ -78,7 +79,7 @@ export function Message({
             ? true
             : false
           : isAnonymous,
-        messageId: props.id,
+        postId: props.id,
       },
       onCompleted: (data) => {
         toast({
@@ -88,7 +89,7 @@ export function Message({
         setReply("");
         updateTempReplies({
           messageId: props.id,
-          replyData: [data.writeReply],
+          replyData: [data.addComment],
         });
         setShowDialog(false);
       },
@@ -109,7 +110,7 @@ export function Message({
         {...props}
         type="message"
         isUserAuthor={isUserAuthor}
-        replyCount={(props.replies?.length ?? 0) + tempReplies.length}
+        replyCount={(props.comments?.length ?? 0) + tempReplies.length}
         upvoteCount={props.upvotes?.length}
         setShowReplies={setShowReplies}
       />
@@ -121,7 +122,7 @@ export function Message({
             type="button"
             className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
           >
-            Reply to {props.isAnonymous ? "user" : props.user.username}
+            Reply to {props.isAnonymous ? "user" : props.author.username}
           </button>
 
           <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -132,7 +133,7 @@ export function Message({
                     {props.isAnonymous ? (
                       <span className="text-zinc-400">hidden</span>
                     ) : (
-                      props.user.username
+                      props.author.username
                     )}
                   </h2>
                   <p className="text-muted-foreground">
@@ -191,13 +192,13 @@ export function Message({
             </DialogContent>
           </Dialog>
 
-          {props.replies?.map((reply) => (
+          {props.comments?.map((reply) => (
             <Post
               key={reply.id}
               type="reply"
               {...reply}
               upvoteCount={reply.upvotes?.length}
-              isAuthor={props.user.id === reply.user.id}
+              isAuthor={props.author.id === reply.author.id}
               isUserAuthor={isUserAuthor}
             />
           ))}
@@ -207,7 +208,7 @@ export function Message({
               key={reply.id}
               type="reply"
               {...reply}
-              isAuthor={props.user.id === reply.user.id}
+              isAuthor={props.author.id === reply.user.id}
               isUserAuthor={isUserAuthor}
             />
           ))}

@@ -10,16 +10,16 @@ import { Message } from "@/components/message";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMessageStore } from "@/store/useMessageStore";
 
-const GET_MESSAGES = gql(`
-query GetMessages($cursorId: ID) {
-  getMessages(cursorId: $cursorId) {
+const GET_POSTS = gql(`
+query GetPosts($cursorId: ID) {
+  getPosts(cursorId: $cursorId) {
     cursorId
     data {
       id
       content
       createdAt
       isAnonymous
-      user {
+      author {
         id
         username
       }
@@ -27,12 +27,12 @@ query GetMessages($cursorId: ID) {
         id
         userId
       }
-      replies {
+      comments {
         id
         content
         createdAt
         isAnonymous
-        user {
+        author {
           id
           username
         }
@@ -48,18 +48,18 @@ query GetMessages($cursorId: ID) {
 
 export default function Home() {
   const { ref, inView } = useInView();
-  const { data, loading, fetchMore } = useQuery(GET_MESSAGES);
+  const { data, loading, fetchMore } = useQuery(GET_POSTS);
   const tempMessages = useMessageStore((state) => state.tempMessages);
 
   useEffect(() => {
     if (inView) {
       fetchMore({
         variables: {
-          cursorId: data?.getMessages.cursorId,
+          cursorId: data?.getPosts.cursorId,
         },
       });
     }
-  }, [inView, fetchMore, data?.getMessages.cursorId]);
+  }, [inView, fetchMore, data?.getPosts.cursorId]);
 
   if (loading) {
     return (
@@ -83,11 +83,11 @@ export default function Home() {
         <Message key={m.id} {...m} />
       ))}
 
-      {data?.getMessages.data?.map((m) => (
+      {data?.getPosts.data?.map((m) => (
         <Message key={m.id} {...m} />
       ))}
 
-      {data?.getMessages.data && data.getMessages.data.length >= 10 && (
+      {data?.getPosts.data && data.getPosts.data.length >= 10 && (
         <div ref={ref}></div>
       )}
     </section>
