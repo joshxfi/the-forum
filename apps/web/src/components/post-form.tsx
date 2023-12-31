@@ -15,14 +15,9 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { useMessageStore } from "@/store/useMessageStore";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from "@/components/ui/dialog";
 import { DisplayBadge } from "@/components/display-badge";
+import { useMessageStore } from "@/store/useMessageStore";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 
 const ADD_MESSAGE = gql(`
 mutation AddPost($isAnonymous: Boolean!, $content: String!) {
@@ -49,10 +44,9 @@ query GetCurrentUser {
 }
 `);
 
-export default function Write() {
+export function PostForm() {
   const { data, loading } = useQuery(GET_CURRENT_USER);
-  const [submitMessage, { loading: submitLoading }] =
-    useMutation(ADD_MESSAGE);
+  const [submitMessage, { loading: submitLoading }] = useMutation(ADD_MESSAGE);
 
   const [badge, setBadge] = useState("");
   const [content, setContent] = useState("");
@@ -104,7 +98,7 @@ export default function Write() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="container">
+    <form onSubmit={handleSubmit} className="p-4 md:p-2">
       <div className="flex flex-col gap-y-3">
         <div className="flex items-end justify-between text-sm">
           <div className="flex space-x-2">
@@ -194,8 +188,6 @@ export default function Write() {
               )
             )}
           </div>
-
-          <DialogFooter></DialogFooter>
         </DialogContent>
       </Dialog>
     </form>

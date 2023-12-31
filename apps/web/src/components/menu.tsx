@@ -1,19 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { Icons } from "@/components/icons";
-import { usePathname } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
-import { useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+
+import { Icons } from "@/components/icons";
+import { useToast } from "@/components/ui/use-toast";
+import { PostFormDialog } from "./post-form-dialog";
 
 export function Menu() {
   const { toast } = useToast();
+  const router = useRouter();
   const pathname = usePathname();
   const { status } = useSession();
+  const [postDialog, setPostDialog] = useState(false);
 
   const routes: {
-    route: string;
+    route?: string;
     icon: "home" | "info" | "write" | "user" | "bell";
     path?: string;
     onClick?: () => void;
@@ -31,10 +36,16 @@ export function Menu() {
     {
       route: status === "unauthenticated" ? "/login" : "/write",
       icon: "write",
-      path: "/write",
+      onClick: () => {
+        if (pathname !== "/") {
+          router.push("/");
+          setTimeout(() => setPostDialog(true), 500);
+          return;
+        }
+        setPostDialog(true);
+      },
     },
     {
-      route: "/notifications",
       icon: "bell",
       onClick: () => {
         toast({
@@ -61,7 +72,7 @@ export function Menu() {
             <Icon className="w-6 h-6" />
           </button>
         ) : (
-          <Link key={nanoid()} href={route}>
+          <Link key={nanoid()} href={route!}>
             {pathname === path ? (
               <IconSolid className="w-6 h-6" />
             ) : (
@@ -70,6 +81,8 @@ export function Menu() {
           </Link>
         );
       })}
+
+      <PostFormDialog open={postDialog} setOpen={setPostDialog} />
     </div>
   );
 }
