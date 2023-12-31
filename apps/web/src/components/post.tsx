@@ -149,7 +149,7 @@ export const Post = ({
 
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto text-sm">
-      <div className={`${type === "comment" && "pl-10 pt-8"} container`}>
+      <div className={`${type === "comment" && "pl-16 pt-8"} container`}>
         <div className="flex gap-x-2 mb-2">
           <h2 className="font-semibold">
             {rest.isAnonymous ? (

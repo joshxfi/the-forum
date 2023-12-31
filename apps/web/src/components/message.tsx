@@ -105,14 +105,16 @@ export function Message({ ...props }: PostData) {
       />
 
       {showReplies && (
-        <div className="mt-4 container">
-          <button
-            onClick={() => setShowDialog(true)}
-            type="button"
-            className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
-          >
-            Reply to {props.isAnonymous ? "user" : props.author.username}
-          </button>
+        <div className="mt-4">
+          <div className="container">
+            <button
+              onClick={() => setShowDialog(true)}
+              type="button"
+              className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
+            >
+              Reply to {props.isAnonymous ? "user" : props.author.username}
+            </button>
+          </div>
 
           <Dialog open={showDialog} onOpenChange={setShowDialog}>
             <DialogContent className="max-w-[425px]">
