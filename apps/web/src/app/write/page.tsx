@@ -104,7 +104,7 @@ export default function Write() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="container">
       <div className="flex flex-col gap-y-3">
         <div className="flex items-end justify-between text-sm">
           <div className="flex space-x-2">

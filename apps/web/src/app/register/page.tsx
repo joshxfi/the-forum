@@ -89,7 +89,7 @@ export default function Register() {
   };
 
   return (
-    <form onSubmit={handleAuth}>
+    <form onSubmit={handleAuth} className="container">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl flex justify-between items-center">

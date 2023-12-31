@@ -10,7 +10,7 @@ If you are here, hello 👋
 `;
 
   return (
-    <section className="prose prose-invert pb-52">
+    <section className="prose prose-invert pb-52 container">
       <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
     </section>
   );
