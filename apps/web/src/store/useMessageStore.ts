@@ -1,6 +1,6 @@
+import { PostData } from "@/types";
 import {
   AddPostMutation,
-  AddCommentMutation,
 } from "@tf/codegen/__generated__/graphql";
 import { create } from "zustand";
 
@@ -12,7 +12,7 @@ type State = {
   tempMessages: AddPostMutation["addPost"][];
   tempReplies: {
     messageId: string;
-    replyData: AddCommentMutation["addComment"][];
+    replyData: Omit<PostData, 'comments'>[];
   }[];
 };
 

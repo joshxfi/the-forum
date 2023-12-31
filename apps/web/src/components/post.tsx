@@ -10,7 +10,7 @@ import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
 
 type Props = {
-  type: "message" | "reply";
+  type: "post" | "comment";
   isAuthor?: boolean;
   isUserAuthor?: boolean;
   upvoteCount?: number;
@@ -149,7 +149,7 @@ export const Post = ({
 
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto text-sm">
-      <div className={`${type === "reply" && "pl-10 pt-8"}`}>
+      <div className={`${type === "comment" && "pl-10 pt-8"} container`}>
         <div className="flex gap-x-2 mb-2">
           <h2 className="font-semibold">
             {rest.isAnonymous ? (
@@ -168,7 +168,7 @@ export const Post = ({
         <p>{rest.content}</p>
 
         <div className="flex space-x-1 mt-2">
-          {type === "reply" && isAuthor && <Badge>author</Badge>}
+          {type === "comment" && isAuthor && <Badge>author</Badge>}
           {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
         </div>
 

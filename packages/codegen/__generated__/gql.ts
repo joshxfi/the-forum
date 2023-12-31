@@ -17,7 +17,7 @@ const documents = {
     "\nquery GetCurrentUser {\n  getCurrentUser {\n    id\n    username\n    createdAt\n  }\n}\n": types.GetCurrentUserDocument,
     "\nmutation CreateUser($password: String!, $username: String!) {\n  createUser(password: $password, username: $username) {\n    id\n    username\n  }\n}\n": types.CreateUserDocument,
     "\nmutation AddPost($isAnonymous: Boolean!, $content: String!) {\n  addPost(isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n": types.AddPostDocument,
-    "\nmutation AddComment(\n  $postId: ID!\n  $isAnonymous: Boolean!\n  $content: String!\n) {\n  addComment(\n    postId: $postId\n    isAnonymous: $isAnonymous\n    content: $content\n  ) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n\n": types.AddCommentDocument,
+    "\nmutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {\n  addComment(postId: $postId, isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n": types.AddCommentDocument,
     "\nmutation AddUpvote($postId: ID!) {\n  addUpvote(postId: $postId) {\n    id\n  }\n}\n": types.AddUpvoteDocument,
     "\nmutation RemoveUpvote($upvoteId: ID!) {\n  removeUpvote(id: $upvoteId) \n}\n": types.RemoveUpvoteDocument,
 };
@@ -55,7 +55,7 @@ export function gql(source: "\nmutation AddPost($isAnonymous: Boolean!, $content
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nmutation AddComment(\n  $postId: ID!\n  $isAnonymous: Boolean!\n  $content: String!\n) {\n  addComment(\n    postId: $postId\n    isAnonymous: $isAnonymous\n    content: $content\n  ) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n\n"): (typeof documents)["\nmutation AddComment(\n  $postId: ID!\n  $isAnonymous: Boolean!\n  $content: String!\n) {\n  addComment(\n    postId: $postId\n    isAnonymous: $isAnonymous\n    content: $content\n  ) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n\n"];
+export function gql(source: "\nmutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {\n  addComment(postId: $postId, isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nmutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {\n  addComment(postId: $postId, isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

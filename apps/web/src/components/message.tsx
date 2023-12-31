@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
 import { gql } from "@tf/codegen/__generated__";
-import { GetPostsQuery } from "@tf/codegen/__generated__/graphql";
 
 import {
   Dialog,
@@ -13,6 +12,7 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { PostData } from "@/types";
 import { Button } from "@/components/ui/button";
 
 import { Post } from "./post";
@@ -25,16 +25,8 @@ import { useToast } from "./ui/use-toast";
 import { useMessageStore } from "@/store/useMessageStore";
 
 const ADD_COMMENT = gql(`
-mutation AddComment(
-  $postId: ID!
-  $isAnonymous: Boolean!
-  $content: String!
-) {
-  addComment(
-    postId: $postId
-    isAnonymous: $isAnonymous
-    content: $content
-  ) {
+mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
+  addComment(postId: $postId, isAnonymous: $isAnonymous, content: $content) {
     id
     content
     createdAt
@@ -45,12 +37,9 @@ mutation AddComment(
     }
   }
 }
-
 `);
 
-export function Message({
-  ...props
-}: NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0]) {
+export function Message({ ...props }: PostData) {
   const { toast } = useToast();
   const { data: session } = useSession();
   const [reply, setReply] = useState("");
@@ -84,12 +73,12 @@ export function Message({
       onCompleted: (data) => {
         toast({
           title: "Success",
-          description: "Your reply has been sent successfully",
+          description: "Your comment has been added",
         });
         setReply("");
         updateTempReplies({
           messageId: props.id,
-          replyData: [data.addComment],
+          replyData: [data?.addComment],
         });
         setShowDialog(false);
       },
@@ -108,7 +97,7 @@ export function Message({
     <div className="pb-8">
       <Post
         {...props}
-        type="message"
+        type="post"
         isUserAuthor={isUserAuthor}
         replyCount={(props.comments?.length ?? 0) + tempReplies.length}
         upvoteCount={props.upvotes?.length}
@@ -116,7 +105,7 @@ export function Message({
       />
 
       {showReplies && (
-        <div className="mt-4">
+        <div className="mt-4 container">
           <button
             onClick={() => setShowDialog(true)}
             type="button"
@@ -192,13 +181,13 @@ export function Message({
             </DialogContent>
           </Dialog>
 
-          {props.comments?.map((reply) => (
+          {props.comments?.map((comment) => (
             <Post
-              key={reply.id}
-              type="reply"
-              {...reply}
-              upvoteCount={reply.upvotes?.length}
-              isAuthor={props.author.id === reply.author.id}
+              key={comment.id}
+              type="comment"
+              {...comment}
+              upvoteCount={comment.upvotes?.length}
+              isAuthor={props.author.id === comment.author.id}
               isUserAuthor={isUserAuthor}
             />
           ))}
@@ -206,7 +195,7 @@ export function Message({
           {tempReplies?.map((reply) => (
             <Post
               key={reply.id}
-              type="reply"
+              type="comment"
               {...reply}
               isAuthor={props.author.id === reply.author.id}
               isUserAuthor={isUserAuthor}

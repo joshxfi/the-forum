@@ -1,6 +1,6 @@
 import { Post, Upvote } from "@generated/type-graphql";
 import type { TContext } from "@/app/api/graphql/_types";
-import { PostData, PostWithComments, PostsWithCursor } from "./post.types";
+import { PostData, PostsWithCursor } from "./post.types";
 import { Resolver, Query, Ctx, Mutation, Arg, ID } from "type-graphql";
 
 @Resolver(() => Post)
@@ -12,6 +12,7 @@ export class PostResolver {
   ): Promise<PostsWithCursor> {
     try {
       const posts = await ctx.prisma.post.findMany({
+        where: { isComment: false },
         orderBy: { createdAt: "desc" },
         take: 10,
         include: {
@@ -67,36 +68,28 @@ export class PostResolver {
     }
   }
 
-  @Mutation(() => PostWithComments)
+  @Mutation(() => PostData)
   async addComment(
     @Arg("content", () => String) content: string,
     @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
     @Arg("postId", () => ID) postId: string,
     @Ctx() ctx: TContext
-  ): Promise<PostWithComments> {
+  ): Promise<PostData> {
     try {
-      return await ctx.prisma.post.update({
-        where: { id: postId },
+      const commentData = await ctx.prisma.post.create({
         data: {
-          comments: {
-            create: [
-              {
-                content,
-                isAnonymous,
-                author: { connect: { id: ctx.id } },
-              },
-            ],
-          },
+          content,
+          isAnonymous,
+          isComment: true,
+          author: { connect: { id: ctx.id } },
+          parent: { connect: { id: postId } },
         },
         include: {
           author: true,
-          comments: {
-            include: {
-              author: true,
-            },
-          },
         },
       });
+
+      return commentData;
     } catch (err) {
       console.log(err);
       throw err;

@@ -30,6 +30,7 @@ model Post {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  isComment   Boolean  @default(false)
   content     String   @db.VarChar(500)
   isAnonymous Boolean  @default(false)
   upvotes     Upvote[]
@@ -38,10 +39,13 @@ model Post {
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
 
-  comments      Post[] @relation("PostComments")
-  commentParent Post[] @relation("PostComments")
+  @@index([authorId])
 
-  @@index([authorId, createdAt(sort: Desc)])
+  parentId String?
+  parent   Post?  @relation("PostComments", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  comments Post[] @relation("PostComments")
+
+  @@index([parentId, isComment, createdAt(sort: Desc)])
 }
 
 model Upvote {

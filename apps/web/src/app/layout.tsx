@@ -30,7 +30,7 @@ export default function RootLayout({
           <NextTopLoader showSpinner={false} />
           <Toaster />
           <ApolloWrapper>
-            <div className="max-w-screen-sm mx-auto container">
+            <div className="max-w-screen-sm mx-auto">
               <Navbar />
               {children}
               <Menu />

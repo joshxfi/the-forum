@@ -7,7 +7,7 @@ import {
   NextSSRApolloClient,
   SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
-import { MessagesData } from "@tf/codegen/__generated__/graphql";
+import { PostsWithCursor } from "@tf/codegen/__generated__/graphql";
 
 export function makeClient() {
   const httpLink = new HttpLink({
@@ -24,8 +24,8 @@ export function makeClient() {
               keyArgs: false,
 
               merge(
-                existing: MessagesData,
-                incoming: MessagesData,
+                existing: PostsWithCursor,
+                incoming: PostsWithCursor,
                 { readField }
               ) {
                 const messages = existing ? { ...existing.data } : {};

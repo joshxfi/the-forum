@@ -63,7 +63,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="space-y-12">
+      <div className="space-y-12 container">
         {Array.from({ length: 6 }).map((_) => (
           <div className="space-y-2" key={nanoid()}>
             <div className="flex space-x-2">
@@ -80,7 +80,7 @@ export default function Home() {
   return (
     <section className="pb-24">
       {tempMessages.map((m) => (
-        <Message key={m.id} {...m} />
+        <Message key={m.id} comments={[]} {...m} />
       ))}
 
       {data?.getPosts.data?.map((m) => (

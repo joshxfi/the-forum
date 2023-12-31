@@ -76,7 +76,7 @@ export default function Write() {
         setContent("");
         setIsAnonymous(false);
         toast({
-          title: "Message sent!",
+          title: "Success",
           description: "Your message has been posted.",
         });
         updateTempMessages(data.addPost);

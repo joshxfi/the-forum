@@ -43,7 +43,7 @@ export type EnumRoleFilter = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addComment: PostWithComments;
+  addComment: PostData;
   addPost: PostData;
   addUpvote: Upvote;
   createUser: User;
@@ -116,17 +116,25 @@ export type NestedStringFilter = {
   startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type NestedStringNullableFilter = {
+  contains?: InputMaybe<Scalars['String']['input']>;
+  endsWith?: InputMaybe<Scalars['String']['input']>;
+  equals?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+  not?: InputMaybe<NestedStringNullableFilter>;
+  notIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type PostCount = {
   __typename?: 'PostCount';
-  commentParent: Scalars['Int']['output'];
   comments: Scalars['Int']['output'];
   tags: Scalars['Int']['output'];
   upvotes: Scalars['Int']['output'];
-};
-
-
-export type PostCountCommentParentArgs = {
-  where?: InputMaybe<PostWhereInput>;
 };
 
 
@@ -153,6 +161,8 @@ export type PostData = {
   createdAt: Scalars['DateTimeISO']['output'];
   id: Scalars['String']['output'];
   isAnonymous: Scalars['Boolean']['output'];
+  isComment: Scalars['Boolean']['output'];
+  parentId?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
   upvotes?: Maybe<Array<Upvote>>;
 };
@@ -161,6 +171,11 @@ export type PostListRelationFilter = {
   every?: InputMaybe<PostWhereInput>;
   none?: InputMaybe<PostWhereInput>;
   some?: InputMaybe<PostWhereInput>;
+};
+
+export type PostNullableRelationFilter = {
+  is?: InputMaybe<PostWhereInput>;
+  isNot?: InputMaybe<PostWhereInput>;
 };
 
 export type PostRelationFilter = {
@@ -174,12 +189,14 @@ export type PostWhereInput = {
   OR?: InputMaybe<Array<PostWhereInput>>;
   author?: InputMaybe<UserRelationFilter>;
   authorId?: InputMaybe<StringFilter>;
-  commentParent?: InputMaybe<PostListRelationFilter>;
   comments?: InputMaybe<PostListRelationFilter>;
   content?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   isAnonymous?: InputMaybe<BoolFilter>;
+  isComment?: InputMaybe<BoolFilter>;
+  parent?: InputMaybe<PostNullableRelationFilter>;
+  parentId?: InputMaybe<StringNullableFilter>;
   tags?: InputMaybe<TagListRelationFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
   upvotes?: InputMaybe<UpvoteListRelationFilter>;
@@ -195,6 +212,8 @@ export type PostWithComments = {
   createdAt: Scalars['DateTimeISO']['output'];
   id: Scalars['String']['output'];
   isAnonymous: Scalars['Boolean']['output'];
+  isComment: Scalars['Boolean']['output'];
+  parentId?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
   upvotes?: Maybe<Array<Upvote>>;
 };
@@ -238,6 +257,20 @@ export type StringFilter = {
   lt?: InputMaybe<Scalars['String']['input']>;
   lte?: InputMaybe<Scalars['String']['input']>;
   not?: InputMaybe<NestedStringFilter>;
+  notIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type StringNullableFilter = {
+  contains?: InputMaybe<Scalars['String']['input']>;
+  endsWith?: InputMaybe<Scalars['String']['input']>;
+  equals?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+  not?: InputMaybe<NestedStringNullableFilter>;
   notIn?: InputMaybe<Array<Scalars['String']['input']>>;
   startsWith?: InputMaybe<Scalars['String']['input']>;
 };
@@ -357,7 +390,7 @@ export type AddCommentMutationVariables = Exact<{
 }>;
 
 
-export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'PostWithComments', id: string, content: string, createdAt: any, isAnonymous: boolean, author: { __typename?: 'User', id: string, username: string } } };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'PostData', id: string, content: string, createdAt: any, isAnonymous: boolean, author: { __typename?: 'User', id: string, username: string } } };
 
 export type AddUpvoteMutationVariables = Exact<{
   postId: Scalars['ID']['input'];
