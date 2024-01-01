@@ -21,9 +21,7 @@ type Props = {
 type Reply = NonNullable<
   NonNullable<Required<GetPostsQuery["getPosts"]>["data"]>[0]["comments"]
 >[0];
-type Message = NonNullable<
-  Required<GetPostsQuery["getPosts"]["data"]>
->[0];
+type Message = NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0];
 
 const ADD_UPVOTE = gql(`
 mutation AddUpvote($postId: ID!) {
@@ -52,7 +50,7 @@ export const Post = ({
   const [removeUpvote, { loading: removeUpvoteLoading }] =
     useMutation(REMOVE_UPVOTE);
   const { toast } = useToast();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const tempUpvote = useMessageStore((state) => state.tempUpvotes).find(
     (u) => u.messageId === rest.id
@@ -84,6 +82,15 @@ export const Post = ({
   }, [tempUpvote, isUpvoted, upvoteCount]);
 
   const handleAddUpvote = (postId: string) => {
+    if (status === "unauthenticated") {
+      toast({
+        title: "Oops!",
+        description: "You are not logged in",
+      });
+
+      return;
+    }
+
     if (isUserAuthor) {
       toast({
         title: "Oops!",

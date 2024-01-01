@@ -41,7 +41,7 @@ mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
 
 export function Message({ ...props }: PostData) {
   const { toast } = useToast();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [reply, setReply] = useState("");
   const [showReplies, setShowReplies] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -60,6 +60,7 @@ export function Message({ ...props }: PostData) {
 
   const handleReply: React.FormEventHandler = (e) => {
     e.preventDefault();
+
     sendReply({
       variables: {
         content: reply,
@@ -108,7 +109,18 @@ export function Message({ ...props }: PostData) {
         <div className="mt-4">
           <div className="container">
             <button
-              onClick={() => setShowDialog(true)}
+              onClick={() => {
+                if (status === "unauthenticated") {
+                  toast({
+                    title: "Oops!",
+                    description: "You are not logged in",
+                  });
+
+                  return;
+                }
+
+                setShowDialog(true);
+              }}
               type="button"
               className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
             >
