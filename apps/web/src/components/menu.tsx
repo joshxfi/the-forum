@@ -8,7 +8,9 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { Icons } from "@/components/icons";
 import { useToast } from "@/components/ui/use-toast";
-import { PostFormDialog } from "./post-form-dialog";
+
+import { PostForm } from "./post/post-form";
+import { DialogDrawer } from "./dialog-drawer";
 
 export function Menu() {
   const { toast } = useToast();
@@ -86,7 +88,9 @@ export function Menu() {
         );
       })}
 
-      <PostFormDialog open={postDialog} setOpen={setPostDialog} />
+      <DialogDrawer open={postDialog} setOpen={setPostDialog}>
+        <PostForm setOpen={setPostDialog} />
+      </DialogDrawer>
     </div>
   );
 }

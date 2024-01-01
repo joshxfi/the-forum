@@ -4,10 +4,11 @@ import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
 import { GetPostsQuery } from "@tf/codegen/__generated__/graphql";
 
-import { Icons } from "./icons";
-import { Badge } from "./badge";
-import { useToast } from "./ui/use-toast";
 import { usePostStore } from "@/store/usePostStore";
+
+import { Badge } from "../badge";
+import { Icons } from "../icons";
+import { useToast } from "../ui/use-toast";
 
 type Props = {
   type: "post" | "comment";

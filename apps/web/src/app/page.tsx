@@ -8,7 +8,7 @@ import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePostStore } from "@/store/usePostStore";
-import { PostContainer } from "@/components/post-container";
+import { PostContainer } from "@/components/post/post-container";
 
 const GET_POSTS = gql(`
 query GetPosts($cursorId: ID) {

@@ -14,15 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import { PostData } from "@/types";
 import { Button } from "@/components/ui/button";
+import { usePostStore } from "@/store/usePostStore";
 
 import { Post } from "./post";
-import { Badge } from "./badge";
-import { Icons } from "./icons";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
-import { Textarea } from "./ui/textarea";
-import { useToast } from "./ui/use-toast";
-import { usePostStore } from "@/store/usePostStore";
+import { Badge } from "../badge";
+import { Icons } from "../icons";
+import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
+import { Textarea } from "../ui/textarea";
+import { useToast } from "../ui/use-toast";
 
 const ADD_COMMENT = gql(`
 mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
@@ -124,7 +124,8 @@ export function PostContainer({ ...props }: PostData) {
               type="button"
               className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
             >
-              Add a comment to {props.isAnonymous ? "user" : props.author.username}
+              Add a comment to{" "}
+              {props.isAnonymous ? "user" : props.author.username}
             </button>
           </div>
 
