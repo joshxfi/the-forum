@@ -13,10 +13,10 @@ import { Icons } from "@/components/icons";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { usePostStore } from "@/store/usePostStore";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { DisplayBadge } from "@/components/display-badge";
-import { useMessageStore } from "@/store/useMessageStore";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 
 const ADD_MESSAGE = gql(`
@@ -53,8 +53,8 @@ export function PostForm() {
   const [showDialog, setShowDialog] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const updateTempMessages = useMessageStore(
-    (state) => state.updateTempMessages
+  const updateTempPosts = usePostStore(
+    (state) => state.updateTempPosts
   );
 
   const { toast } = useToast();
@@ -73,7 +73,7 @@ export function PostForm() {
           title: "Success",
           description: "Your message has been posted.",
         });
-        updateTempMessages(data.addPost);
+        updateTempPosts(data.addPost);
         push("/");
       },
       onError: (error) => {

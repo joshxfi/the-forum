@@ -6,9 +6,9 @@ import { gql } from "@tf/codegen/__generated__";
 import { useInView } from "react-intersection-observer";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import { Message } from "@/components/message";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMessageStore } from "@/store/useMessageStore";
+import { usePostStore } from "@/store/usePostStore";
+import { PostContainer } from "@/components/post-container";
 
 const GET_POSTS = gql(`
 query GetPosts($cursorId: ID) {
@@ -49,7 +49,7 @@ query GetPosts($cursorId: ID) {
 export default function Home() {
   const { ref, inView } = useInView();
   const { data, loading, fetchMore } = useQuery(GET_POSTS);
-  const tempMessages = useMessageStore((state) => state.tempMessages);
+  const tempPosts = usePostStore((state) => state.tempPosts);
 
   useEffect(() => {
     if (inView) {
@@ -79,12 +79,12 @@ export default function Home() {
 
   return (
     <section className="pb-24">
-      {tempMessages.map((m) => (
-        <Message key={m.id} comments={[]} {...m} />
+      {tempPosts.map((m) => (
+        <PostContainer key={m.id} comments={[]} {...m} />
       ))}
 
       {data?.getPosts.data?.map((m) => (
-        <Message key={m.id} {...m} />
+        <PostContainer key={m.id} {...m} />
       ))}
 
       {data?.getPosts.data && data.getPosts.data.length >= 10 && (

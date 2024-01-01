@@ -22,7 +22,7 @@ import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
-import { useMessageStore } from "@/store/useMessageStore";
+import { usePostStore } from "@/store/usePostStore";
 
 const ADD_COMMENT = gql(`
 mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
@@ -39,7 +39,7 @@ mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
 }
 `);
 
-export function Message({ ...props }: PostData) {
+export function PostContainer({ ...props }: PostData) {
   const { toast } = useToast();
   const { data: session, status } = useSession();
   const [comment, setComment] = useState("");
@@ -50,11 +50,11 @@ export function Message({ ...props }: PostData) {
   const [addComment, { loading }] = useMutation(ADD_COMMENT);
   const isUserAuthor = props.author.id === session?.user?.id;
 
-  const _tempComments = useMessageStore((state) => state.tempComments);
-  const updateTempComments = useMessageStore((state) => state.updateTempComments);
+  const _tempComments = usePostStore((state) => state.tempComments);
+  const updateTempComments = usePostStore((state) => state.updateTempComments);
 
   const tempComments = useMemo(
-    () => _tempComments.find((r) => r.messageId === props.id)?.commentData ?? [],
+    () => _tempComments.find((r) => r.postId === props.id)?.commentData ?? [],
     [_tempComments, props.id]
   );
 
@@ -78,7 +78,7 @@ export function Message({ ...props }: PostData) {
         });
         setComment("");
         updateTempComments({
-          messageId: props.id,
+          postId: props.id,
           commentData: [data?.addComment],
         });
         setShowDialog(false);

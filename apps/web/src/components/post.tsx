@@ -7,7 +7,7 @@ import { GetPostsQuery } from "@tf/codegen/__generated__/graphql";
 import { Icons } from "./icons";
 import { Badge } from "./badge";
 import { useToast } from "./ui/use-toast";
-import { useMessageStore } from "@/store/useMessageStore";
+import { usePostStore } from "@/store/usePostStore";
 
 type Props = {
   type: "post" | "comment";
@@ -21,7 +21,7 @@ type Props = {
 type Comment = NonNullable<
   NonNullable<Required<GetPostsQuery["getPosts"]>["data"]>[0]["comments"]
 >[0];
-type Message = NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0];
+type post = NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0];
 
 const ADD_UPVOTE = gql(`
 mutation AddUpvote($postId: ID!) {
@@ -45,18 +45,18 @@ export const Post = ({
   upvoteCount = 0,
   setShowComments,
   ...rest
-}: Props & (Comment | Message)) => {
+}: Props & (Comment | post)) => {
   const [addUpvote, { loading: addUpvoteLoading }] = useMutation(ADD_UPVOTE);
   const [removeUpvote, { loading: removeUpvoteLoading }] =
     useMutation(REMOVE_UPVOTE);
   const { toast } = useToast();
   const { data: session, status } = useSession();
 
-  const tempUpvote = useMessageStore((state) => state.tempUpvotes).find(
-    (u) => u.messageId === rest.id
+  const tempUpvote = usePostStore((state) => state.tempUpvotes).find(
+    (u) => u.postId === rest.id
   );
 
-  const updateTempUpvotes = useMessageStore((state) => state.updateTempUpvotes);
+  const updateTempUpvotes = usePostStore((state) => state.updateTempUpvotes);
 
   const isUpvoted = useMemo(
     () => rest.upvotes?.some((u) => u.userId === session?.user?.id),
@@ -108,7 +108,7 @@ export const Post = ({
           title: "Success",
           description: "Upvoted successfully",
         });
-        updateTempUpvotes({ upvoteId: data.addUpvote.id, messageId: rest.id });
+        updateTempUpvotes({ upvoteId: data.addUpvote.id, postId: rest.id });
       },
       onError: (err) => {
         console.log(err);
@@ -141,7 +141,7 @@ export const Post = ({
           description: "Upvote removed",
         });
 
-        updateTempUpvotes({ messageId: rest.id });
+        updateTempUpvotes({ postId: rest.id });
       },
       onError: (err) => {
         console.log(err);
