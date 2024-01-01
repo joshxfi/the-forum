@@ -34,9 +34,13 @@ export function Menu() {
       path: "/info",
     },
     {
-      route: status === "unauthenticated" ? "/login" : "/write",
       icon: "write",
       onClick: () => {
+        if (status === "unauthenticated") {
+          router.push("/login");
+          return;
+        }
+
         if (pathname !== "/") {
           router.push("/");
           setTimeout(() => setPostDialog(true), 500);
