@@ -42,28 +42,28 @@ mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
 export function Message({ ...props }: PostData) {
   const { toast } = useToast();
   const { data: session, status } = useSession();
-  const [reply, setReply] = useState("");
-  const [showReplies, setShowReplies] = useState(false);
+  const [comment, setComment] = useState("");
+  const [showComments, setShowComments] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
-  const [sendReply, { loading }] = useMutation(ADD_COMMENT);
+  const [addComment, { loading }] = useMutation(ADD_COMMENT);
   const isUserAuthor = props.author.id === session?.user?.id;
 
-  const _tempReplies = useMessageStore((state) => state.tempReplies);
-  const updateTempReplies = useMessageStore((state) => state.updateTempReplies);
+  const _tempComments = useMessageStore((state) => state.tempComments);
+  const updateTempComments = useMessageStore((state) => state.updateTempComments);
 
-  const tempReplies = useMemo(
-    () => _tempReplies.find((r) => r.messageId === props.id)?.replyData ?? [],
-    [_tempReplies, props.id]
+  const tempComments = useMemo(
+    () => _tempComments.find((r) => r.messageId === props.id)?.commentData ?? [],
+    [_tempComments, props.id]
   );
 
-  const handleReply: React.FormEventHandler = (e) => {
+  const handleComment: React.FormEventHandler = (e) => {
     e.preventDefault();
 
-    sendReply({
+    addComment({
       variables: {
-        content: reply,
+        content: comment,
         isAnonymous: isUserAuthor
           ? props.isAnonymous
             ? true
@@ -76,10 +76,10 @@ export function Message({ ...props }: PostData) {
           title: "Success",
           description: "Your comment has been added",
         });
-        setReply("");
-        updateTempReplies({
+        setComment("");
+        updateTempComments({
           messageId: props.id,
-          replyData: [data?.addComment],
+          commentData: [data?.addComment],
         });
         setShowDialog(false);
       },
@@ -100,12 +100,12 @@ export function Message({ ...props }: PostData) {
         {...props}
         type="post"
         isUserAuthor={isUserAuthor}
-        replyCount={(props.comments?.length ?? 0) + tempReplies.length}
+        commentCount={(props.comments?.length ?? 0) + tempComments.length}
         upvoteCount={props.upvotes?.length}
-        setShowReplies={setShowReplies}
+        setShowComments={setShowComments}
       />
 
-      {showReplies && (
+      {showComments && (
         <div className="mt-4">
           <div className="container">
             <button
@@ -124,7 +124,7 @@ export function Message({ ...props }: PostData) {
               type="button"
               className="rounded-full w-full px-5 py-3 bg-muted text-sm text-left text-muted-foreground"
             >
-              Reply to {props.isAnonymous ? "user" : props.author.username}
+              Add a comment to {props.isAnonymous ? "user" : props.author.username}
             </button>
           </div>
 
@@ -153,22 +153,22 @@ export function Message({ ...props }: PostData) {
                 </div>
               </DialogHeader>
 
-              <form onSubmit={handleReply}>
+              <form onSubmit={handleComment}>
                 <Textarea
                   required
                   maxLength={500}
-                  value={reply}
-                  onChange={(e) => setReply(e.target.value)}
-                  placeholder="Type your reply here"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Type your comment here"
                   className="max-h-[300px]"
                 />
 
                 <Button
                   type="submit"
-                  disabled={loading || reply.length === 0}
+                  disabled={loading || comment.length === 0}
                   className="w-full mt-4"
                 >
-                  Reply
+                  Comment
                 </Button>
               </form>
 
@@ -206,12 +206,12 @@ export function Message({ ...props }: PostData) {
             />
           ))}
 
-          {tempReplies?.map((reply) => (
+          {tempComments?.map((comment) => (
             <Post
-              key={reply.id}
+              key={comment.id}
               type="comment"
-              {...reply}
-              isAuthor={props.author.id === reply.author.id}
+              {...comment}
+              isAuthor={props.author.id === comment.author.id}
               isUserAuthor={isUserAuthor}
             />
           ))}

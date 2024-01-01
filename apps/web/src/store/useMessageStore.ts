@@ -10,19 +10,19 @@ type State = {
     messageId: string;
   }[];
   tempMessages: AddPostMutation["addPost"][];
-  tempReplies: {
+  tempComments: {
     messageId: string;
-    replyData: Omit<PostData, 'comments'>[];
+    commentData: Omit<PostData, 'comments'>[];
   }[];
 };
 
 type Action = {
   updateTempUpvotes: (upvoteData: State["tempUpvotes"][0]) => void;
   updateTempMessages: (messageData: State["tempMessages"][0]) => void;
-  updateTempReplies: ({
+  updateTempComments: ({
     messageId,
-    replyData,
-  }: State["tempReplies"][0]) => void;
+    commentData,
+  }: State["tempComments"][0]) => void;
 };
 
 export const useMessageStore = create<State & Action>((set) => ({
@@ -54,31 +54,31 @@ export const useMessageStore = create<State & Action>((set) => ({
   updateTempMessages: (messageData) =>
     set((state) => ({ tempMessages: [messageData, ...state.tempMessages] })),
 
-  tempReplies: [],
-  updateTempReplies: ({ messageId, replyData }) =>
+  tempComments: [],
+  updateTempComments: ({ messageId, commentData }) =>
     set((state) => {
-      const reply = state.tempReplies.find(
+      const comment = state.tempComments.find(
         (r) => r.messageId === messageId
-      )?.replyData;
+      )?.commentData;
 
-      if (!!reply) {
-        const messageIndex = state.tempReplies.findIndex(
+      if (!!comment) {
+        const messageIndex = state.tempComments.findIndex(
           (r) => r.messageId === messageId
         );
 
-        const replies = state.tempReplies.slice(0);
+        const replies = state.tempComments.slice(0);
         replies[messageIndex] = {
           messageId,
-          replyData: [...reply, ...replyData],
+          commentData: [...comment, ...commentData],
         };
 
         return {
-          tempReplies: replies,
+          tempComments: replies,
         };
       }
 
       return {
-        tempReplies: [...state.tempReplies, { messageId, replyData }],
+        tempComments: [...state.tempComments, { messageId, commentData }],
       };
     }),
 }));

@@ -14,11 +14,11 @@ type Props = {
   isAuthor?: boolean;
   isUserAuthor?: boolean;
   upvoteCount?: number;
-  replyCount?: number;
-  setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
+  commentCount?: number;
+  setShowComments?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-type Reply = NonNullable<
+type Comment = NonNullable<
   NonNullable<Required<GetPostsQuery["getPosts"]>["data"]>[0]["comments"]
 >[0];
 type Message = NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0];
@@ -41,11 +41,11 @@ export const Post = ({
   type,
   isAuthor,
   isUserAuthor,
-  replyCount,
+  commentCount,
   upvoteCount = 0,
-  setShowReplies,
+  setShowComments,
   ...rest
-}: Props & (Reply | Message)) => {
+}: Props & (Comment | Message)) => {
   const [addUpvote, { loading: addUpvoteLoading }] = useMutation(ADD_UPVOTE);
   const [removeUpvote, { loading: removeUpvoteLoading }] =
     useMutation(REMOVE_UPVOTE);
@@ -203,13 +203,13 @@ export const Post = ({
             <p className="text-muted-foreground">{displayUpvoteCount()}</p>
           </div>
 
-          {setShowReplies && (
+          {setShowComments && (
             <div className="flex gap-x-1 items-center">
-              <button type="button" onClick={() => setShowReplies((p) => !p)}>
+              <button type="button" onClick={() => setShowComments((p) => !p)}>
                 <Icons.reply className="w-6 h-6" />
               </button>
 
-              <p className="text-muted-foreground">{replyCount}</p>
+              <p className="text-muted-foreground">{commentCount}</p>
             </div>
           )}
         </div>
