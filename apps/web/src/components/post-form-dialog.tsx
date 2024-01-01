@@ -1,23 +1,7 @@
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
-
 import { PostForm } from "./post-form";
-import Link from "next/link";
 
 export function PostFormDialog({
   open,
