@@ -126,7 +126,7 @@ export function PostForm({
           onChange={(e) => setContent(e.target.value)}
           disabled={submitLoading}
           placeholder="Type your message here"
-          className="max-h-[300px]"
+          className="max-h-[300px] min-h-[150px]"
         />
 
         <div className="flex items-center justify-between border-b border-muted pt-3 pb-6">

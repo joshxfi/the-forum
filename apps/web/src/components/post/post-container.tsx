@@ -6,12 +6,6 @@ import { useMutation } from "@apollo/client";
 import { formatDistanceToNow } from "date-fns";
 import { gql } from "@tf/codegen/__generated__";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from "@/components/ui/dialog";
 import { PostData } from "@/types";
 import { Button } from "@/components/ui/button";
 import { usePostStore } from "@/store/usePostStore";
@@ -23,6 +17,7 @@ import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
+import { DialogDrawer } from "../dialog-drawer";
 
 const ADD_COMMENT = gql(`
 mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
@@ -129,30 +124,28 @@ export function PostContainer({ ...props }: PostData) {
             </button>
           </div>
 
-          <Dialog open={showDialog} onOpenChange={setShowDialog}>
-            <DialogContent className="max-w-[425px]">
-              <DialogHeader className="text-left text-sm">
-                <div className="flex gap-x-2 mb-2">
-                  <h2 className="font-semibold">
-                    {props.isAnonymous ? (
-                      <span className="text-zinc-400">hidden</span>
-                    ) : (
-                      props.author.username
-                    )}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    {formatDistanceToNow(new Date(props.createdAt), {
-                      addSuffix: true,
-                    })}
-                  </p>
-                </div>
+          <DialogDrawer open={showDialog} setOpen={setShowDialog}>
+            <section className="text-sm p-4 md:p-2 space-y-2">
+              <div className="flex gap-x-2">
+                <h2 className="font-semibold">
+                  {props.isAnonymous ? (
+                    <span className="text-zinc-400">hidden</span>
+                  ) : (
+                    props.author.username
+                  )}
+                </h2>
+                <p className="text-muted-foreground">
+                  {formatDistanceToNow(new Date(props.createdAt), {
+                    addSuffix: true,
+                  })}
+                </p>
+              </div>
 
-                <p>{props.content}</p>
+              <p>{props.content}</p>
 
-                <div className="flex pt-1">
-                  {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
-                </div>
-              </DialogHeader>
+              <div className="flex py-1">
+                {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
+              </div>
 
               <form onSubmit={handleComment}>
                 <Textarea
@@ -162,7 +155,7 @@ export function PostContainer({ ...props }: PostData) {
                   disabled={loading}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Type your comment here"
-                  className="max-h-[300px]"
+                  className="max-h-[300px] min-h-[150px]"
                 />
 
                 <Button
@@ -174,28 +167,26 @@ export function PostContainer({ ...props }: PostData) {
                 </Button>
               </form>
 
-              <DialogFooter>
-                <div className="flex items-center justify-between h-8">
-                  {isUserAuthor ? (
-                    <p className="text-muted-foreground italic text-xs">
-                      Username will be {props.isAnonymous ? "hidden" : "shown"}
-                    </p>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={isAnonymous}
-                        onClick={() => setIsAnonymous((prev) => !prev)}
-                        id="hide-username"
-                      />
-                      <Label htmlFor="hide-username">Hide Username</Label>
-                    </div>
-                  )}
+              <div className="flex items-center justify-between h-8">
+                {isUserAuthor ? (
+                  <p className="text-muted-foreground italic text-xs">
+                    Username will be {props.isAnonymous ? "hidden" : "shown"}
+                  </p>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={isAnonymous}
+                      onClick={() => setIsAnonymous((prev) => !prev)}
+                      id="hide-username"
+                    />
+                    <Label htmlFor="hide-username">Hide Username</Label>
+                  </div>
+                )}
 
-                  {loading && <Icons.spinner className="w-8 h-8" />}
-                </div>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                {loading && <Icons.spinner className="w-8 h-8" />}
+              </div>
+            </section>
+          </DialogDrawer>
 
           {props.comments?.map((comment) => (
             <Post
