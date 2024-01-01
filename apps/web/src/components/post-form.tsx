@@ -53,9 +53,7 @@ export function PostForm() {
   const [showDialog, setShowDialog] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const updateTempPosts = usePostStore(
-    (state) => state.updateTempPosts
-  );
+  const updateTempPosts = usePostStore((state) => state.updateTempPosts);
 
   const { toast } = useToast();
   const { status } = useSession();
@@ -91,7 +89,7 @@ export function PostForm() {
 
   if (loading) {
     return (
-      <div className="grid place-items-center pt-40">
+      <div className="grid place-items-center py-24">
         <Icons.spinner className="w-12 h-12" />
       </div>
     );
@@ -118,19 +116,15 @@ export function PostForm() {
           <p className="text-muted-foreground">{content.length}/500</p>
         </div>
 
-        <div className="relative">
-          <Textarea
-            required
-            maxLength={500}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="type your message here."
-            className="max-h-[300px]"
-          />
-          {submitLoading && (
-            <Icons.spinner className="w-8 h-8 top-2 right-2 absolute" />
-          )}
-        </div>
+        <Textarea
+          required
+          maxLength={500}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          disabled={submitLoading}
+          placeholder="Type your message here"
+          className="max-h-[300px]"
+        />
 
         <div className="flex items-center justify-between border-b border-muted pt-3 pb-6">
           <Label
@@ -148,21 +142,25 @@ export function PostForm() {
           />
         </div>
 
-        <div className="space-x-2 self-end mt-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setShowDialog(true)}
-          >
-            Add tag
-          </Button>
+        <div className="flex justify-between items-center mt-3">
+          {submitLoading && <Icons.spinner className="w-8 h-8" />}
+          <div className="space-x-2 flex justify-end w-full">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={submitLoading}
+              onClick={() => setShowDialog(true)}
+            >
+              Add tag
+            </Button>
 
-          <Button
-            type="submit"
-            disabled={submitLoading || content.length === 0}
-          >
-            Post
-          </Button>
+            <Button
+              type="submit"
+              disabled={submitLoading || content.length === 0}
+            >
+              Post
+            </Button>
+          </div>
         </div>
       </div>
 
