@@ -158,6 +158,7 @@ export function PostContainer({ ...props }: PostData) {
                   required
                   maxLength={500}
                   value={comment}
+                  disabled={loading}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Type your comment here"
                   className="max-h-[300px]"

@@ -20,7 +20,7 @@ export function makeClient() {
       typePolicies: {
         Query: {
           fields: {
-            getMessages: {
+            getPosts: {
               keyArgs: false,
 
               merge(
@@ -28,16 +28,16 @@ export function makeClient() {
                 incoming: PostsWithCursor,
                 { readField }
               ) {
-                const messages = existing ? { ...existing.data } : {};
+                const posts = existing ? { ...existing.data } : {};
 
                 incoming.data?.forEach((msg) => {
                   // @ts-ignore
-                  messages[readField("id", msg)] = msg;
+                  posts[readField("id", msg)] = msg;
                 });
 
                 return {
                   cursorId: incoming.cursorId,
-                  data: messages,
+                  data: posts,
                 };
               },
 
