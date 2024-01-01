@@ -1,5 +1,3 @@
-"use client";
-
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -44,7 +42,11 @@ query GetCurrentUser {
 }
 `);
 
-export function PostForm() {
+export function PostForm({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const { data, loading } = useQuery(GET_CURRENT_USER);
   const [submitMessage, { loading: submitLoading }] = useMutation(ADD_MESSAGE);
 
@@ -66,6 +68,7 @@ export function PostForm() {
       variables: { content, isAnonymous },
       onCompleted: (data) => {
         setContent("");
+        setOpen(false);
         setIsAnonymous(false);
         toast({
           title: "Success",

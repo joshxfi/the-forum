@@ -16,7 +16,7 @@ export function PostFormDialog({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
-          <PostForm />
+          <PostForm setOpen={setOpen} />
         </DialogContent>
       </Dialog>
     );
@@ -25,7 +25,7 @@ export function PostFormDialog({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <PostForm />
+        <PostForm setOpen={setOpen} />
       </DrawerContent>
     </Drawer>
   );
