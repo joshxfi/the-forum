@@ -8,13 +8,14 @@ import responseCachePlugin from "@apollo/server-plugin-response-cache";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 import prisma from "@/utils/db";
+import { TagResolver } from "@/schema/tag/tag.resolvers";
 import { UserResolver } from "@/schema/user/user.resolvers";
 import { PostResolver } from "@/schema/post/post.resolvers";
 
 import { authOptions } from "../auth/[...nextauth]/_options";
 
 const schema = buildSchemaSync({
-  resolvers: [UserResolver, PostResolver],
+  resolvers: [UserResolver, PostResolver, TagResolver],
 });
 
 const server = new ApolloServer({
