@@ -23,6 +23,10 @@ query GetPosts($cursorId: ID) {
         id
         username
       }
+      tags {
+        id
+        name
+      }
       upvotes {
         id
         userId
@@ -87,7 +91,7 @@ export default function Home() {
         <PostContainer key={m.id} {...m} />
       ))}
 
-      {data?.getPosts.data && data.getPosts.data.length >= 10 && (
+      {!!data?.getPosts.data && data.getPosts.data.length >= 10 && (
         <div ref={ref}></div>
       )}
     </section>

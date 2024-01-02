@@ -1,4 +1,4 @@
-import { Post, User, Upvote } from "@generated/type-graphql";
+import { Post, User, Upvote, Tag } from "@generated/type-graphql";
 import { Directive, Field, ObjectType } from "type-graphql";
 
 @ObjectType()
@@ -10,9 +10,11 @@ export class PostData extends Post {
   upvotes?: Upvote[];
 }
 
-
 @ObjectType()
 export class PostWithComments extends PostData {
+  @Field(() => [Tag], { nullable: true })
+  tags?: Tag[];
+
   @Field(() => [PostData])
   comments: PostData[];
 }

@@ -17,6 +17,7 @@ export class PostResolver {
         take: 10,
         include: {
           author: true,
+          tags: true,
           upvotes: true,
           comments: {
             include: { author: true, upvotes: true },

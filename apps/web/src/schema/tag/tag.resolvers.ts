@@ -16,8 +16,8 @@ export class TagResolver {
 
   @Mutation(() => Tag)
   async addTag(
-    @Ctx() ctx: TContext,
-    @Arg("name", () => String) name: string
+    @Arg("name", () => String) name: string,
+    @Ctx() ctx: TContext
   ): Promise<Tag> {
     try {
       return await ctx.prisma.tag.create({
@@ -31,10 +31,33 @@ export class TagResolver {
     }
   }
 
+  @Mutation(() => Tag)
+  async addTagToPost(
+    @Arg("tagName", () => String) tagName: string,
+    @Arg("postId", () => ID) postId: string,
+    @Ctx() ctx: TContext
+  ): Promise<Tag> {
+    try {
+      return await ctx.prisma.tag.update({
+        where: {
+          name: tagName,
+        },
+        data: {
+          posts: {
+            connect: { id: postId },
+          },
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
   @Mutation(() => String)
   async removeTag(
-    @Ctx() ctx: TContext,
-    @Arg("id", () => ID) id: string
+    @Arg("id", () => ID) id: string,
+    @Ctx() ctx: TContext
   ): Promise<String> {
     try {
       await ctx.prisma.tag.delete({

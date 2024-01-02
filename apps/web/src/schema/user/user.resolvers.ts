@@ -3,7 +3,7 @@ import { Resolver, Query, Mutation, Ctx, Arg } from "type-graphql";
 import { hashPassword } from "@/utils/helpers";
 import { User } from "@generated/type-graphql";
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
   @Query(() => User)
   async getUser(

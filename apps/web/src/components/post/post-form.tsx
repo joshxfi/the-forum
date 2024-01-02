@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -6,7 +5,6 @@ import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import { Badge } from "@/components/badge";
 import { Icons } from "@/components/icons";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -14,8 +12,10 @@ import { Button } from "@/components/ui/button";
 import { usePostStore } from "@/store/usePostStore";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { DisplayBadge } from "@/components/display-badge";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+
+import { Badge } from "../badge";
+import { TagDialog } from "./tag-dialog";
+import { DisplayBadge } from "../display-badge";
 
 const ADD_MESSAGE = gql(`
 mutation AddPost($isAnonymous: Boolean!, $content: String!) {
@@ -42,6 +42,15 @@ query GetCurrentUser {
 }
 `);
 
+const ADD_TAG_TO_POST = gql(`
+mutation AddTagToPost($postId: ID!, $tagName: String!) {
+  addTagToPost(postId: $postId, tagName: $tagName) {
+    id
+    name
+  }
+}
+`);
+
 export function PostForm({
   setOpen,
 }: {
@@ -49,8 +58,9 @@ export function PostForm({
 }) {
   const { data, loading } = useQuery(GET_CURRENT_USER);
   const [submitMessage, { loading: submitLoading }] = useMutation(ADD_MESSAGE);
+  const [addTagToPost] = useMutation(ADD_TAG_TO_POST);
 
-  const [badge, setBadge] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
   const [content, setContent] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -70,12 +80,21 @@ export function PostForm({
         setContent("");
         setOpen(false);
         setIsAnonymous(false);
+        if (!!selectedTag) {
+          addTagToPost({
+            variables: {
+              postId: data.addPost.id,
+              tagName: selectedTag,
+            },
+          });
+        }
+
+        updateTempPosts(data.addPost);
+
         toast({
           title: "Success",
           description: "Your message has been posted.",
         });
-        updateTempPosts(data.addPost);
-        push("/");
       },
       onError: (error) => {
         toast({
@@ -113,7 +132,7 @@ export function PostForm({
 
             <div className="flex space-x-1">
               <Badge className="bg-gray-900">you</Badge>
-              {badge && <DisplayBadge name={badge} />}
+              {selectedTag && <DisplayBadge name={selectedTag} />}
             </div>
           </div>
           <p className="text-muted-foreground">{content.length}/500</p>
@@ -167,30 +186,11 @@ export function PostForm({
         </div>
       </div>
 
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-[425px]">
-          <DialogHeader className="text-left text-sm font-semibold">
-            <p>Select a tag</p>
-          </DialogHeader>
-
-          <div className="flex flex-wrap gap-2">
-            {["story", "insight", "rant", "confession", "question", "none"].map(
-              (name) => (
-                <button
-                  key={nanoid()}
-                  type="button"
-                  onClick={() => {
-                    setBadge(name === "none" ? "" : name);
-                    setShowDialog(false);
-                  }}
-                >
-                  <DisplayBadge name={name} />
-                </button>
-              )
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <TagDialog
+        open={showDialog}
+        setOpen={setShowDialog}
+        setSelectedTag={setSelectedTag}
+      />
     </form>
   );
 }

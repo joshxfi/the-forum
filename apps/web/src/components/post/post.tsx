@@ -2,13 +2,14 @@ import { useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
-import { GetPostsQuery } from "@tf/codegen/__generated__/graphql";
 
 import { usePostStore } from "@/store/usePostStore";
 
 import { Badge } from "../badge";
 import { Icons } from "../icons";
+import { PostData } from "@/types";
 import { useToast } from "../ui/use-toast";
+import { DisplayBadge } from "../display-badge";
 
 type Props = {
   type: "post" | "comment";
@@ -18,11 +19,6 @@ type Props = {
   commentCount?: number;
   setShowComments?: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-type Comment = NonNullable<
-  NonNullable<Required<GetPostsQuery["getPosts"]>["data"]>[0]["comments"]
->[0];
-type post = NonNullable<Required<GetPostsQuery["getPosts"]["data"]>>[0];
 
 const ADD_UPVOTE = gql(`
 mutation AddUpvote($postId: ID!) {
@@ -46,7 +42,7 @@ export const Post = ({
   upvoteCount = 0,
   setShowComments,
   ...rest
-}: Props & (Comment | post)) => {
+}: Props & Omit<PostData, "comments">) => {
   const [addUpvote, { loading: addUpvoteLoading }] = useMutation(ADD_UPVOTE);
   const [removeUpvote, { loading: removeUpvoteLoading }] =
     useMutation(REMOVE_UPVOTE);
@@ -178,6 +174,9 @@ export const Post = ({
         <div className="flex space-x-1 mt-2">
           {type === "comment" && isAuthor && <Badge>author</Badge>}
           {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
+          {rest.tags?.map((tag) => (
+            <DisplayBadge key={tag.id} name={tag.name} />
+          ))}
         </div>
 
         <div className="mt-4 flex gap-x-2 items-center">
