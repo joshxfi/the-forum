@@ -86,10 +86,13 @@ export function PostForm({
               postId: data.addPost.id,
               tagName: selectedTag,
             },
+            onCompleted: (tagData) => {
+              updateTempPosts({ ...data.addPost, tags: [tagData.addTagToPost] });
+            },
           });
+        } else {
+          updateTempPosts(data.addPost);
         }
-
-        updateTempPosts(data.addPost);
 
         toast({
           title: "Success",

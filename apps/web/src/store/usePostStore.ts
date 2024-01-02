@@ -1,13 +1,18 @@
 import { create } from "zustand";
 import { PostData } from "@/types";
-import { AddPostMutation } from "@tf/codegen/__generated__/graphql";
+import {
+  AddPostMutation,
+  AddTagMutation,
+} from "@tf/codegen/__generated__/graphql";
 
 type State = {
   tempUpvotes: {
     upvoteId?: string;
     postId: string;
   }[];
-  tempPosts: AddPostMutation["addPost"][];
+  tempPosts: (AddPostMutation["addPost"] & {
+    tags?: AddTagMutation["addTag"][];
+  })[];
   tempComments: {
     postId: string;
     commentData: Omit<PostData, "comments">[];
