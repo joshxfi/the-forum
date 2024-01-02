@@ -141,7 +141,7 @@ export function PostContainer({ ...props }: PostData) {
                 </p>
               </div>
 
-              <p>{props.content}</p>
+              <p className="break-words whitespace-pre-wrap">{props.content}</p>
 
               <div className="flex py-1">
                 {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}

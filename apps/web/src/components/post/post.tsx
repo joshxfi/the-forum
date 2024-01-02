@@ -169,7 +169,7 @@ export const Post = ({
           </p>
         </div>
 
-        <p className="break-words">{rest.content}</p>
+        <p className="break-words whitespace-pre-wrap">{rest.content}</p>
 
         <div className="flex space-x-1 mt-2">
           {type === "comment" && isAuthor && <Badge>author</Badge>}
