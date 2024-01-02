@@ -62,7 +62,7 @@ model Tag {
   id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
-  Posts     Post[]
+  posts     Post[]
 }
 
 enum Role {
