@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import type { AuthedUser } from "../../authorize/_types";
+import { Role } from "@tf/codegen/__generated__/graphql";
 
 export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
@@ -42,6 +43,8 @@ export const authOptions: NextAuthOptions = {
     jwt({ token, user }) {
       if (user) {
         token.username = user.username;
+        token.role = user.role;
+        token.createdAt = user.createdAt;
         return token;
       }
       return token;
@@ -51,6 +54,8 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.sub;
         session.user.username = token.username as string;
+        session.user.role = token.role as Role;
+        session.user.createdAt = token.createdAt;
       }
       return session;
     },
