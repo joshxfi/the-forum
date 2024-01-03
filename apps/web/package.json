@@ -35,6 +35,7 @@
     "date-fns": "^2.30.0",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "geist": "^1.2.0",
     "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
     "lucide-react": "^0.272.0",

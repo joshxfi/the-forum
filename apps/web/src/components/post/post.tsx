@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
-import { formatDistanceToNow } from "date-fns";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { gql } from "@tf/codegen/__generated__";
 
 import { usePostStore } from "@/store/usePostStore";
 
-import { Badge } from "../badge";
 import { Icons } from "../icons";
 import { PostData } from "@/types";
 import { useToast } from "../ui/use-toast";
 import { DisplayBadge } from "../display-badge";
+import { PostContent } from "./post-content";
 
 type Props = {
   type: "post" | "comment";
@@ -154,30 +154,15 @@ export const Post = ({
   return (
     <div className="border-b border-muted pb-8 max-w-screen-sm mx-auto text-sm">
       <div className={`${type === "comment" && "pl-16 pt-8"} container`}>
-        <div className="flex gap-x-2 mb-2">
-          <h2 className="font-semibold">
-            {rest.isAnonymous ? (
-              <span className="text-zinc-400">hidden</span>
-            ) : (
-              rest.author.username
-            )}
-          </h2>
-          <p className="text-muted-foreground">
-            {formatDistanceToNow(new Date(rest.createdAt), {
-              addSuffix: true,
-            })}
-          </p>
-        </div>
-
-        <p className="break-words whitespace-pre-wrap">{rest.content}</p>
-
-        <div className="flex space-x-1 mt-2">
-          {type === "comment" && isAuthor && <Badge>author</Badge>}
-          {isUserAuthor && <Badge className="bg-gray-900">you</Badge>}
-          {rest.tags?.map((tag) => (
-            <DisplayBadge key={tag.id} name={tag.name} />
-          ))}
-        </div>
+        <PostContent
+          {...rest}
+          additionalTags={
+            <>
+              {type === "comment" && isAuthor && <DisplayBadge name="author" />}
+              {isUserAuthor && <DisplayBadge name="you" />}
+            </>
+          }
+        />
 
         <div className="mt-4 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
