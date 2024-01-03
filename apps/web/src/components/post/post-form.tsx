@@ -13,9 +13,8 @@ import { usePostStore } from "@/store/usePostStore";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 
-import { Badge } from "../badge";
+import { Badge } from "../ui/badge";
 import { TagDialog } from "./tag-dialog";
-import { DisplayBadge } from "../display-badge";
 
 const ADD_MESSAGE = gql(`
 mutation AddPost($isAnonymous: Boolean!, $content: String!) {
@@ -87,7 +86,10 @@ export function PostForm({
               tagName: selectedTag,
             },
             onCompleted: (tagData) => {
-              updateTempPosts({ ...data.addPost, tags: [tagData.addTagToPost] });
+              updateTempPosts({
+                ...data.addPost,
+                tags: [tagData.addTagToPost],
+              });
             },
           });
         } else {
@@ -134,8 +136,8 @@ export function PostForm({
             </h2>
 
             <div className="flex space-x-1">
-              <Badge className="bg-gray-900">you</Badge>
-              {selectedTag && <DisplayBadge name={selectedTag} />}
+              <Badge name="you" />
+              {selectedTag && <Badge name={selectedTag} />}
             </div>
           </div>
           <p className="text-muted-foreground">{content.length}/500</p>

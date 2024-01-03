@@ -2,7 +2,7 @@ import { gql } from "@tf/codegen/__generated__/";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { DisplayBadge } from "../display-badge";
+import { Badge } from "../ui/badge";
 
 type Props = {
   open: boolean;
@@ -39,7 +39,7 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
                 setOpen(false);
               }}
             >
-              <DisplayBadge name={name} />
+              <Badge name={name} />
             </button>
           ))}
 
@@ -50,7 +50,7 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
               setOpen(false);
             }}
           >
-            <DisplayBadge name="none" />
+            <Badge name="none" />
           </button>
         </div>
       </DialogContent>

@@ -8,9 +8,9 @@ import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { DisplayBadge } from "@/components/display-badge";
 import { ConfirmButton } from "@/components/confirm-button";
 
 const GET_TAGS = gql(`
@@ -99,7 +99,7 @@ export default function Manage() {
             onConfirm={() => handleRemoveTag(tag.id)}
           >
             <button disabled={removeTagLoading}>
-              <DisplayBadge name={tag.name} />
+              <Badge name={tag.name} />
             </button>
           </ConfirmButton>
         ))}

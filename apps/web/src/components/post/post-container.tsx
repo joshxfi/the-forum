@@ -11,13 +11,13 @@ import { usePostStore } from "@/store/usePostStore";
 
 import { Post } from "./post";
 import { Icons } from "../icons";
+import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
-import { DialogDrawer } from "../dialog-drawer";
 import { PostContent } from "./post-content";
-import { DisplayBadge } from "../display-badge";
+import { DialogDrawer } from "../dialog-drawer";
 
 const ADD_COMMENT = gql(`
 mutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {
@@ -129,7 +129,7 @@ export function PostContainer({ ...props }: PostData) {
               <PostContent
                 {...props}
                 additionalTags={
-                  <>{isUserAuthor && <DisplayBadge name="you" />}</>
+                  isUserAuthor && <Badge name="you" />
                 }
               />
 

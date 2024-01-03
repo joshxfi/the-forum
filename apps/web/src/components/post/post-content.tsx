@@ -1,6 +1,7 @@
-import { PostData } from "@/types";
-import { DisplayBadge } from "../display-badge";
 import { formatDistanceToNow } from "date-fns";
+
+import { PostData } from "@/types";
+import { Badge } from "../ui/badge";
 
 type Props = {
   additionalTags?: React.ReactNode;
@@ -29,7 +30,7 @@ export function PostContent({ additionalTags, ...rest }: Props) {
       <div className="flex space-x-1">
         {additionalTags}
         {rest.tags?.map((tag) => (
-          <DisplayBadge key={tag.id} name={tag.name} />
+          <Badge key={tag.id} name={tag.name} />
         ))}
       </div>
     </section>

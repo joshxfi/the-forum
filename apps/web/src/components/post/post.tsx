@@ -3,12 +3,12 @@ import { useSession } from "next-auth/react";
 import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
 
+import { PostData } from "@/types";
 import { usePostStore } from "@/store/usePostStore";
 
 import { Icons } from "../icons";
-import { PostData } from "@/types";
+import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
-import { DisplayBadge } from "../display-badge";
 import { PostContent } from "./post-content";
 
 type Props = {
@@ -158,8 +158,8 @@ export const Post = ({
           {...rest}
           additionalTags={
             <>
-              {type === "comment" && isAuthor && <DisplayBadge name="author" />}
-              {isUserAuthor && <DisplayBadge name="you" />}
+              {type === "comment" && isAuthor && <Badge name="author" />}
+              {isUserAuthor && <Badge name="you" />}
             </>
           }
         />
