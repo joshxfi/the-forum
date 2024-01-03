@@ -1,17 +1,18 @@
-import type { TContext } from "@/app/api/graphql/_types";
 import { Resolver, Query, Mutation, Ctx, Arg } from "type-graphql";
+
 import { hashPassword } from "@/utils/helpers";
-import { User } from "@generated/type-graphql";
+import { User, Role } from "@generated/type-graphql";
+import type { TContext } from "@/app/api/graphql/_types";
 
 @Resolver(() => User)
 export class UserResolver {
   @Query(() => User)
   async getUser(
     @Arg("username", () => String) username: string,
-    @Ctx() { prisma }: TContext
+    @Ctx() ctx: TContext
   ): Promise<User> {
     try {
-      const user = await prisma.user.findUniqueOrThrow({
+      const user = await ctx.prisma.user.findUniqueOrThrow({
         where: { username },
       });
 
@@ -27,14 +28,14 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  async getCurrentUser(@Ctx() { prisma, id }: TContext): Promise<User> {
+  async getCurrentUser(@Ctx() ctx: TContext): Promise<User> {
     try {
-      if (!id) {
+      if (!ctx.id) {
         throw new Error("Not authenticated");
       }
 
-      const user = await prisma.user.findUniqueOrThrow({
-        where: { id },
+      const user = await ctx.prisma.user.findUniqueOrThrow({
+        where: { id: ctx.id },
       });
 
       if (!user) {
@@ -42,6 +43,23 @@ export class UserResolver {
       }
 
       return user;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  @Query(() => [User])
+  async getUsers(
+    @Arg("role", () => Role) role: Role,
+    @Ctx() ctx: TContext
+  ): Promise<User[]> {
+    try {
+      return await ctx.prisma.user.findMany({
+        where: {
+          role,
+        },
+      });
     } catch (err) {
       console.log(err);
       throw err;
@@ -78,6 +96,25 @@ export class UserResolver {
       });
     } catch (err) {
       console.log(err);
+      throw err;
+    }
+  }
+
+  @Mutation(() => User)
+  async setUserRole(
+    @Arg("username", () => String) username: string,
+    @Arg("role", () => Role) role: Role,
+    @Ctx() ctx: TContext
+  ): Promise<User> {
+    try {
+      return await ctx.prisma.user.update({
+        where: { username },
+        data: {
+          role,
+        },
+      });
+    } catch (err) {
+      console.error(err);
       throw err;
     }
   }
