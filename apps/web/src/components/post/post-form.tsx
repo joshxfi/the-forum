@@ -123,7 +123,7 @@ export function PostForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 md:p-2">
+    <form onSubmit={handleSubmit} className="px-4 pb-4 pt-8 md:p-2">
       <div className="flex flex-col gap-y-3">
         <div className="flex items-end justify-between text-sm">
           <div className="flex space-x-2">
@@ -137,7 +137,11 @@ export function PostForm({
 
             <div className="flex space-x-1">
               <Badge name="you" />
-              {selectedTag && <Badge name={selectedTag} />}
+              {selectedTag && (
+                <button onClick={() => setSelectedTag("")}>
+                  <Badge name={selectedTag} withRemove />
+                </button>
+              )}
             </div>
           </div>
           <p className="text-muted-foreground">{content.length}/500</p>

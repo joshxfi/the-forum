@@ -25,11 +25,14 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-[425px]">
-        <DialogHeader className="text-left text-sm font-semibold">
-          <p>Select a tag</p>
+        <DialogHeader className="text-left">
+          <p className="font-medium leading-none">Tags</p>
+          <p className="text-muted-foreground text-sm leading-none">
+            Select a tag that applies to your post
+          </p>
         </DialogHeader>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mt-4">
           {data?.getTags.map(({ id, name }) => (
             <button
               key={id}
@@ -42,16 +45,6 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
               <Badge name={name} />
             </button>
           ))}
-
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedTag("");
-              setOpen(false);
-            }}
-          >
-            <Badge name="none" />
-          </button>
         </div>
       </DialogContent>
     </Dialog>
