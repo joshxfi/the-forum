@@ -2,12 +2,15 @@ import { formatDistanceToNow } from "date-fns";
 
 import { PostData } from "@/types";
 import { Badge } from "../ui/badge";
+import { usePostStore } from "@/store/usePostStore";
+import { nanoid } from "nanoid";
 
 type Props = {
   additionalTags?: React.ReactNode;
 } & Omit<PostData, "comments">;
 
 export function PostContent({ additionalTags, ...rest }: Props) {
+  const tempTags = usePostStore((state) => state.tags[rest.id]);
   return (
     <section className="space-y-2">
       <div className="flex justify-between items-center">
@@ -36,6 +39,10 @@ export function PostContent({ additionalTags, ...rest }: Props) {
         {additionalTags}
         {rest.tags?.map((tag) => (
           <Badge key={tag.id} name={tag.name} />
+        ))}
+
+        {tempTags?.map((tag) => (
+          <Badge key={nanoid()} name={tag} />
         ))}
       </div>
     </section>

@@ -65,6 +65,7 @@ export function PostForm({
   const [isAnonymous, setIsAnonymous] = useState(false);
 
   const updateTempPosts = usePostStore((state) => state.addPost);
+  const updateTempTags = usePostStore((state) => state.updateTags);
 
   const { toast } = useToast();
   const { status } = useSession();
@@ -85,17 +86,17 @@ export function PostForm({
               postId: data.addPost.id,
               tagName: selectedTag,
             },
-            onCompleted: () => {
-              updateTempPosts(data.addPost);
+            onCompleted: (tagData) => {
+              updateTempTags(data.addPost.id, tagData.addTagToPost.name);
             },
           });
-        } else {
-          updateTempPosts(data.addPost);
         }
+
+        updateTempPosts(data.addPost);
 
         toast({
           title: "Success",
-          description: "Your message has been posted.",
+          description: "Your message has been posted",
         });
       },
       onError: (error) => {

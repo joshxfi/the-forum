@@ -9,12 +9,14 @@ type State = {
   posts: Record<string, PostData>;
   comments: Record<string, Record<string, Omit<PostData, "comments">>>;
   upvotes: Record<string, string>;
+  tags: Record<string, string[]>;
 };
 
 type Action = {
   addPost: (postData: AddPostMutation["addPost"]) => void;
   updateComments: UpdateData<Omit<PostData, "comments">>;
   updateUpvotes: UpdateData<string>;
+  updateTags: UpdateData<string>;
 };
 
 export const usePostStore = create<State & Action>()(
@@ -22,6 +24,7 @@ export const usePostStore = create<State & Action>()(
     posts: {},
     comments: {},
     upvotes: {},
+    tags: {},
 
     addPost: (postData) =>
       set((state) => {
@@ -41,6 +44,11 @@ export const usePostStore = create<State & Action>()(
     updateUpvotes: (postId, upvoteId) =>
       set((state) => {
         state.upvotes[postId] = upvoteId;
+      }),
+
+    updateTags: (postId, tag) =>
+      set((state) => {
+        state.tags[postId] = [...(state.tags[postId] ?? []), tag];
       }),
   }))
 );
