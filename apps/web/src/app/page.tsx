@@ -83,7 +83,7 @@ export default function Home() {
 
   return (
     <section className="pb-24">
-      {Object.entries(tempPosts).map(([_, m]) => (
+      {Object.entries(tempPosts).reverse().map(([_, m]) => (
         <PostContainer key={m.id} comments={[]} {...m} />
       ))}
 
