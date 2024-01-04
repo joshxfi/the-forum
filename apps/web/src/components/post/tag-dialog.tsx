@@ -32,7 +32,7 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
           </p>
         </DialogHeader>
 
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mt-2">
           {data?.getTags.map(({ id, name }) => (
             <button
               key={id}

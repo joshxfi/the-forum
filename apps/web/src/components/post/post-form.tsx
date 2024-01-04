@@ -59,12 +59,12 @@ export function PostForm({
   const [submitMessage, { loading: submitLoading }] = useMutation(ADD_MESSAGE);
   const [addTagToPost] = useMutation(ADD_TAG_TO_POST);
 
-  const [selectedTag, setSelectedTag] = useState("");
   const [content, setContent] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const updateTempPosts = usePostStore((state) => state.updateTempPosts);
+  const updateTempPosts = usePostStore((state) => state.addPost);
 
   const { toast } = useToast();
   const { status } = useSession();
@@ -85,11 +85,8 @@ export function PostForm({
               postId: data.addPost.id,
               tagName: selectedTag,
             },
-            onCompleted: (tagData) => {
-              updateTempPosts({
-                ...data.addPost,
-                tags: [tagData.addTagToPost],
-              });
+            onCompleted: () => {
+              updateTempPosts(data.addPost);
             },
           });
         } else {

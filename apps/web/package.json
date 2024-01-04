@@ -38,6 +38,7 @@
     "geist": "^1.2.0",
     "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
+    "immer": "^10.0.3",
     "lucide-react": "^0.272.0",
     "nanoid": "^5.0.1",
     "next": "14.0.4",

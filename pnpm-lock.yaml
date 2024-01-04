@@ -104,6 +104,9 @@ importers:
       graphql-scalars:
         specifier: ^1.22.2
         version: 1.22.2(graphql@16.7.1)
+      immer:
+        specifier: ^10.0.3
+        version: 10.0.3
       lucide-react:
         specifier: ^0.272.0
         version: 0.272.0(react@18.2.0)
@@ -163,7 +166,7 @@ importers:
         version: 3.22.2
       zustand:
         specifier: ^4.4.7
-        version: 4.4.7(@types/react@18.2.21)(react@18.2.0)
+        version: 4.4.7(@types/react@18.2.21)(immer@10.0.3)(react@18.2.0)
     devDependencies:
       '@prisma/nextjs-monorepo-workaround-plugin':
         specifier: ^5.7.1
@@ -5102,6 +5105,10 @@ packages:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
 
+  /immer@10.0.3:
+    resolution: {integrity: sha512-pwupu3eWfouuaowscykeckFmVTpqbzW+rXFCX8rQLkZzM9ftBmU/++Ra+o+L27mz03zJTlyV4UUr+fdKNffo4A==}
+    dev: false
+
   /immutable@3.7.6:
     resolution: {integrity: sha512-AizQPcaofEtO11RZhPPHBOJRdo/20MKQF9mBLnVkBoyHi1/zXK8fzVdnEpSV9gxqtnh6Qomfp3F0xT5qP/vThw==}
     engines: {node: '>=0.8.0'}
@@ -8438,7 +8445,7 @@ packages:
     resolution: {integrity: sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==}
     dev: false
 
-  /zustand@4.4.7(@types/react@18.2.21)(react@18.2.0):
+  /zustand@4.4.7(@types/react@18.2.21)(immer@10.0.3)(react@18.2.0):
     resolution: {integrity: sha512-QFJWJMdlETcI69paJwhSMJz7PPWjVP8Sjhclxmxmxv/RYI7ZOvR5BHX+ktH0we9gTWQMxcne8q1OY8xxz604gw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -8454,6 +8461,7 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.2.21
+      immer: 10.0.3
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false

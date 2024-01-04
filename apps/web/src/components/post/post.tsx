@@ -49,11 +49,9 @@ export const Post = ({
   const { toast } = useToast();
   const { data: session, status } = useSession();
 
-  const tempUpvote = usePostStore((state) => state.tempUpvotes).find(
-    (u) => u.postId === rest.id
-  );
-
-  const updateTempUpvotes = usePostStore((state) => state.updateTempUpvotes);
+  const tempUpvote = usePostStore((state) => state.upvotes[rest.id]);
+  const isTempUpvoted = tempUpvote && tempUpvote !== "temp";
+  const updateTempUpvotes = usePostStore((state) => state.updateUpvotes);
 
   const isUpvoted = useMemo(
     () => rest.upvotes?.some((u) => u.userId === session?.user?.id),
@@ -62,21 +60,19 @@ export const Post = ({
 
   const upvoteId = useMemo(
     () =>
-      tempUpvote
-        ? tempUpvote.upvoteId
-        : rest.upvotes?.find((u) => u.userId === session?.user?.id)?.id,
+      tempUpvote ??
+      rest.upvotes?.find((u) => u.userId === session?.user?.id)?.id,
     [tempUpvote, rest.upvotes, session?.user]
   );
 
   const displayUpvoteCount = useCallback(() => {
     if (!!tempUpvote) {
-      if (isUpvoted)
-        return !tempUpvote.upvoteId ? upvoteCount - 1 : upvoteCount;
-      return tempUpvote.upvoteId ? upvoteCount + 1 : upvoteCount;
+      if (isUpvoted) return !isTempUpvoted ? upvoteCount - 1 : upvoteCount;
+      return isTempUpvoted ? upvoteCount + 1 : upvoteCount;
     } else {
       return upvoteCount;
     }
-  }, [tempUpvote, isUpvoted, upvoteCount]);
+  }, [isTempUpvoted, isUpvoted, upvoteCount]);
 
   const handleAddUpvote = (postId: string) => {
     if (status === "unauthenticated") {
@@ -105,7 +101,8 @@ export const Post = ({
           title: "Success",
           description: "Upvoted successfully",
         });
-        updateTempUpvotes({ upvoteId: data.addUpvote.id, postId: rest.id });
+
+        updateTempUpvotes(rest.id, data.addUpvote.id);
       },
       onError: (err) => {
         console.log(err);
@@ -138,7 +135,7 @@ export const Post = ({
           description: "Upvote removed",
         });
 
-        updateTempUpvotes({ postId: rest.id });
+        updateTempUpvotes(rest.id, "temp");
       },
       onError: (err) => {
         console.log(err);
@@ -166,8 +163,7 @@ export const Post = ({
 
         <div className="mt-4 flex gap-x-2 items-center">
           <div className="flex gap-x-1 items-center">
-            {(!!tempUpvote && !!tempUpvote.upvoteId) ||
-            (isUpvoted && !tempUpvote) ? (
+            {!!isTempUpvoted || (isUpvoted && !tempUpvote) ? (
               <button
                 type="button"
                 disabled={removeUpvoteLoading}

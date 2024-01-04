@@ -53,7 +53,7 @@ query GetPosts($cursorId: ID) {
 export default function Home() {
   const { ref, inView } = useInView();
   const { data, loading, fetchMore } = useQuery(GET_POSTS);
-  const tempPosts = usePostStore((state) => state.tempPosts);
+  const tempPosts = usePostStore((state) => state.posts);
 
   useEffect(() => {
     if (inView) {
@@ -83,7 +83,7 @@ export default function Home() {
 
   return (
     <section className="pb-24">
-      {tempPosts.map((m) => (
+      {Object.entries(tempPosts).map(([_, m]) => (
         <PostContainer key={m.id} comments={[]} {...m} />
       ))}
 

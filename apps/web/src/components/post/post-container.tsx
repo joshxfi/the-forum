@@ -45,11 +45,14 @@ export function PostContainer({ ...props }: PostData) {
   const [addComment, { loading }] = useMutation(ADD_COMMENT);
   const isUserAuthor = props.author.id === session?.user?.id;
 
-  const _tempComments = usePostStore((state) => state.tempComments);
-  const updateTempComments = usePostStore((state) => state.updateTempComments);
+  const _tempComments = usePostStore((state) => state.comments);
+  const updateTempComments = usePostStore((state) => state.updateComments);
 
   const tempComments = useMemo(
-    () => _tempComments.find((r) => r.postId === props.id)?.commentData ?? [],
+    () =>
+      _tempComments[props.id]
+        ? Object.entries(_tempComments[props.id]).map(([_, v]) => v)
+        : [],
     [_tempComments, props.id]
   );
 
@@ -72,10 +75,7 @@ export function PostContainer({ ...props }: PostData) {
           description: "Your comment has been added",
         });
         setComment("");
-        updateTempComments({
-          postId: props.id,
-          commentData: [data?.addComment],
-        });
+        updateTempComments(props.id, data?.addComment);
         setShowDialog(false);
       },
       onError: (err) => {
@@ -128,9 +128,7 @@ export function PostContainer({ ...props }: PostData) {
             <section className="text-sm p-4 md:p-2 space-y-2">
               <PostContent
                 {...props}
-                additionalTags={
-                  isUserAuthor && <Badge name="you" />
-                }
+                additionalTags={isUserAuthor && <Badge name="you" />}
               />
 
               <form onSubmit={handleComment} className="pt-2">

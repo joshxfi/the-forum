@@ -15,15 +15,15 @@ export class PostWithComments extends PostData {
   @Field(() => [Tag], { nullable: true })
   tags?: Tag[];
 
-  @Field(() => [PostData])
-  comments: PostData[];
+  @Field(() => [PostData], { nullable: true })
+  comments?: PostData[];
 }
 
 @ObjectType()
 export class PostsWithCursor {
   @Directive("@cacheControl(maxAge: 86400)")
-  @Field(() => [PostWithComments], { nullable: true })
-  data?: PostWithComments[];
+  @Field(() => [PostWithComments])
+  data: PostWithComments[];
 
   @Field({ nullable: true })
   cursorId?: string;
