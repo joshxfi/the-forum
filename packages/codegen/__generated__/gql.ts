@@ -21,6 +21,7 @@ const documents = {
     "\nquery GetUsers($role: Role!) {\n  getUsers(role: $role) {\n    id\n    username\n  }\n}\n": types.GetUsersDocument,
     "\nmutation setUserRole($role: Role!, $username: String!) {\n  setUserRole(role: $role, username: $username) {\n    id\n    username\n  }\n}\n": types.SetUserRoleDocument,
     "\nmutation AddTagToPost($postId: ID!, $tagName: String!) {\n  addTagToPost(postId: $postId, tagName: $tagName) {\n    id\n    name\n  }\n}\n": types.AddTagToPostDocument,
+    "\nmutation RemoveTagOnPost($postId: ID!, $tagName: String!) {\n  removeTagOnPost(postId: $postId, tagName: $tagName)\n}\n": types.RemoveTagOnPostDocument,
     "\nmutation AddComment($postId: ID!, $isAnonymous: Boolean!, $content: String!) {\n  addComment(postId: $postId, isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n": types.AddCommentDocument,
     "\nmutation AddPost($isAnonymous: Boolean!, $content: String!) {\n  addPost(isAnonymous: $isAnonymous, content: $content) {\n    id\n    content\n    createdAt\n    isAnonymous\n    author {\n      id\n      username\n    }\n  }\n}\n": types.AddPostDocument,
     "\nquery GetCurrentUser {\n  getCurrentUser {\n    id\n    username\n    createdAt\n  }\n}\n": types.GetCurrentUserDocument,
@@ -74,6 +75,10 @@ export function gql(source: "\nmutation setUserRole($role: Role!, $username: Str
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nmutation AddTagToPost($postId: ID!, $tagName: String!) {\n  addTagToPost(postId: $postId, tagName: $tagName) {\n    id\n    name\n  }\n}\n"): (typeof documents)["\nmutation AddTagToPost($postId: ID!, $tagName: String!) {\n  addTagToPost(postId: $postId, tagName: $tagName) {\n    id\n    name\n  }\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nmutation RemoveTagOnPost($postId: ID!, $tagName: String!) {\n  removeTagOnPost(postId: $postId, tagName: $tagName)\n}\n"): (typeof documents)["\nmutation RemoveTagOnPost($postId: ID!, $tagName: String!) {\n  removeTagOnPost(postId: $postId, tagName: $tagName)\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

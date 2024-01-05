@@ -1,16 +1,35 @@
+import { useMemo, useState } from "react";
+import { nanoid } from "nanoid";
 import { formatDistanceToNow } from "date-fns";
+import { useSession } from "next-auth/react";
 
 import { PostData } from "@/types";
-import { Badge } from "../ui/badge";
 import { usePostStore } from "@/store/usePostStore";
-import { nanoid } from "nanoid";
+import { Role } from "@tf/codegen/__generated__/graphql";
+
+import { Icons } from "../icons";
+import { Badge } from "../ui/badge";
+import { ContentMod } from "../moderator/mod-dialog";
 
 type Props = {
   additionalTags?: React.ReactNode;
 } & Omit<PostData, "comments">;
 
 export function PostContent({ additionalTags, ...rest }: Props) {
-  const tempTags = usePostStore((state) => state.tags[rest.id]);
+  const [modDialog, setModDialog] = useState(false);
+  const _tempTags = usePostStore((state) => state.tags);
+  const tempTags = useMemo(
+    () =>
+      _tempTags[rest.id]
+        ? Object.entries(_tempTags[rest.id]).map(([k, v]) => ({
+            name: k,
+            hide: v,
+          }))
+        : [],
+    [_tempTags, rest.id]
+  );
+  const { data: session } = useSession();
+
   return (
     <section className="space-y-2">
       <div className="flex justify-between items-center">
@@ -29,21 +48,34 @@ export function PostContent({ additionalTags, ...rest }: Props) {
           </p>
         </div>
 
-        {/**{session?.user?.role === Role.Moderator && (
-          <ModButton />
-        )}**/}
+        {session?.user?.role === Role.Moderator && (
+          <>
+            <button type="button" onClick={() => setModDialog(true)}>
+              <Icons.exclamation className="w-4 h-4" />
+            </button>
+
+            <ContentMod open={modDialog} setOpen={setModDialog} {...rest} />
+          </>
+        )}
       </div>
       <p className="break-words whitespace-pre-wrap">{rest.content}</p>
 
-      <div className="flex space-x-1">
+      <div className="flex gap-2 flex-wrap">
         {additionalTags}
-        {rest.tags?.map((tag) => (
-          <Badge key={tag.id} name={tag.name} />
-        ))}
+        {rest.tags
+          ?.filter(
+            (t) =>
+              !tempTags.some((_t) => t.name === _t.name && _t.hide === true)
+          )
+          .map((tag) => (
+            <Badge key={tag.id} name={tag.name} />
+          ))}
 
-        {tempTags?.map((tag) => (
-          <Badge key={nanoid()} name={tag} />
-        ))}
+        {tempTags
+          ?.filter((t) => t.hide === false)
+          .map((tag) => (
+            <Badge key={nanoid()} name={tag.name} />
+          ))}
       </div>
     </section>
   );

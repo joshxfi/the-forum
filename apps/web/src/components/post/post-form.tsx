@@ -87,7 +87,10 @@ export function PostForm({
               tagName: selectedTag,
             },
             onCompleted: (tagData) => {
-              updateTempTags(data.addPost.id, tagData.addTagToPost.name);
+              updateTempTags(data.addPost.id, {
+                name: tagData.addTagToPost.name,
+                hide: false,
+              });
             },
           });
         }
@@ -136,7 +139,10 @@ export function PostForm({
             <div className="flex space-x-1">
               <Badge name="you" />
               {selectedTag && (
-                <button onClick={() => setSelectedTag("")}>
+                <button
+                  onClick={() => setSelectedTag("")}
+                  disabled={submitLoading}
+                >
                   <Badge name={selectedTag} withRemove />
                 </button>
               )}

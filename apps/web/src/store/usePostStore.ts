@@ -9,14 +9,14 @@ type State = {
   posts: Record<string, PostData>;
   comments: Record<string, Record<string, Omit<PostData, "comments">>>;
   upvotes: Record<string, string>;
-  tags: Record<string, string[]>;
+  tags: Record<string, Record<string, boolean>>;
 };
 
 type Action = {
   addPost: (postData: AddPostMutation["addPost"]) => void;
   updateComments: UpdateData<Omit<PostData, "comments">>;
   updateUpvotes: UpdateData<string>;
-  updateTags: UpdateData<string>;
+  updateTags: UpdateData<{ name: string; hide: boolean }>;
 };
 
 export const usePostStore = create<State & Action>()(
@@ -48,7 +48,9 @@ export const usePostStore = create<State & Action>()(
 
     updateTags: (postId, tag) =>
       set((state) => {
-        state.tags[postId] = [...(state.tags[postId] ?? []), tag];
+        state.tags[postId] = {
+          [tag.name]: tag.hide,
+        };
       }),
   }))
 );

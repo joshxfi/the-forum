@@ -72,7 +72,7 @@ export const Post = ({
     } else {
       return upvoteCount;
     }
-  }, [isTempUpvoted, isUpvoted, upvoteCount]);
+  }, [isTempUpvoted, isUpvoted, upvoteCount, tempUpvote]);
 
   const handleAddUpvote = (postId: string) => {
     if (status === "unauthenticated") {
