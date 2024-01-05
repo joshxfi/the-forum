@@ -1,14 +1,15 @@
 import { nanoid } from "nanoid";
 import { produce } from "immer";
-import { useCallback, useMemo, useState } from "react";
 import { PostData } from "@/types";
 import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { Skeleton } from "../ui/skeleton";
 
 const ADD_TAG_TO_POST = gql(`
 mutation AddTagToPost($postId: ID!, $tagName: String!) {
@@ -48,7 +49,7 @@ export function ModTags({ open, setOpen, ...rest }: Props) {
     }[]
   >([]);
 
-  const { data: allTags } = useQuery(GET_TAGS);
+  const { data: allTags, loading } = useQuery(GET_TAGS);
   const [addTagToPost, { loading: addLoading }] = useMutation(ADD_TAG_TO_POST);
   const [removeTagOnPost, { loading: removeLoading }] =
     useMutation(REMOVE_TAG_ON_POST);
@@ -176,6 +177,11 @@ export function ModTags({ open, setOpen, ...rest }: Props) {
       </div>
 
       <div className="flex flex-wrap gap-2 mt-2 border-t border-muted pt-4">
+        {loading &&
+          Array.from({ length: 4 }).map((_) => (
+            <Skeleton key={nanoid()} className="h-4 w-[70px]" />
+          ))}
+
         {choicesTags?.map((t) => (
           <button key={t.id} type="button" onClick={() => handleAdd(t.name)}>
             <Badge name={t.name} />

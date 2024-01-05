@@ -1,8 +1,11 @@
+import { nanoid } from "nanoid";
 import { gql } from "@tf/codegen/__generated__/";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+
 import { Badge } from "../ui/badge";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   open: boolean;
@@ -20,7 +23,7 @@ query GetTags {
 `);
 
 export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
-  const { data } = useQuery(GET_TAGS);
+  const { data, loading } = useQuery(GET_TAGS);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -33,6 +36,11 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
         </DialogHeader>
 
         <div className="flex flex-wrap gap-2 mt-2">
+          {loading &&
+            Array.from({ length: 4 }).map((_) => (
+              <Skeleton key={nanoid()} className="h-4 w-[70px]" />
+            ))}
+
           {data?.getTags.map(({ id, name }) => (
             <button
               key={id}
