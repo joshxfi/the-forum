@@ -8,9 +8,10 @@ import { ModTags } from "./mod-tags";
 type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  existingTags: { name: string }[];
 } & Omit<PostData, "comments">;
 
-export function ContentMod({ open, setOpen, ...rest }: Props) {
+export function ContentMod({ open, setOpen, existingTags, ...rest }: Props) {
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -43,7 +44,12 @@ export function ContentMod({ open, setOpen, ...rest }: Props) {
             {rest.content}
           </p>
 
-          <ModTags open={open} setOpen={setOpen} {...rest} />
+          <ModTags
+            postId={rest.id}
+            existingTags={existingTags}
+            setOpen={setOpen}
+            {...rest}
+          />
         </DialogContent>
       </Dialog>
     </>

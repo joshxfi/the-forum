@@ -30,6 +30,18 @@ export function PostContent({ additionalTags, ...rest }: Props) {
   );
   const { data: session } = useSession();
 
+  const tagsToDisplay = useMemo(
+    () => [
+      ...(rest.tags
+        ?.filter(
+          (t) => !tempTags.some((_t) => t.name === _t.name && _t.hide === true)
+        )
+        .map((t) => ({ name: t.name })) ?? []),
+      ...tempTags?.filter((t) => t.hide === false),
+    ],
+    [rest.tags, tempTags]
+  );
+
   return (
     <section className="space-y-2">
       <div className="flex justify-between items-center">
@@ -54,7 +66,12 @@ export function PostContent({ additionalTags, ...rest }: Props) {
               <Icons.exclamation className="w-4 h-4" />
             </button>
 
-            <ContentMod open={modDialog} setOpen={setModDialog} {...rest} />
+            <ContentMod
+              open={modDialog}
+              setOpen={setModDialog}
+              existingTags={tagsToDisplay}
+              {...rest}
+            />
           </>
         )}
       </div>
@@ -62,20 +79,9 @@ export function PostContent({ additionalTags, ...rest }: Props) {
 
       <div className="flex gap-2 flex-wrap">
         {additionalTags}
-        {rest.tags
-          ?.filter(
-            (t) =>
-              !tempTags.some((_t) => t.name === _t.name && _t.hide === true)
-          )
-          .map((tag) => (
-            <Badge key={tag.id} name={tag.name} />
-          ))}
-
-        {tempTags
-          ?.filter((t) => t.hide === false)
-          .map((tag) => (
-            <Badge key={nanoid()} name={tag.name} />
-          ))}
+        {tagsToDisplay.map((tag) => (
+          <Badge key={nanoid()} name={tag.name} />
+        ))}
       </div>
     </section>
   );
