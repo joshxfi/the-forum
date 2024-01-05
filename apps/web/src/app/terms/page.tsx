@@ -34,7 +34,7 @@ TheForum may update these Terms of Service from time to time. Users will be noti
 `;
 
   return (
-    <section className="container prose prose-invert pb-52">
+    <section className="container prose prose-invert pb-52 text-sm">
       <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
     </section>
   );
