@@ -41,18 +41,20 @@ export function TagDialog({ open, setOpen, setSelectedTag }: Props) {
               <Skeleton key={nanoid()} className="h-4 w-[70px]" />
             ))}
 
-          {data?.getTags.map(({ id, name }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => {
-                setSelectedTag(name);
-                setOpen(false);
-              }}
-            >
-              <Badge name={name} />
-            </button>
-          ))}
+          {data?.getTags
+            .filter((t) => !["quarantine", "nsfw"].includes(t.name))
+            .map(({ id, name }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setSelectedTag(name);
+                  setOpen(false);
+                }}
+              >
+                <Badge name={name} />
+              </button>
+            ))}
         </div>
       </DialogContent>
     </Dialog>
