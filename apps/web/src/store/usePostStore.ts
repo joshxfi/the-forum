@@ -49,6 +49,7 @@ export const usePostStore = create<State & Action>()(
     updateTags: (postId, tag) =>
       set((state) => {
         state.tags[postId] = {
+          ...state.tags[postId],
           [tag.name]: tag.hide,
         };
       }),

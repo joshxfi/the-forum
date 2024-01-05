@@ -3,6 +3,7 @@ import { produce } from "immer";
 import { PostData } from "@/types";
 import { useMutation } from "@apollo/client";
 import { gql } from "@tf/codegen/__generated__";
+import { usePostStore } from "@/store/usePostStore";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
@@ -54,6 +55,21 @@ export function ModTags({ open, setOpen, ...rest }: Props) {
   const [removeTagOnPost, { loading: removeLoading }] =
     useMutation(REMOVE_TAG_ON_POST);
 
+  const _tempTags = usePostStore((state) => state.tags);
+  const updateTempTags = usePostStore((state) => state.updateTags);
+  const tempTags = useMemo(
+    () =>
+      _tempTags[rest.id]
+        ? Object.entries(_tempTags[rest.id])
+            .map(([k, v]) => ({
+              name: k,
+              hide: v,
+            }))
+            .filter((t) => !t.hide)
+        : [],
+    [_tempTags, rest.id]
+  );
+
   const handleSave = () => {
     toast({
       title: "Please wait",
@@ -61,35 +77,39 @@ export function ModTags({ open, setOpen, ...rest }: Props) {
     });
 
     selectedTags.forEach((tag) => {
-      const exists = rest.tags?.some((t) => t.name === tag.name);
+      const exists =
+        rest.tags?.some((t) => t.name === tag.name) ||
+        tempTags.some((t) => t.name === tag.name);
+
       if (tag.add && !exists) {
         addTagToPost({
           variables: {
             postId: rest.id,
             tagName: tag.name,
           },
+          onCompleted: () => {
+            updateTempTags(rest.id, { name: tag.name, hide: false });
+          },
           onError: (err) => {
             console.log(err);
           },
         });
       }
 
-      if (!tag.add && exists) {
+      if (tag.name && !tag.add && exists) {
         removeTagOnPost({
           variables: {
             postId: rest.id,
             tagName: tag.name,
           },
+          onCompleted: () => {
+            updateTempTags(rest.id, { name: tag.name, hide: true });
+          },
           onError: (err) => {
             console.log(err);
           },
         });
       }
-    });
-
-    toast({
-      title: "Success",
-      description: "Tags have been modified",
     });
 
     setOpen(false);
@@ -131,31 +151,34 @@ export function ModTags({ open, setOpen, ...rest }: Props) {
     () =>
       rest.tags
         ?.filter(
-          (t) =>
-            !selectedTags
-              .filter((_tf) => _tf.add === true)
-              .some((_t) => t.name === _t.name)
+          (t) => !selectedTags.some((_t) => t.name === _t.name && _t.add)
         )
         ?.filter(
-          (t) =>
-            !selectedTags
-              .filter((_tf) => _tf.add === false)
-              .some((_t) => t.name === _t.name)
+          (t) => !selectedTags.some((_t) => t.name === _t.name && !_t.add)
         ),
     [rest.tags, selectedTags]
+  );
+
+  const temporaryTags = useMemo(
+    () =>
+      tempTags
+        ?.filter(
+          (t) => !selectedTags.some((_t) => t.name === _t.name && _t.add)
+        )
+        .filter(
+          (t) => !selectedTags.some((_t) => _t.name === t.name && !_t.add)
+        )
+        .filter((t) => !parentTags?.some((_t) => t.name === _t.name)),
+    [parentTags, tempTags, selectedTags, allTags?.getTags]
   );
 
   const choicesTags = useMemo(
     () =>
       allTags?.getTags
-        .filter(
-          (t) =>
-            !selectedTags
-              .filter((_t) => _t.add === true)
-              .some((_t) => _t.name === t.name)
-        )
-        .filter((t) => !parentTags?.some((_t) => t.name === _t.name)),
-    [parentTags, selectedTags, allTags?.getTags]
+        .filter((t) => !selectedTags.some((_t) => _t.name === t.name && _t.add))
+        .filter((t) => !parentTags?.some((_t) => t.name === _t.name))
+        .filter((t) => !temporaryTags?.some((_t) => t.name === _t.name)),
+    [parentTags, selectedTags, temporaryTags, allTags?.getTags]
   );
 
   return (
@@ -171,6 +194,16 @@ export function ModTags({ open, setOpen, ...rest }: Props) {
 
         {parentTags?.map((t) => (
           <button key={t.id} onClick={() => handleRemove(t.name)}>
+            <Badge name={t.name} withRemove />
+          </button>
+        ))}
+
+        {temporaryTags?.map((t) => (
+          <button
+            key={nanoid()}
+            type="button"
+            onClick={() => handleRemove(t.name)}
+          >
             <Badge name={t.name} withRemove />
           </button>
         ))}
