@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
 import { nanoid } from "nanoid";
+import { useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { useSession } from "next-auth/react";
 
+import { cn } from "@/lib/utils";
 import { PostData } from "@/types";
 import { usePostStore } from "@/store/usePostStore";
 import { Role } from "@tf/codegen/__generated__/graphql";
@@ -10,7 +11,6 @@ import { Role } from "@tf/codegen/__generated__/graphql";
 import { Icons } from "../icons";
 import { Badge } from "../ui/badge";
 import { ContentMod } from "../moderator/mod-dialog";
-import clsx from "clsx";
 
 type Props = {
   additionalTags?: React.ReactNode;
@@ -42,6 +42,8 @@ export function PostContent({ additionalTags, ...rest }: Props) {
     ],
     [rest.tags, tempTags]
   );
+
+  const [hideNsfw, setHideNsfw] = useState(true);
 
   return (
     <section className="space-y-2">
@@ -76,13 +78,28 @@ export function PostContent({ additionalTags, ...rest }: Props) {
           </>
         )}
       </div>
-      <p
-        className={clsx("break-words whitespace-pre-wrap", {
-          "blur-sm select-none": tagsToDisplay.includes("quarantine"),
-        })}
-      >
-        {rest.content}
-      </p>
+      <div className="relative">
+        <p
+          className={cn("break-words whitespace-pre-wrap relative", {
+            "blur-sm text-gray-600 select-none":
+              tagsToDisplay.includes("quarantine") ||
+              (tagsToDisplay.includes("nsfw") && hideNsfw),
+          })}
+        >
+          {rest.content}
+        </p>
+        {tagsToDisplay.includes("nsfw") && !tagsToDisplay.includes("quarantine") && hideNsfw && (
+          <button
+            type="button"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+            onClick={() => setHideNsfw(false)}
+          >
+            <Icons.exclamationCircle className="w-5 h-5 text-red-500" />
+            <p className="font-semibold mt-2">NSFW Content</p>
+            <p className="text-xs mt-1">Tap to view</p>
+          </button>
+        )}
+      </div>
 
       <div className="flex gap-2 flex-wrap">
         {additionalTags}
