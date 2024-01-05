@@ -10,6 +10,7 @@ import { Role } from "@tf/codegen/__generated__/graphql";
 import { Icons } from "../icons";
 import { Badge } from "../ui/badge";
 import { ContentMod } from "../moderator/mod-dialog";
+import clsx from "clsx";
 
 type Props = {
   additionalTags?: React.ReactNode;
@@ -75,7 +76,13 @@ export function PostContent({ additionalTags, ...rest }: Props) {
           </>
         )}
       </div>
-      <p className="break-words whitespace-pre-wrap">{rest.content}</p>
+      <p
+        className={clsx("break-words whitespace-pre-wrap", {
+          "blur-sm select-none": tagsToDisplay.includes("quarantine"),
+        })}
+      >
+        {rest.content}
+      </p>
 
       <div className="flex gap-2 flex-wrap">
         {additionalTags}
