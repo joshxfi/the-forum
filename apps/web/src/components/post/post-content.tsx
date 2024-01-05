@@ -36,8 +36,8 @@ export function PostContent({ additionalTags, ...rest }: Props) {
         ?.filter(
           (t) => !tempTags.some((_t) => t.name === _t.name && _t.hide === true)
         )
-        .map((t) => ({ name: t.name })) ?? []),
-      ...tempTags?.filter((t) => t.hide === false),
+        .map((t) => t.name) ?? []),
+      ...tempTags?.filter((t) => t.hide === false).map((t) => t.name),
     ],
     [rest.tags, tempTags]
   );
@@ -80,7 +80,7 @@ export function PostContent({ additionalTags, ...rest }: Props) {
       <div className="flex gap-2 flex-wrap">
         {additionalTags}
         {tagsToDisplay.map((tag) => (
-          <Badge key={nanoid()} name={tag.name} />
+          <Badge key={nanoid()} name={tag} />
         ))}
       </div>
     </section>

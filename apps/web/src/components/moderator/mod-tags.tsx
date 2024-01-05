@@ -37,8 +37,8 @@ query GetTags {
 
 type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  postId: string,
-  existingTags: { name: string }[];
+  postId: string;
+  existingTags: string[];
 };
 
 export function ModTags({ setOpen, postId, existingTags }: Props) {
@@ -64,7 +64,7 @@ export function ModTags({ setOpen, postId, existingTags }: Props) {
     });
 
     selectedTags.forEach((tag) => {
-      const exists = existingTags?.some((t) => t.name === tag.name);
+      const exists = existingTags.includes(tag.name);
 
       if (tag.add && !exists) {
         addTagToPost({
@@ -138,12 +138,8 @@ export function ModTags({ setOpen, postId, existingTags }: Props) {
   const parentTags = useMemo(
     () =>
       existingTags
-        ?.filter(
-          (t) => !selectedTags.some((_t) => t.name === _t.name && _t.add)
-        )
-        ?.filter(
-          (t) => !selectedTags.some((_t) => t.name === _t.name && !_t.add)
-        ),
+        ?.filter((t) => !selectedTags.some((_t) => t === _t.name && _t.add))
+        ?.filter((t) => !selectedTags.some((_t) => t === _t.name && !_t.add)),
     [existingTags, selectedTags]
   );
 
@@ -151,7 +147,7 @@ export function ModTags({ setOpen, postId, existingTags }: Props) {
     () =>
       allTags?.getTags
         .filter((t) => !selectedTags.some((_t) => _t.name === t.name && _t.add))
-        .filter((t) => !parentTags?.some((_t) => t.name === _t.name)),
+        .filter((t) => !parentTags?.some((_t) => t.name === _t)),
     [parentTags, selectedTags, allTags?.getTags]
   );
 
@@ -167,8 +163,8 @@ export function ModTags({ setOpen, postId, existingTags }: Props) {
           ))}
 
         {parentTags?.map((t) => (
-          <button key={nanoid()} onClick={() => handleRemove(t.name)}>
-            <Badge name={t.name} withRemove />
+          <button key={nanoid()} onClick={() => handleRemove(t)}>
+            <Badge name={t} withRemove />
           </button>
         ))}
       </div>

@@ -8,7 +8,7 @@ import { ModTags } from "./mod-tags";
 type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  existingTags: { name: string }[];
+  existingTags: string[];
 } & Omit<PostData, "comments">;
 
 export function ContentMod({ open, setOpen, existingTags, ...rest }: Props) {
