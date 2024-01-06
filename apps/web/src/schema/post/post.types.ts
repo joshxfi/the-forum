@@ -1,5 +1,5 @@
 import { Post, User, Upvote, Tag } from "@generated/type-graphql";
-import { Directive, Field, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class PostData extends Post {
@@ -21,7 +21,6 @@ export class PostWithComments extends PostData {
 
 @ObjectType()
 export class PostsWithCursor {
-  @Directive("@cacheControl(maxAge: 86400)")
   @Field(() => [PostWithComments])
   data: PostWithComments[];
 

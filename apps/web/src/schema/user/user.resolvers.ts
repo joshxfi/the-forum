@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Ctx, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Ctx, Arg, Directive } from "type-graphql";
 
 import { hashPassword } from "@/utils/helpers";
 import { User, Role } from "@generated/type-graphql";
@@ -50,6 +50,7 @@ export class UserResolver {
   }
 
   @Query(() => [User])
+  @Directive('@cacheControl(maxAge: 60)')
   async getUsers(
     @Arg("role", () => Role) role: Role,
     @Ctx() ctx: TContext
