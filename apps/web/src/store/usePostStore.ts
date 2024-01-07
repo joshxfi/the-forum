@@ -10,6 +10,7 @@ type State = {
   comments: Record<string, Record<string, Omit<PostData, "comments">>>;
   upvotes: Record<string, string>;
   tags: Record<string, Record<string, boolean>>;
+  removedPosts: string[];
 };
 
 type Action = {
@@ -17,6 +18,7 @@ type Action = {
   updateComments: UpdateData<Omit<PostData, "comments">>;
   updateUpvotes: UpdateData<string>;
   updateTags: UpdateData<{ name: string; hide: boolean }>;
+  removePost: (postId: string) => void;
 };
 
 export const usePostStore = create<State & Action>()(
@@ -25,6 +27,7 @@ export const usePostStore = create<State & Action>()(
     comments: {},
     upvotes: {},
     tags: {},
+    removedPosts: [],
 
     addPost: (postData) =>
       set((state) => {
@@ -32,6 +35,11 @@ export const usePostStore = create<State & Action>()(
           ...postData,
           comments: [],
         };
+      }),
+
+    removePost: (postId) =>
+      set((state) => {
+        state.removedPosts.push(postId);
       }),
 
     updateComments: (postId, commentData) =>

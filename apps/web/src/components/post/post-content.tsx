@@ -35,10 +35,10 @@ export function PostContent({ additionalTags, ...rest }: Props) {
     () => [
       ...(rest.tags
         ?.filter(
-          (t) => !tempTags.some((_t) => t.name === _t.name && _t.hide === true)
+          (t) => !tempTags.some((_t) => t.name === _t.name && _t.hide)
         )
         .map((t) => t.name) ?? []),
-      ...tempTags?.filter((t) => t.hide === false).map((t) => t.name),
+      ...tempTags?.filter((t) => t.hide).map((t) => t.name),
     ],
     [rest.tags, tempTags]
   );

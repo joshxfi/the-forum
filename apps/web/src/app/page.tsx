@@ -54,6 +54,7 @@ export default function Home() {
   const { ref, inView } = useInView();
   const { data, loading, fetchMore } = useQuery(GET_POSTS);
   const tempPosts = usePostStore((state) => state.posts);
+  const removedPosts = usePostStore((state) => state.removedPosts);
 
   useEffect(() => {
     if (inView) {
@@ -83,13 +84,18 @@ export default function Home() {
 
   return (
     <section className="pb-24">
-      {Object.entries(tempPosts).reverse().map(([_, m]) => (
-        <PostContainer key={m.id} comments={[]} {...m} />
-      ))}
+      {Object.entries(tempPosts)
+        .filter(([_, m]) => !removedPosts.includes(m.id))
+        .reverse()
+        .map(([_, m]) => (
+          <PostContainer key={m.id} comments={[]} {...m} />
+        ))}
 
-      {data?.getPosts.data?.map((m) => (
-        <PostContainer key={m.id} {...m} />
-      ))}
+      {data?.getPosts.data
+        ?.filter((m) => !removedPosts.includes(m.id))
+        .map((m) => (
+          <PostContainer key={m.id} {...m} />
+        ))}
 
       {!!data?.getPosts.data && data.getPosts.data.length >= 10 && (
         <div ref={ref}></div>

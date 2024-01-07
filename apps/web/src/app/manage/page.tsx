@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { ManageTags } from "@/components/manage/manage-tags";
-import { ManageUsers } from "@/components/manage/manage-users";
+import { ManageMods } from "@/components/manage/manage-mods";
 
 export default function Manage() {
   const { data: session } = useSession();
@@ -16,7 +16,7 @@ export default function Manage() {
   return (
     <section className="container space-y-24 min-h-screen pb-24">
       <ManageTags />
-      <ManageUsers />
+      <ManageMods />
     </section>
   );
 }

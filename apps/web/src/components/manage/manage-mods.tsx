@@ -29,7 +29,7 @@ mutation setUserRole($role: Role!, $username: String!) {
 }
 `);
 
-export function ManageUsers() {
+export function ManageMods() {
   const { toast } = useToast();
   const { data, refetch } = useQuery(GET_USERS, {
     variables: {

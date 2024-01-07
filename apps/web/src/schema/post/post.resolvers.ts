@@ -115,6 +115,28 @@ export class PostResolver {
     @Ctx() ctx: TContext
   ): Promise<String> {
     try {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: postId },
+        include: { comments: true },
+      });
+
+      if (!post) {
+        throw new Error("Post not found");
+      }
+
+      if (post.comments.length > 0) {
+        await ctx.prisma.post.update({
+          where: {
+            id: postId,
+          },
+          data: {
+            comments: {
+              deleteMany: {},
+            },
+          },
+        });
+      }
+
       await ctx.prisma.post.delete({
         where: {
           id: postId,
