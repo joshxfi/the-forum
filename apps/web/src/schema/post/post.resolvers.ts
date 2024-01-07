@@ -1,12 +1,20 @@
 import { Post, Upvote } from "@generated/type-graphql";
 import type { TContext } from "@/app/api/graphql/_types";
 import { PostData, PostsWithCursor } from "./post.types";
-import { Resolver, Query, Ctx, Mutation, Arg, ID, Directive } from "type-graphql";
+import {
+  Resolver,
+  Query,
+  Ctx,
+  Mutation,
+  Arg,
+  ID,
+  Directive,
+} from "type-graphql";
 
 @Resolver(() => Post)
 export class PostResolver {
   @Query(() => PostsWithCursor)
-  @Directive('@cacheControl(maxAge: 60)')
+  @Directive("@cacheControl(maxAge: 60)")
   async getPosts(
     @Ctx() ctx: TContext,
     @Arg("cursorId", () => ID, { nullable: true }) cursorId?: string | null
@@ -50,7 +58,7 @@ export class PostResolver {
   }
 
   @Mutation(() => PostData)
-  @Directive('@cacheControl(maxAge: 60)')
+  @Directive("@cacheControl(maxAge: 60)")
   async addPost(
     @Arg("content", () => String) content: string,
     @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
@@ -72,7 +80,7 @@ export class PostResolver {
   }
 
   @Mutation(() => PostData)
-  @Directive('@cacheControl(maxAge: 60)')
+  @Directive("@cacheControl(maxAge: 60)")
   async addComment(
     @Arg("content", () => String) content: string,
     @Arg("isAnonymous", () => Boolean) isAnonymous: boolean,
@@ -100,8 +108,28 @@ export class PostResolver {
     }
   }
 
+  @Mutation(() => String)
+  @Directive("@cacheControl(maxAge: 60)")
+  async removePost(
+    @Arg("postId", () => ID) postId: string,
+    @Ctx() ctx: TContext
+  ): Promise<String> {
+    try {
+      await ctx.prisma.post.delete({
+        where: {
+          id: postId,
+        },
+      });
+
+      return "Success";
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
   @Mutation(() => Upvote)
-  @Directive('@cacheControl(maxAge: 60)')
+  @Directive("@cacheControl(maxAge: 60)")
   async addUpvote(
     @Arg("postId", () => ID) postId: string,
     @Ctx() ctx: TContext
@@ -120,7 +148,7 @@ export class PostResolver {
   }
 
   @Mutation(() => String)
-  @Directive('@cacheControl(maxAge: 60)')
+  @Directive("@cacheControl(maxAge: 60)")
   async removeUpvote(
     @Arg("id", () => ID) id: string,
     @Ctx() ctx: TContext
